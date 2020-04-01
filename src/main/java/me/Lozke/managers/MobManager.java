@@ -8,6 +8,7 @@ import me.Lozke.RetardRealms;
 import me.Lozke.data.MobSpawner;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.Tier;
+import me.Lozke.tasks.TickSpawnersTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -22,11 +23,13 @@ public class MobManager {
 
     private List<MobSpawner> mobSpawners;
     private boolean visible;
+    private TickSpawnersTask task;
 
     public MobManager(RetardRealms plugin) {
         this.plugin = plugin;
         mobSpawners = new ArrayList<>();
         visible = false;
+        task = new TickSpawnersTask(this);
     }
 
     public void loadSpawners() {
@@ -83,7 +86,6 @@ public class MobManager {
     public void removeSpawner(Location location) {
         if (isSpawner(location)) {
             location.getBlock().setType(Material.AIR);
-            getSpawner(location).cancelTask();
             mobSpawners.remove(getSpawner(location));
         }
     }
@@ -95,5 +97,13 @@ public class MobManager {
 
     public Inventory openGUI(Location location) {
         return getSpawner(location).editor();
+    }
+
+    public void tickSpawners() {
+        for (MobSpawner spawner : mobSpawners) {
+            int timeLeft = spawner.getTimeLeft();
+            int newTimeLeft = timeLeft-- > 0 ? timeLeft-- : spawner.getSpawnTimer();
+            spawner.setTimeLeft(newTimeLeft);
+        }
     }
 }

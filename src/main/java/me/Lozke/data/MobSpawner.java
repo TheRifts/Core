@@ -1,11 +1,9 @@
 package me.Lozke.data;
 
-import me.Lozke.RetardRealms;
 import me.Lozke.guis.SpawnerEditor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Map;
@@ -31,7 +29,6 @@ public class MobSpawner {
         this.spawnerStatus = mobSpawner.getSpawnerStatus();
         this.spawnTimer = mobSpawner.getSpawnTimer();
         this.timeLeft = spawnTimer;
-        runTask();
     }
 
     public MobSpawner(Location location, Tier tier, Rarity rarity, String mobType, boolean eliteStatus, boolean spawnerStatus, int timer) {
@@ -43,7 +40,6 @@ public class MobSpawner {
         this.spawnerStatus = spawnerStatus;
         this.spawnTimer = timer;
         this.timeLeft = spawnTimer;
-        runTask();
     }
 
     public Tier getTier() {
@@ -86,21 +82,10 @@ public class MobSpawner {
 
     public void toggleSpawnerStatus() {
         this.spawnerStatus = !spawnerStatus;
-        if (spawnerStatus) {
-            runTask();
-        }
-        else {
-            cancelTask();
-        }
     }
 
     public int getSpawnTimer() {
         return spawnTimer;
-    }
-
-    public void setSpawnTimer(int time) {
-        this.spawnTimer = time;
-        runTask();
     }
 
     public int getTimeLeft() {
@@ -142,25 +127,5 @@ public class MobSpawner {
             Location.deserialize(location).getBlock().setType(Material.getMaterial(tier.getMaterialColor() + "_CONCRETE"));
         }
         return this;
-    }
-
-    public void cancelTask() {
-        task.cancel();
-    }
-
-    public void runTask() {
-        if (task != null) {
-            task.cancel();
-        }
-        task = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (timeLeft == 0) {
-                    //TODO: spawnerTask.run()
-                }
-                timeLeft = timeLeft-- > 0 ? timeLeft-- : spawnTimer;
-
-            }
-        }.runTaskTimer(RetardRealms.getPluginInstance(), 20, 20);
     }
 }
