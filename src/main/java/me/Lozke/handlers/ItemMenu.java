@@ -26,8 +26,10 @@ public class ItemMenu {
         else {
             inventory = Bukkit.createInventory(null, size, title);
         }
-        for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
-            inventory.setItem(slot, items[slot]);
+        if (items != null) {
+            for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
+                inventory.setItem(slot, items[slot]);
+            }
         }
     }
 
