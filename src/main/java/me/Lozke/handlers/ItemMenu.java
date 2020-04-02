@@ -60,4 +60,8 @@ public class ItemMenu {
     public Inventory getMenu() {
         return inventory;
     }
+
+    public void updateSlot(int slot, ItemStack itemStack) {
+        inventory.setItem(slot, itemStack);
+    }
 }
