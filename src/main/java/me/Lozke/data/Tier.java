@@ -1,13 +1,6 @@
 package me.Lozke.data;
 
-import me.Lozke.RetardRealms;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-
-import java.util.Random;
 
 public enum Tier {
     T1("WHITE", Material.WHITE_CONCRETE,"LEATHER", "WOODEN", "&7"), //Wood/Leather
@@ -51,60 +44,5 @@ public enum Tier {
 
     public String getWeaponMaterial() {
         return weaponMaterial;
-    }
-
-    //Everything below this needs to be made into an Item class
-    private ItemStack createItem(String itemType) {
-        ItemStack item = null;
-        ItemMeta itemMeta = null;
-        PersistentDataContainer dataContainer = null;
-        switch (itemType) {
-            case "_HELMET":
-            case "_CHESTPLATE":
-            case "_LEGGINGS":
-            case "_BOOTS":
-                item = new ItemStack(Material.valueOf(armourMaterial + itemType));
-                itemMeta = item.getItemMeta();
-                dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(ItemData.HP, PersistentDataType.INTEGER, new Random().nextInt(RetardRealms.getGearData().getInt("Helmet.LO")));
-                break;
-            case "_SWORD":
-            case "_AXE":
-            case "_SHOVEL":
-            case "_HOE":
-                item = new ItemStack(Material.valueOf(weaponMaterial + itemType));
-                itemMeta = item.getItemMeta();
-                dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(ItemData.DMG, PersistentDataType.INTEGER, 5000);
-                break;
-        }
-        dataContainer.set(ItemData.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
-        item.setItemMeta(itemMeta);
-        return item;
-    }
-
-    public ItemStack getHelmet() {
-        return createItem("_HELMET");
-    }
-
-    public ItemStack getChestplate() {
-        return createItem("_CHESTPLATE");
-    }
-
-    public ItemStack getLeggings() {
-        return createItem("_LEGGINGS");
-    }
-
-    public ItemStack getBoots() {
-        return createItem("_BOOTS");
-    }
-
-    //lol this would be the perfect place to return a Set<ItemStack>... just saying...
-    public ItemStack[] getSet() {
-        return new ItemStack[]{getHelmet(), getChestplate(), getLeggings(), getBoots()};
-    }
-
-    public ItemStack getWeapon(String type) {
-        return createItem("_" + type.toUpperCase());
     }
 }
