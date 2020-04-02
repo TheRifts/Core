@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemMenu {
 
+    private Inventory inventory;
     private ItemMenu parent;
     private InventoryType type;
     private int size;
@@ -19,6 +20,15 @@ public class ItemMenu {
         this.size = size;
         this.title = title;
         this.items = items;
+        if (type != null) {
+            inventory = Bukkit.createInventory(null, type, title);
+        }
+        else {
+            inventory = Bukkit.createInventory(null, size, title);
+        }
+        for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
+            inventory.setItem(slot, items[slot]);
+        }
     }
 
     public ItemMenu(InventoryType type, String title, ItemStack... items) {
@@ -43,25 +53,11 @@ public class ItemMenu {
         }
     }
 
-    public Inventory generateMenu() {
-        Inventory inventory = null;
-        if (type != null) {
-            inventory = Bukkit.createInventory(null, type, title);
-        }
-        else {
-            inventory = Bukkit.createInventory(null, size, title);
-        }
-        for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
-            inventory.setItem(slot, items[slot]);
-        }
-        return inventory;
-    }
-
     public void openMenu(Player player) {
-        player.openInventory(generateMenu());
+        player.openInventory(inventory);
     }
 
     public Inventory getMenu() {
-        return generateMenu();
+        return inventory;
     }
 }
