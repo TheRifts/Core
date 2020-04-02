@@ -101,6 +101,9 @@ public class MobManager {
 
     public void tickSpawners() {
         for (MobSpawner spawner : mobSpawners) {
+            if (!spawner.getSpawnerStatus()) { //return method, if spawner is off.
+                return;
+            }
             int timeLeft = spawner.getTimeLeft();
             int newTimeLeft = timeLeft-- > 0 ? timeLeft-- : spawner.getSpawnTimer();
             spawner.setTimeLeft(newTimeLeft);
