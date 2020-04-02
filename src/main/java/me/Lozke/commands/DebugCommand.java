@@ -1,6 +1,7 @@
 package me.Lozke.commands;
 
 import me.Lozke.data.Tier;
+import me.Lozke.handlers.ItemHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,31 +33,31 @@ public class DebugCommand extends Command {
             if (tier.ordinal() == num - 1) {
                 switch (type) {
                     case "sword":
-                        inv.setItem(inv.firstEmpty(), tier.getWeapon("SWORD"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "SWORD"));
                         return true;
                     case "axe":
-                        inv.setItem(inv.firstEmpty(), tier.getWeapon("AXE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "AXE"));
                         return true;
                     case "shovel":
-                        inv.setItem(inv.firstEmpty(), tier.getWeapon("SHOVEL"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "SHOVEL"));
                         return true;
                     case "hoe":
-                        inv.setItem(inv.firstEmpty(), tier.getWeapon("HOE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "HOE"));
                         return true;
                     case "boots":
-                        inv.setItem(inv.firstEmpty(), tier.getBoots());
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier));
                         return true;
                     case "leggings":
-                        inv.setItem(inv.firstEmpty(), tier.getLeggings());
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newLeggings(tier));
                         return true;
                     case "chestplate":
-                        inv.setItem(inv.firstEmpty(), tier.getChestplate());
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newChestplate(tier));
                         return true;
                     case "helmet":
-                        inv.setItem(inv.firstEmpty(), tier.getHelmet());
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newHelmet(tier));
                         return true;
                     default:
-                        for (ItemStack item : tier.getSet()) {
+                        for (ItemStack item : ItemHandler.newSet(tier)) {
                             inv.setItem(inv.firstEmpty(), item);
                         }
                         return true;
