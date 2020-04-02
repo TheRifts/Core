@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SpawnerEditor implements Listener {
 
     private me.Lozke.data.MobSpawner spawner;
-    private Inventory gui;
+    private ItemMenu menu;
     private Page currentPage;
     private Page previousPage;
 
@@ -38,45 +38,46 @@ public class SpawnerEditor implements Listener {
 
     private void setPage(Page page) {
         int slot = 0;
-        ItemStack[] items = new ItemStack[page.getInventoryType().getDefaultSize()];
+        if (menu == null || !menu.getInventory().getType().equals(page.inventoryType)) {
+            menu = new ItemMenu(page.inventoryType, "");
+        }
+        else {
+            menu.clearItems();
+        }
         switch (page) {
             case Main:
                 currentPage = page;
-                items[0] = Items.formatItem(new ItemStack(spawner.getTier().getMaterial()), spawner.getTier().getColorCode() + spawner.getTier() + " &r(" + spawner.getRarity().getColorCode() + spawner.getRarity().getSymbol() + "&r)", new String[]{Text.colorize("&8Left click to edit tier"), Text.colorize("&8Right click to edit rarity")});
-                items[1] = Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD), Text.colorize("&fMob Editor"));
-                items[2] = Items.formatItem(new ItemStack(Material.NETHER_STAR), Text.colorize("&fSpawner Mechanics"));
-                items[3] = Items.formatItem(new ItemStack(Material.CLOCK), "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTimer());
+                menu.addDisplayItem(Items.formatItem(new ItemStack(spawner.getTier().getMaterial()), spawner.getTier().getColorCode() + spawner.getTier() + " &r(" + spawner.getRarity().getColorCode() + spawner.getRarity().getSymbol() + "&r)", new String[]{Text.colorize("&8Left click to edit tier"), Text.colorize("&8Right click to edit rarity")}));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD), Text.colorize("&fMob Editor")));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NETHER_STAR), Text.colorize("&fSpawner Mechanics")));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.CLOCK), "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTimer()));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        if (!currentPage.equals(Page.Main) || gui.getViewers().size() == 0){
+                        if (!currentPage.equals(Page.Main) || menu.getInventory().getViewers().size() == 0 || !spawner.getSpawnerStatus()){
                             cancel();
                             return;
                         }
-                        gui.setItem(3, Items.formatItem(new ItemStack(Material.CLOCK), "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTimer()));
+                        menu.updateSlot(3, Items.formatItem(new ItemStack(Material.CLOCK), "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTimer()));
                     }
                 }.runTaskTimer(RetardRealms.getPluginInstance(), 0, 20);
                 if (spawner.getSpawnerStatus()) {
-                    items[4] = Items.formatItem(new ItemStack(Material.LIME_DYE), "&fSpawner Status: &a&lON");
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.LIME_DYE), "&fSpawner Status: &a&lON"));
                 }
                 else {
-                    items[4] = Items.formatItem(new ItemStack(Material.GRAY_DYE), "&fSpawner Status: &c&lOFF");
-                }
-                if (gui == null) {
-                    gui = new ItemMenu(Page.Main.inventoryType, "", items).getMenu();
-                    break;
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.GRAY_DYE), "&fSpawner Status: &c&lOFF"));
                 }
                 break;
             case Tier:
                 currentPage = page;
                 for (Tier tier : Tier.types) {
                     if (spawner.getTier() == tier) {
-                        ItemStack itemStack = Items.formatItem(new ItemStack(tier.getMaterial()), Text.colorize(tier.getColorCode() + tier.name()));
+                        ItemStack itemStack = Items.makeGlow(Items.formatItem(new ItemStack(tier.getMaterial()), Text.colorize(tier.getColorCode() + tier.name())));
                         Items.makeGlow(itemStack);
-                        items[slot] = itemStack;
+                        menu.addDisplayItem(itemStack);
                     }
                     else {
-                        items[slot] = Items.formatItem(new ItemStack(tier.getMaterial()), Text.colorize(tier.getColorCode() + tier.name()));
+                        menu.addDisplayItem(Items.formatItem(new ItemStack(tier.getMaterial()), Text.colorize(tier.getColorCode() + tier.name())));
                     }
                     slot++;
                 }
@@ -84,38 +85,34 @@ public class SpawnerEditor implements Listener {
             case Rarity:
                 currentPage = page;
                 for (Rarity rarity : Rarity.types) {
-                    items[slot] = Items.formatItem(rarity.getIcon(), Text.colorize(rarity.getColorCode() + rarity.name()));
+                    menu.addDisplayItem(Items.formatItem(rarity.getIcon(), Text.colorize(rarity.getColorCode() + rarity.name())));
                     slot++;
                 }
                 break;
             case MobEditor:
                 currentPage = page;
-                items[0] = Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD), Text.colorize("&fType: " + spawner.getMobType()), new String[] {Text.colorize("&8Click to change type")});
-                items[1] = Items.formatItem(new ItemStack(Material.NAME_TAG), Text.colorize("&fName: " + spawner.getMobType()), new String[] {Text.colorize("&8Click to change name")});
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD), Text.colorize("&fType: " + spawner.getMobType()), new String[] {Text.colorize("&8Click to change type")}));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NAME_TAG), Text.colorize("&fName: " + spawner.getMobType()), new String[] {Text.colorize("&8Click to change name")}));
                 if (spawner.getEliteStatus()) {
-                    items[2] = Items.formatItem(new ItemStack(Material.ENDER_EYE), Text.colorize("&fToggle Elite Status"));
-                    Items.makeGlow(items[2]);
+                    ItemStack item = Items.formatItem(new ItemStack(Material.ENDER_EYE), Text.colorize("&fToggle Elite Status"));
+                    Items.makeGlow(item);
+                    menu.addDisplayItem(item);
                 }
                 else {
-                    items[2] = Items.formatItem(new ItemStack(Material.ENDER_PEARL), Text.colorize("&fToggle Elite Status"));
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ENDER_PEARL), Text.colorize("&fToggle Elite Status")));
                 }
-                items[4] = Items.formatItem(new ItemStack(Material.RED_CONCRETE), Text.colorize("&cReturn"));
+                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE), Text.colorize("&cReturn")));
                 break;
             case SpawnerEditor:
                 currentPage = page;
-                items[4] = Items.formatItem(new ItemStack(Material.RED_CONCRETE), Text.colorize("&cReturn"));
+                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE), Text.colorize("&cReturn")));
                 break;
-        }
-        slot = 0;
-        for (ItemStack item : items) {
-            gui.setItem(slot, item);
-            slot++;
         }
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getInventory().equals(gui))) {
+        if (!(event.getInventory().equals(menu.getInventory()))) {
             return;
         }
         event.setCancelled(true);
@@ -149,6 +146,7 @@ public class SpawnerEditor implements Listener {
                     case 4:
                         spawner.toggleSpawnerStatus();
                         setPage(Page.Main);
+                        break;
                 }
                 break;
             case Tier:
@@ -187,11 +185,11 @@ public class SpawnerEditor implements Listener {
     }
 
     public void openGUI(Player player) {
-        player.openInventory(gui);
+        player.openInventory(menu.getInventory());
     }
 
     public Inventory getGui() {
-        return gui;
+        return menu.getInventory();
     }
 
     private enum Page {
