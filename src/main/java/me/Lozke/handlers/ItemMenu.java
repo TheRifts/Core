@@ -19,18 +19,14 @@ public class ItemMenu {
         this.type = type;
         this.size = size;
         this.title = title;
-        this.items = items;
         if (type != null) {
             inventory = Bukkit.createInventory(null, type, title);
         }
         else {
             inventory = Bukkit.createInventory(null, size, title);
         }
-        if (items != null) {
-            for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
-                inventory.setItem(slot, items[slot]);
-            }
-        }
+        this.items = items == null || items.length < inventory.getSize() ? new ItemStack[inventory.getSize()] : items;
+        displayItems();
     }
 
     public ItemMenu(InventoryType type, String title, ItemStack... items) {
@@ -63,15 +59,31 @@ public class ItemMenu {
         return inventory;
     }
 
+    public void displayItems() {
+        if (items != null) {
+            for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
+                inventory.setItem(slot, items[slot]);
+            }
+        }
+    }
+
     public void updateSlot(int slot, ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
+        items[slot] = itemStack;
     }
 
-    public void displayItem(int slot, ItemStack itemStack) {
+    public void setDisplayItem(int slot, ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
+        items[slot] = itemStack;
     }
 
-    public void displayItem(ItemStack itemStack) {
-        displayItem(inventory.firstEmpty(), itemStack);
+    public void addDisplayItem(ItemStack itemStack) {
+        setDisplayItem(inventory.firstEmpty(), itemStack);
+    }
+
+    public void clearItems() {
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            inventory.setItem(slot, null);
+        }
     }
 }
