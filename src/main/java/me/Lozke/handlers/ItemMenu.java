@@ -64,4 +64,12 @@ public class ItemMenu {
     public void updateSlot(int slot, ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
     }
+
+    public void displayItem(int slot, ItemStack itemStack) {
+        inventory.setItem(slot, itemStack);
+    }
+
+    public void displayItem(ItemStack itemStack) {
+        displayItem(inventory.firstEmpty(), itemStack);
+    }
 }
