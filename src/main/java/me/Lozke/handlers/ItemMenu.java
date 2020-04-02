@@ -57,7 +57,7 @@ public class ItemMenu {
         player.openInventory(inventory);
     }
 
-    public Inventory getMenu() {
+    public Inventory getInventory() {
         return inventory;
     }
 
