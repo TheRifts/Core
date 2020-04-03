@@ -7,6 +7,7 @@ import me.Lozke.utils.Text;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
 
 public class ItemInteractionListener implements Listener {
 
@@ -41,21 +44,51 @@ public class ItemInteractionListener implements Listener {
         if (handItem.getType() != Material.SHEARS || itemMeta == null || !itemMeta.getDisplayName().equals(Text.colorize("&eSpawner Wand"))) {
             return;
         }
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            mobManager.removeSpawner(event.getClickedBlock().getLocation());
-            event.setCancelled(true);
-        }
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-            NamespacedKey key = ItemData.spawnerWandToggle;
-            if (dataContainer.has(key, PersistentDataType.INTEGER)) {
-                int value = dataContainer.get(key, PersistentDataType.INTEGER); //Let's convert this to a boolean DataType!
-                if (value == 0) { //Placement Mode
-                    placeSpawner(event.getClickedBlock().getLocation(), event.getBlockFace());
+
+        Action action = event.getAction();
+        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            Location location;
+            if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
+                location = event.getClickedBlock().getLocation();
+            }
+            else {
+                try {
+                    location = player.getTargetBlockExact(50).getLocation();
+                } catch (NullPointerException ignore) {
+                    return;
                 }
-                if (value == 1) { //Edit Mode
-                    if (mobManager.isSpawner(event.getClickedBlock().getLocation())) {
-                        player.openInventory(mobManager.openGUI(event.getClickedBlock().getLocation()));
+            }
+
+            if(action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
+                mobManager.removeSpawner(location);
+                event.setCancelled(true); //Prevent destroying blocks manually
+            }
+
+            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+                PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+                NamespacedKey key = ItemData.spawnerWandToggle;
+                if (dataContainer.has(key, PersistentDataType.INTEGER)) {
+                    int value = dataContainer.get(key, PersistentDataType.INTEGER); //Let's convert this to a boolean DataType!
+                    if (value == 0) { //Placement Mode
+                        if(action == Action.RIGHT_CLICK_BLOCK) {
+                            placeSpawner(location, event.getBlockFace());
+                        }
+                        else {
+                            List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks(null, 50);
+                            if(lastTwoTargetBlocks.size() != 2) {
+                                return;
+                            }
+                            BlockFace blockFace = lastTwoTargetBlocks.get(1).getFace(lastTwoTargetBlocks.get(0));
+                            if(blockFace == null) {
+                                return;
+                            }
+                            placeSpawner(location, blockFace);
+                        }
+                    }
+                    if (value == 1) { //Edit Mode
+                        if (mobManager.isSpawner(location)) {
+                            player.openInventory(mobManager.openGUI(location));
+                        }
                     }
                 }
             }
