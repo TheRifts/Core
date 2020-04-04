@@ -37,7 +37,7 @@ public class RetardRealms extends JavaPlugin {
         pm.registerEvents(new PlayerLogoutListener(this), this);
         pm.registerEvents(new ArmourChangeListener(), this);
         pm.registerEvents(new ItemInteractionListener(), this);
-        pm.registerEvents(new SneakListener(), this);
+        pm.registerEvents(new SpawnerWandToggleListener(), this);
         pm.registerEvents(new DamageListener(), this);
 
         //Migrate this to a Factory

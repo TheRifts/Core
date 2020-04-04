@@ -48,20 +48,22 @@ public class ItemInteractionListener implements Listener {
         Action action = event.getAction();
         if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             Location location;
-            if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
-                location = event.getClickedBlock().getLocation();
-            }
-            else {
-                try {
-                    location = player.getTargetBlockExact(50).getLocation();
-                } catch (NullPointerException ignore) {
-                    return;
+            try {
+                if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
+                    location = event.getClickedBlock().getLocation();
                 }
+                else {
+                    location = player.getTargetBlockExact(50).getLocation();
+                }
+            } catch (NullPointerException ignore) {
+                return;
             }
 
             if(action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
+                if(mobManager.isSpawner(location)) {
+                    event.setCancelled(true); //Prevent destroying blocks manually
+                }
                 mobManager.removeSpawner(location);
-                event.setCancelled(true); //Prevent destroying blocks manually
             }
 
             if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {

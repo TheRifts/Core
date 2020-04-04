@@ -9,19 +9,17 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class SneakListener implements Listener {
+public class SpawnerWandToggleListener implements Listener {
 
     @EventHandler
-    public void onSneak(PlayerToggleSneakEvent event) {
-        if (event.isSneaking()) {
-            return;
-        }
+    public void onSneak(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         ItemStack handItem = player.getItemInHand();
         if (handItem.getType() != Material.SHEARS || !handItem.getItemMeta().getDisplayName().equals(Text.colorize("&eSpawner Wand"))) {
@@ -43,6 +41,7 @@ public class SneakListener implements Listener {
                 }
             }
             handItem.setItemMeta(itemMeta);
+            event.setCancelled(true);
         }
     }
 }
