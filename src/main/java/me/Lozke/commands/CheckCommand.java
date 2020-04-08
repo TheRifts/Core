@@ -1,6 +1,6 @@
 package me.Lozke.commands;
 
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,8 +19,8 @@ public class CheckCommand extends Command {
         Player player = (Player) sender;
         ItemStack item = player.getItemInHand();
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-        if (container.has(ItemData.realItem, PersistentDataType.STRING)) {
-            player.sendMessage(container.get(ItemData.realItem, PersistentDataType.STRING));
+        if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+            player.sendMessage(container.get(NamespacedKeys.realItem, PersistentDataType.STRING));
             return true;
         }
         player.sendMessage("This is NOT a RetardedRealms™ Item!");

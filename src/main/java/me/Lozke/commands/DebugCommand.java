@@ -20,18 +20,27 @@ public class DebugCommand extends Command {
         Inventory inv = player.getInventory();
         int num = 0;
         String type = "";
+        int amount = 1;
 
-        if (args.length == 1 ) {
+        if (args.length > 0) {
             num = Integer.parseInt(args[0]);
         }
         if (args.length > 1) {
-            num = Integer.parseInt(args[0]);
             type = args[1];
+        }
+        if (args.length > 2) {
+            amount = Integer.parseInt(args[2]);
         }
 
         for (Tier tier : Tier.types) {
             if (tier.ordinal() == num - 1) {
                 switch (type) {
+                    case "orb":
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newOrb(tier, amount));
+                        return true;
+                    case "scrap":
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
+                        return true;
                     case "sword":
                         inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "SWORD"));
                         return true;

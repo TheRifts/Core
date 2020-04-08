@@ -1,9 +1,9 @@
-package me.Lozke.data;
+package me.Lozke.data.items;
 
 import me.Lozke.RetardRealms;
 import org.bukkit.NamespacedKey;
 
-public class ItemData {
+public class NamespacedKeys {
     final private static RetardRealms plugin = RetardRealms.getPluginInstance();
     final public static NamespacedKey realItem = new NamespacedKey(plugin, "a-retarded-item");
     final public static NamespacedKey HP = new NamespacedKey(plugin, "retarded-HP");

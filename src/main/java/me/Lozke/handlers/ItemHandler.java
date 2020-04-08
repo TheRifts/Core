@@ -1,8 +1,10 @@
 package me.Lozke.handlers;
 
 import me.Lozke.RetardRealms;
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.Tier;
+import me.Lozke.data.items.Orb;
+import me.Lozke.data.items.Scrap;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -18,9 +20,9 @@ public class ItemHandler {
 
     public static void handleStats(Player player, ItemStack item, boolean equipped) {
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(ItemData.realItem, PersistentDataType.STRING)) {
+        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
             AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            int itemHP = dataContainer.get(ItemData.HP, PersistentDataType.INTEGER);
+            int itemHP = dataContainer.get(NamespacedKeys.HP, PersistentDataType.INTEGER);
             if (equipped) {
                 maxHealth.setBaseValue((int) maxHealth.getValue() + itemHP);
             }
@@ -49,7 +51,7 @@ public class ItemHandler {
                 item = new ItemStack(Material.valueOf(material + itemType));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(ItemData.HP, PersistentDataType.INTEGER, new Random().nextInt(RetardRealms.getGearData().getInt("Helmet.LO")));
+                dataContainer.set(NamespacedKeys.HP, PersistentDataType.INTEGER, new Random().nextInt(RetardRealms.getGearData().getInt("Helmet.LO")));
                 break;
             case "_SWORD":
             case "_AXE":
@@ -58,10 +60,10 @@ public class ItemHandler {
                 item = new ItemStack(Material.valueOf(material + itemType));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(ItemData.DMG, PersistentDataType.INTEGER, 5000);
+                dataContainer.set(NamespacedKeys.DMG, PersistentDataType.INTEGER, 5000);
                 break;
         }
-        dataContainer.set(ItemData.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
+        dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
         item.setItemMeta(itemMeta);
         return item;
     }
@@ -89,5 +91,25 @@ public class ItemHandler {
 
     public static ItemStack getWeapon(Tier tier, String type) {
         return createItem(tier.getWeaponMaterial(), "_" + type.toUpperCase());
+    }
+
+    public static ItemStack newScrap(Tier tier) {
+        return newScrap(tier, 1);
+    }
+
+    public static ItemStack newScrap(Tier tier, int amount) {
+        ItemStack scrap = Scrap.types[tier.ordinal()].getItem();
+        scrap.setAmount(amount);
+        return scrap;
+    }
+
+    public static ItemStack newOrb(Tier tier) {
+        return newOrb(tier, 1);
+    }
+
+    public static ItemStack newOrb(Tier tier, int amount) {
+        ItemStack orb = Orb.types[tier.ordinal()].getItem();
+        orb.setAmount(amount);
+        return orb;
     }
 }

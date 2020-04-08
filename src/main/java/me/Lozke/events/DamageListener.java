@@ -1,6 +1,6 @@
 package me.Lozke.events;
 
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import org.bukkit.EntityEffect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,10 +27,10 @@ public class DamageListener implements Listener {
         ItemStack item = player.getItemInHand();
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(ItemData.realItem, PersistentDataType.STRING)) {
+        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
             event.setCancelled(true);
             LivingEntity entity = (LivingEntity) event.getEntity();
-            double newHP = entity.getHealth() - dataContainer.get(ItemData.DMG, PersistentDataType.INTEGER);
+            double newHP = entity.getHealth() - dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
             if (newHP > 0) {
                 entity.setHealth(newHP);
                 entity.playEffect(EntityEffect.HURT);

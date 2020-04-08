@@ -1,6 +1,6 @@
 package me.Lozke.commands;
 
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -24,7 +24,7 @@ public class SpawnerWand extends Command {
         ItemStack spawnerWand = new ItemStack(Material.SHEARS);
 
         ItemMeta itemMeta = spawnerWand.getItemMeta();
-        itemMeta.getPersistentDataContainer().set(ItemData.spawnerWandToggle, PersistentDataType.INTEGER, 0);
+        itemMeta.getPersistentDataContainer().set(NamespacedKeys.spawnerWandToggle, PersistentDataType.INTEGER, 0);
         itemMeta.setDisplayName(Text.colorize("&eSpawner Wand"));
 
         spawnerWand.setItemMeta(itemMeta);

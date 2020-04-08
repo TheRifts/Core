@@ -1,6 +1,6 @@
 package me.Lozke.events;
 
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -28,7 +28,7 @@ public class SpawnerWandToggleListener implements Listener {
         ItemMeta itemMeta = handItem.getItemMeta();
         if (itemMeta != null) {
             PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-            NamespacedKey key = ItemData.spawnerWandToggle;
+            NamespacedKey key = NamespacedKeys.spawnerWandToggle;
             if (dataContainer.has(key, PersistentDataType.INTEGER)) {
                 int value = dataContainer.get(key, PersistentDataType.INTEGER);
                 if (value == 0) {

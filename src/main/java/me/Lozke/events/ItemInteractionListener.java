@@ -1,7 +1,7 @@
 package me.Lozke.events;
 
 import me.Lozke.RetardRealms;
-import me.Lozke.data.ItemData;
+import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.managers.MobManager;
 import me.Lozke.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
@@ -72,7 +72,7 @@ public class ItemInteractionListener implements Listener {
             case RIGHT_CLICK_AIR:
             case RIGHT_CLICK_BLOCK:
                 PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-                NamespacedKey key = ItemData.spawnerWandToggle;
+                NamespacedKey key = NamespacedKeys.spawnerWandToggle;
                 if (dataContainer.has(key, PersistentDataType.INTEGER)) {
                     int value = dataContainer.get(key, PersistentDataType.INTEGER); //Let's convert this to a boolean DataType!
                     if (value == 0) { //Placement Mode
