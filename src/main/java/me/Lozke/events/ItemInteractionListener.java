@@ -4,6 +4,8 @@ import me.Lozke.RetardRealms;
 import me.Lozke.data.ItemData;
 import me.Lozke.managers.MobManager;
 import me.Lozke.utils.Text;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -34,6 +36,8 @@ public class ItemInteractionListener implements Listener {
     public void onInteraction(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
+        //TODO: Check player's Rank and if too low return here.
+
         //Prevents event from firing twice, we only care if player is using main hand!
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
@@ -45,43 +49,42 @@ public class ItemInteractionListener implements Listener {
             return;
         }
 
-        Action action = event.getAction();
-        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            Location location;
-            try {
-                if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
-                    location = event.getClickedBlock().getLocation();
-                }
-                else {
-                    location = player.getTargetBlockExact(50).getLocation();
-                }
-            } catch (NullPointerException ignore) {
-                return;
+        Location location;
+        try {
+            if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                location = event.getClickedBlock().getLocation();
+            } else {
+                location = player.getTargetBlockExact(50).getLocation(); //We should consider calculating the actual maximum range instead of capping it at 50
             }
+        } catch (NullPointerException ignore) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cOut Of Range")));
+            return;
+        }
 
-            if(action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
-                if(mobManager.isSpawner(location)) {
+        switch (event.getAction()) {
+            case LEFT_CLICK_AIR:
+            case LEFT_CLICK_BLOCK:
+                if (mobManager.isSpawner(location)) {
                     event.setCancelled(true); //Prevent destroying blocks manually
                 }
                 mobManager.removeSpawner(location);
-            }
-
-            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+                break;
+            case RIGHT_CLICK_AIR:
+            case RIGHT_CLICK_BLOCK:
                 PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
                 NamespacedKey key = ItemData.spawnerWandToggle;
                 if (dataContainer.has(key, PersistentDataType.INTEGER)) {
                     int value = dataContainer.get(key, PersistentDataType.INTEGER); //Let's convert this to a boolean DataType!
                     if (value == 0) { //Placement Mode
-                        if(action == Action.RIGHT_CLICK_BLOCK) {
+                        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             placeSpawner(location, event.getBlockFace());
-                        }
-                        else {
+                        } else {
                             List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks(null, 50);
-                            if(lastTwoTargetBlocks.size() != 2) {
+                            if (lastTwoTargetBlocks.size() != 2) {
                                 return;
                             }
                             BlockFace blockFace = lastTwoTargetBlocks.get(1).getFace(lastTwoTargetBlocks.get(0));
-                            if(blockFace == null) {
+                            if (blockFace == null) {
                                 return;
                             }
                             placeSpawner(location, blockFace);
@@ -93,7 +96,6 @@ public class ItemInteractionListener implements Listener {
                         }
                     }
                 }
-            }
         }
     }
 
