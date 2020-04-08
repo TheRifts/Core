@@ -19,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class SpawnerWandToggleListener implements Listener {
 
     @EventHandler
-    public void onSneak(PlayerSwapHandItemsEvent event) {
+    public void onHandSwap(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         ItemStack handItem = player.getItemInHand();
         if (handItem.getType() != Material.SHEARS || !handItem.getItemMeta().getDisplayName().equals(Text.colorize("&eSpawner Wand"))) {
