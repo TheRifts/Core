@@ -119,6 +119,6 @@ public class ItemInteractionListener implements Listener {
                 location.add(0, -1, 0);
                 break;
         }
-        RetardRealms.getPluginInstance().getMobManager().createSpawner(location);
+        mobManager.createSpawner(location);
     }
 }
