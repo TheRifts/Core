@@ -16,7 +16,7 @@ public class ItemRename extends Command {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         Player player = (Player) sender;
-        ItemStack handItem = player.getItemInHand();
+        ItemStack handItem = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = handItem.getItemMeta();
         itemMeta.setDisplayName(Text.colorize(String.join(" ", args)));
         handItem.setItemMeta(itemMeta);

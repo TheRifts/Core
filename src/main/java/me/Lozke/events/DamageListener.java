@@ -24,7 +24,7 @@ public class DamageListener implements Listener {
         }
 
         Player player = (Player) event.getDamager();
-        ItemStack item = player.getItemInHand();
+        ItemStack item = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = item.getItemMeta();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {

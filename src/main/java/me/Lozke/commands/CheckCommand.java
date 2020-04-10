@@ -17,7 +17,7 @@ public class CheckCommand extends Command {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         Player player = (Player) sender;
-        ItemStack item = player.getItemInHand();
+        ItemStack item = player.getInventory().getItemInMainHand();
         PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
         if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
             player.sendMessage(container.get(NamespacedKeys.realItem, PersistentDataType.STRING));
