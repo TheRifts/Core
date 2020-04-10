@@ -58,7 +58,7 @@ public class FallingAutism extends JavaPlugin {
             e.printStackTrace();
         }
 
-        System.out.println("[RetardRealms] The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
+        System.out.println("[FallingAutism] The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FallingAutism extends JavaPlugin {
         bossBarHandler.removeAll();
         mobManager.saveSpawners();
         mobManager.hideSpawners();
-        System.out.println("[RetardRealms] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
+        System.out.println("[FallingAutisma] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
     }
 
     public static FallingAutism getPluginInstance() {
