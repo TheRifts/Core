@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 
-public class RetardRealms extends JavaPlugin {
+public class FallingAutism extends JavaPlugin {
 
-    private static RetardRealms plugin;
+    private static FallingAutism plugin;
     private MobManager mobManager;
     private BossBarHandler bossBarHandler;
 
@@ -70,7 +70,7 @@ public class RetardRealms extends JavaPlugin {
         System.out.println("[RetardRealms] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
     }
 
-    public static RetardRealms getPluginInstance() {
+    public static FallingAutism getPluginInstance() {
         return plugin;
     }
 

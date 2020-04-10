@@ -1,6 +1,6 @@
 package me.Lozke.commands;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.managers.MobManager;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -13,7 +13,7 @@ public class Spawners extends Command {
 
     public Spawners() {
         super("spawners");
-        this.mobManager = RetardRealms.getPluginInstance().getMobManager();
+        this.mobManager = FallingAutism.getPluginInstance().getMobManager();
     }
 
     @Override

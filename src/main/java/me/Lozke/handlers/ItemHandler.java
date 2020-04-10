@@ -1,6 +1,6 @@
 package me.Lozke.handlers;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.Tier;
 import me.Lozke.data.items.Orb;
@@ -51,7 +51,7 @@ public class ItemHandler {
                 item = new ItemStack(Material.valueOf(material + itemType));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(NamespacedKeys.HP, PersistentDataType.INTEGER, new Random().nextInt(RetardRealms.getGearData().getInt("Helmet.LO")));
+                dataContainer.set(NamespacedKeys.HP, PersistentDataType.INTEGER, new Random().nextInt(FallingAutism.getGearData().getInt("Helmet.LO")));
                 break;
             case "_SWORD":
             case "_AXE":

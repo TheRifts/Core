@@ -1,6 +1,6 @@
 package me.Lozke.guis;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.handlers.ItemMenu;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.Tier;
@@ -28,7 +28,7 @@ public class SpawnerEditor implements Listener {
 
     public SpawnerEditor(me.Lozke.data.MobSpawner spawner) {
         this.spawner = spawner;
-        Bukkit.getPluginManager().registerEvents(this, RetardRealms.getPluginInstance());
+        Bukkit.getPluginManager().registerEvents(this, FallingAutism.getPluginInstance());
         setPage(Page.Main);
     }
 
@@ -77,7 +77,7 @@ public class SpawnerEditor implements Listener {
                                         Text.colorize("&8Middle click to force spawn (spawner must be on)"),
                                         Text.colorize("&8Press drop key on this item to set to minimum value")}));
                     }
-                }.runTaskTimer(RetardRealms.getPluginInstance(), 0, 20);
+                }.runTaskTimer(FallingAutism.getPluginInstance(), 0, 20);
                 if (spawner.isSpawnerActive()) {
                     menu.addDisplayItem(Items.formatItem(new ItemStack(Material.LIME_DYE),
                             "&fSpawner Status: &a&lON"));

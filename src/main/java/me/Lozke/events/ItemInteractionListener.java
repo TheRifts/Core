@@ -1,6 +1,6 @@
 package me.Lozke.events;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.managers.MobManager;
 import me.Lozke.utils.Text;
@@ -33,7 +33,7 @@ public class ItemInteractionListener implements Listener {
     private List<UUID> ignoredPlayers;
 
     public ItemInteractionListener() {
-        mobManager = RetardRealms.getPluginInstance().getMobManager();
+        mobManager = FallingAutism.getPluginInstance().getMobManager();
         ignoredPlayers = new ArrayList<>();
     }
 
@@ -52,7 +52,7 @@ public class ItemInteractionListener implements Listener {
             public void run() {
                 ignoredPlayers.remove(UUID);
             }
-        }.runTaskLaterAsynchronously(RetardRealms.getPluginInstance(), 1);
+        }.runTaskLaterAsynchronously(FallingAutism.getPluginInstance(), 1);
 
 
         //Prevents event from firing twice, we only care if player is using main hand!

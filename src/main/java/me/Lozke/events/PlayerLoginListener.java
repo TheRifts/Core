@@ -1,6 +1,6 @@
 package me.Lozke.events;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerLoginListener implements Listener {
 
-    private RetardRealms plugin;
+    private FallingAutism plugin;
 
-    public PlayerLoginListener(RetardRealms plugin) {
+    public PlayerLoginListener(FallingAutism plugin) {
         this.plugin = plugin;
     }
 

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.data.MobSpawner;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.Tier;
@@ -19,13 +19,13 @@ import java.util.List;
 
 public class MobManager {
 
-    private RetardRealms plugin;
+    private FallingAutism plugin;
 
     private List<MobSpawner> mobSpawners;
     private boolean visible;
     private TickSpawnersTask task;
 
-    public MobManager(RetardRealms plugin) {
+    public MobManager(FallingAutism plugin) {
         this.plugin = plugin;
         mobSpawners = new ArrayList<>();
         visible = false;

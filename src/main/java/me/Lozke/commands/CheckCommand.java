@@ -23,7 +23,7 @@ public class CheckCommand extends Command {
             player.sendMessage(container.get(NamespacedKeys.realItem, PersistentDataType.STRING));
             return true;
         }
-        player.sendMessage("This is NOT a RetardedRealms™ Item!");
+        player.sendMessage("This is NOT a FallingAutism™ Item!");
         return true;
     }
 }

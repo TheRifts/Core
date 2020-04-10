@@ -1,6 +1,6 @@
 package me.Lozke.tasks;
 
-import me.Lozke.RetardRealms;
+import me.Lozke.FallingAutism;
 import me.Lozke.data.MobSpawner;
 import me.Lozke.managers.MobManager;
 import org.bukkit.Location;
@@ -16,7 +16,7 @@ public class TickSpawnersTask extends BukkitRunnable {
 
     public TickSpawnersTask(MobManager mobManager) {
         this.mobManager = mobManager;
-        runTaskTimerAsynchronously(RetardRealms.getPluginInstance(), 0L, 20L);
+        runTaskTimerAsynchronously(FallingAutism.getPluginInstance(), 0L, 20L);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TickSpawnersTask extends BukkitRunnable {
                             entity.setHealth(1);
                         }
                     }
-                }.runTask(RetardRealms.getPluginInstance());
+                }.runTask(FallingAutism.getPluginInstance());
             }
             timeLeft = timeLeft > 0 ? timeLeft-1 : spawner.getSpawnTime()-1;
             spawner.setTimeLeft(timeLeft);
