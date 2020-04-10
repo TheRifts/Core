@@ -32,6 +32,10 @@ public class MobManager {
         task = new TickSpawnersTask(this);
     }
 
+    public List<MobSpawner> getSpawners() {
+        return mobSpawners;
+    }
+
     public void loadSpawners() {
         try {
             mobSpawners = new GsonBuilder().create().fromJson(new JsonReader(new FileReader(plugin.getDataFolder() + "/Spawners.json")), new TypeToken<List<MobSpawner>>() {}.getType());
@@ -70,7 +74,7 @@ public class MobManager {
     }
 
     public void createSpawner(Location location) {
-        mobSpawners.add(new MobSpawner(location, Tier.T1, Rarity.ANCIENT,"Mr. Poopy the Butthole", false, true, 42069).showSpawner());
+        mobSpawners.add(new MobSpawner(location, Tier.T1, Rarity.ANCIENT,"Mr. Poopy the Butthole", false, true, 10, 4, 3).showSpawner());
     }
 
     //Make this async?
@@ -97,16 +101,5 @@ public class MobManager {
 
     public Inventory openGUI(Location location) {
         return getSpawner(location).editor();
-    }
-
-    public void tickSpawners() {
-        for (MobSpawner spawner : mobSpawners) {
-            if (!spawner.getSpawnerStatus()) { //return method, if spawner is off.
-                return;
-            }
-            int timeLeft = spawner.getTimeLeft();
-            int newTimeLeft = timeLeft-- > 0 ? timeLeft-- : spawner.getSpawnTimer();
-            spawner.setTimeLeft(newTimeLeft);
-        }
     }
 }

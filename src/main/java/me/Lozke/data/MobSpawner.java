@@ -14,9 +14,11 @@ public class MobSpawner {
     private Tier tier;
     private Rarity rarity;
     private String mobType; //Convert this to an Object
-    private boolean eliteStatus;
-    private boolean spawnerStatus;
-    private int spawnTimer;
+    private boolean elite;
+    private boolean spawnerActive;
+    private int spawnTime;
+    private int radius;
+    private int amount;
     private transient int timeLeft;
     private transient BukkitTask task;
 
@@ -25,21 +27,25 @@ public class MobSpawner {
         this.tier = mobSpawner.getTier();
         this.rarity = mobSpawner.getRarity();
         this.mobType = mobSpawner.getMobType();
-        this.eliteStatus = mobSpawner.getEliteStatus();
-        this.spawnerStatus = mobSpawner.getSpawnerStatus();
-        this.spawnTimer = mobSpawner.getSpawnTimer();
-        this.timeLeft = spawnTimer;
+        this.elite = mobSpawner.isElite();
+        this.spawnerActive = mobSpawner.isSpawnerActive();
+        this.spawnTime = mobSpawner.getSpawnTime();
+        this.timeLeft = spawnTime;
+        this.radius = mobSpawner.getRadius();
+        this.amount = mobSpawner.getAmount();
     }
 
-    public MobSpawner(Location location, Tier tier, Rarity rarity, String mobType, boolean eliteStatus, boolean spawnerStatus, int timer) {
+    public MobSpawner(Location location, Tier tier, Rarity rarity, String mobType, boolean elite, boolean spawnerActive, int timer, int radius, int amount) {
         this.location = location.serialize();
         this.tier = tier;
         this.rarity = rarity;
         this.mobType = mobType;
-        this.eliteStatus = eliteStatus;
-        this.spawnerStatus = spawnerStatus;
-        this.spawnTimer = timer;
-        this.timeLeft = spawnTimer;
+        this.elite = elite;
+        this.spawnerActive = spawnerActive;
+        this.spawnTime = timer;
+        this.timeLeft = spawnTime;
+        this.radius = radius;
+        this.amount = amount;
     }
 
     public Tier getTier() {
@@ -67,25 +73,32 @@ public class MobSpawner {
         this.mobType = mobType;
     }
 
-    public boolean getEliteStatus() {
-        return eliteStatus;
+    public boolean isElite() {
+        return elite;
     }
 
-    public void toggleEliteStatus() {
-        this.eliteStatus = !eliteStatus;
+    public void toggleElite() {
+        this.elite = !elite;
         showSpawner();
     }
 
-    public boolean getSpawnerStatus() {
-        return spawnerStatus;
+    public boolean isSpawnerActive() {
+        return spawnerActive;
     }
 
-    public void toggleSpawnerStatus() {
-        this.spawnerStatus = !spawnerStatus;
+    public void toggleSpawnerActive() {
+        this.spawnerActive = !spawnerActive;
     }
 
-    public int getSpawnTimer() {
-        return spawnTimer;
+    public int getSpawnTime() {
+        return spawnTime;
+    }
+
+    public void setSpawnTime(int time) {
+        this.spawnTime = time;
+        if(timeLeft>spawnTime) {
+            timeLeft = time;
+        }
     }
 
     public int getTimeLeft() {
@@ -94,6 +107,22 @@ public class MobSpawner {
 
     public void setTimeLeft(int time) {
         this.timeLeft = time;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public Location getLocation() {
@@ -121,7 +150,7 @@ public class MobSpawner {
     }
 
     public MobSpawner showSpawner() {
-        if (eliteStatus) {
+        if (elite) {
             Location.deserialize(location).getBlock().setType(Material.getMaterial(tier.getMaterialColor() + "_STAINED_GLASS"));
         } else {
             Location.deserialize(location).getBlock().setType(Material.getMaterial(tier.getMaterialColor() + "_CONCRETE"));

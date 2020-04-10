@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
+
 public class SpawnerWand extends Command {
 
     public SpawnerWand() {
@@ -26,6 +28,9 @@ public class SpawnerWand extends Command {
         ItemMeta itemMeta = spawnerWand.getItemMeta();
         itemMeta.getPersistentDataContainer().set(NamespacedKeys.spawnerWandToggle, PersistentDataType.INTEGER, 0);
         itemMeta.setDisplayName(Text.colorize("&eSpawner Wand"));
+        itemMeta.setLore(Arrays.asList(Text.colorize("&8Press swap key to switch between placement and edit modes"),
+                Text.colorize("&8Placement mode: Right click to place, Left click to destroy"),
+                Text.colorize("&8Edit mode: Left click to access spawner GUI, Right click to place fixed spawn locations")));
 
         spawnerWand.setItemMeta(itemMeta);
 
