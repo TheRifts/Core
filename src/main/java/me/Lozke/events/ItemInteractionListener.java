@@ -3,6 +3,7 @@ package me.Lozke.events;
 import me.Lozke.FallingAutism;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.managers.MobManager;
+import me.Lozke.utils.Logger;
 import me.Lozke.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,26 +40,26 @@ public class ItemInteractionListener implements Listener {
 
     @EventHandler
     public void onInteraction(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        UUID UUID = player.getUniqueId();
-
-        //Prevent event from firing twice if spawner is at edge of melee range
-        if(ignoredPlayers.contains(UUID)) {
-            return;
-        }
-        ignoredPlayers.add(UUID);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ignoredPlayers.remove(UUID);
-            }
-        }.runTaskLaterAsynchronously(FallingAutism.getPluginInstance(), 1);
-
-
         //Prevents event from firing twice, we only care if player is using main hand!
         if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
+
+        Player player = event.getPlayer();
+        UUID uniqueId = player.getUniqueId();
+
+        //Prevent event from firing twice if spawner is at edge of melee range
+        if(ignoredPlayers.contains(uniqueId)) {
+            return;
+        }
+        ignoredPlayers.add(uniqueId);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ignoredPlayers.remove(uniqueId);
+            }
+        }.runTaskLaterAsynchronously(FallingAutism.getPluginInstance(), 1);
+
 
         //TODO: Check player's Rank and if too low return here.
 

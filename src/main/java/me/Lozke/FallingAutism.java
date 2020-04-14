@@ -4,6 +4,7 @@ import me.Lozke.commands.*;
 import me.Lozke.events.*;
 import me.Lozke.handlers.BossBarHandler;
 import me.Lozke.managers.MobManager;
+import me.Lozke.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,6 +17,7 @@ public class FallingAutism extends JavaPlugin {
 
     private static FallingAutism plugin;
     private MobManager mobManager;
+    private PlayerManager playerManager;
     private BossBarHandler bossBarHandler;
 
     private static FileConfiguration gearData;
@@ -28,6 +30,7 @@ public class FallingAutism extends JavaPlugin {
 
         mobManager = new MobManager(this);
         mobManager.loadSpawners();
+        playerManager = new PlayerManager();
         bossBarHandler = new BossBarHandler(this);
 
         //Turn this into the same setup as commands
@@ -39,6 +42,7 @@ public class FallingAutism extends JavaPlugin {
         pm.registerEvents(new ItemInteractionListener(), this);
         pm.registerEvents(new SpawnerWandToggleListener(), this);
         pm.registerEvents(new DamageListener(), this);
+        pm.registerEvents(new PlayerDeathListener(this), this);
 
         //Migrate this to a Factory
         try {
@@ -78,9 +82,15 @@ public class FallingAutism extends JavaPlugin {
         return bossBarHandler;
     }
 
-    public static FileConfiguration getGearData() { return gearData; }
+    public static FileConfiguration getGearData() {
+        return gearData;
+    }
 
     public MobManager getMobManager() {
         return mobManager;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
     }
 }

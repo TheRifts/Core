@@ -23,13 +23,13 @@ public class MobManager {
 
     private List<MobSpawner> mobSpawners;
     private boolean visible;
-    private TickSpawnersTask task;
+    private TickSpawnersTask tickSpawnersTask;
 
     public MobManager(FallingAutism plugin) {
         this.plugin = plugin;
         mobSpawners = new ArrayList<>();
         visible = false;
-        task = new TickSpawnersTask(this);
+        tickSpawnersTask = new TickSpawnersTask(this);
     }
 
     public List<MobSpawner> getSpawners() {

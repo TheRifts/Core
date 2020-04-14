@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.UUID;
+
 public class PlayerLoginListener implements Listener {
 
     private FallingAutism plugin;
@@ -17,7 +19,10 @@ public class PlayerLoginListener implements Listener {
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        UUID uniqueId = player.getUniqueId();
+
         player.setHealthScale(20.0);
         plugin.getBossBarHandler().createBar(player);
+        plugin.getPlayerManager().loadPlayer(uniqueId);
     }
 }
