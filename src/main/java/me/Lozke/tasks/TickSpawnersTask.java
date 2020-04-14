@@ -23,7 +23,7 @@ public class TickSpawnersTask extends BukkitRunnable {
     public void run() {
         for (MobSpawner spawner : mobManager.getSpawners()) {
             if (!spawner.isSpawnerActive()) { //return method, if spawner is off.
-                return;
+                continue;
             }
             int timeLeft = spawner.getTimeLeft();
             if (timeLeft == 0) {
