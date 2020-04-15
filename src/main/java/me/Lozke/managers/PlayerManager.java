@@ -12,11 +12,9 @@ import java.util.*;
 public class PlayerManager {
 
     private Map<UUID, AutisticPlayer> autisticPlayers;
-    private TickStatusesTask tickStatusesTask;
 
     public PlayerManager() {
         autisticPlayers = new HashMap<>();
-        tickStatusesTask = new TickStatusesTask(this);
     }
 
     public AutisticPlayer getPlayer(UUID uniqueId) {
@@ -42,20 +40,7 @@ public class PlayerManager {
 
     public void savePlayer(UUID uniqueId) {
         //TODO actually save player data
+        autisticPlayers.get(uniqueId).handleLogout();
         autisticPlayers.remove(uniqueId);
-    }
-
-    public void savePlayers() {
-        for (UUID uniqueId : autisticPlayers.keySet()) {
-            savePlayer(uniqueId);
-        }
-    }
-
-    public void setStatus(UUID uniqueId, TimedPlayerStatus status) {
-        tickStatusesTask.addNewStatus(uniqueId, status);
-    }
-
-    public void removeStatus(UUID uniqueId, TimedPlayerStatus status) {
-        tickStatusesTask.addRecentlyEndedStatus(uniqueId, status);
     }
 }
