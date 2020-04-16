@@ -5,16 +5,14 @@ import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.TimedPlayerStatus;
 import me.Lozke.managers.PlayerManager;
-import org.bukkit.EntityEffect;
+import me.Lozke.utils.Items;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -27,21 +25,11 @@ public class DamageListener implements Listener {
         if (event.getDamager() instanceof  Player) {
             Player playerDamager = (Player)event.getDamager();
             ItemStack item = playerDamager.getInventory().getItemInMainHand();
-            if (item.hasItemMeta()) {
-                ItemMeta itemMeta = item.getItemMeta();
+
+            if (Items.isRealItem(item)) {
                 PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-                if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-                    event.setCancelled(true);
-                    LivingEntity entity = (LivingEntity)event.getEntity();
-                    double newHP = entity.getHealth() - dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
-                    if (newHP>0) {
-                        entity.setHealth(newHP);
-                        entity.playEffect(EntityEffect.HURT);
-                    }
-                    else {
-                        entity.setHealth(1);
-                        ((LivingEntity)event.getEntity()).damage(1, playerDamager);
-                    }
+                if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
+                    event.setDamage(dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER));
                 }
             }
         }

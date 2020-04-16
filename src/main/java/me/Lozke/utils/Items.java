@@ -37,9 +37,11 @@ public class Items {
 
     public static boolean isRealItem(ItemStack item) {
         if (item != null) {
-            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-            if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-                return true;
+            if(item.hasItemMeta()) {
+                PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+                    return true;
+                }
             }
         }
         return false;
