@@ -131,6 +131,7 @@ public class AutisticPlayer {
     }
 
     public void handleLogout() {
+        energyRegenTask.cancel();
         hpRegenTask.cancel();
         tickStatusesTask.cancel();
     }
