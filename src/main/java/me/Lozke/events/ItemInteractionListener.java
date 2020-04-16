@@ -1,9 +1,10 @@
 package me.Lozke.events;
 
 import me.Lozke.FallingAutism;
+import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.managers.MobManager;
-import me.Lozke.utils.Logger;
+import me.Lozke.utils.Items;
 import me.Lozke.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,9 +30,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ItemInteractionListener implements Listener {
+    private static final int noWeaponEnergy = 5;
 
     private MobManager mobManager;
     private List<UUID> ignoredPlayers;
+
 
     public ItemInteractionListener() {
         mobManager = FallingAutism.getPluginInstance().getMobManager();
@@ -45,6 +48,11 @@ public class ItemInteractionListener implements Listener {
             return;
         }
 
+        handleSpawnerWand(event);
+        handleEnergy(event);
+    }
+
+    private void handleSpawnerWand(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID uniqueId = player.getUniqueId();
 
@@ -143,7 +151,7 @@ public class ItemInteractionListener implements Listener {
         }
     }
 
-    public void placeSpawner(Location location, BlockFace blockFace) {
+    private void placeSpawner(Location location, BlockFace blockFace) {
         //TODO: Change these to only add to the affected coordinate. Less maths!
         switch (blockFace) {
             case NORTH:
@@ -166,5 +174,31 @@ public class ItemInteractionListener implements Listener {
                 break;
         }
         mobManager.createSpawner(location);
+    }
+
+    private void handleEnergy(PlayerInteractEvent event) {
+        Action action = event.getAction();
+
+        if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+            AutisticPlayer autisticPlayer = FallingAutism.getPluginInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
+            ItemStack item = event.getItem();
+            updateEnergy(autisticPlayer, item);
+        }
+    }
+
+    private void updateEnergy(AutisticPlayer autisticPlayer, ItemStack item) {
+        int energy = autisticPlayer.getEnergy();
+        if(energy > 0) {
+            autisticPlayer.setEnergy(energy-getItemEnergyCost(item));
+        }
+    }
+
+    private int getItemEnergyCost(ItemStack item) {
+        if (Items.isRealItem(item) && Items.isMeleeWeapon(item)) {
+            return noWeaponEnergy+5; //TODO replace with real cost
+        }
+        else {
+            return noWeaponEnergy;
+        }
     }
 }

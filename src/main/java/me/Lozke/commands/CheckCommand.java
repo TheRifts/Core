@@ -1,6 +1,7 @@
 package me.Lozke.commands;
 
 import me.Lozke.data.items.NamespacedKeys;
+import me.Lozke.utils.Items;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,12 +19,14 @@ public class CheckCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
-        PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-        if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+        boolean isRealItem = Items.isRealItem(item);
+        if(isRealItem) {
+            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
             player.sendMessage(container.get(NamespacedKeys.realItem, PersistentDataType.STRING));
-            return true;
         }
-        player.sendMessage("This is NOT a FallingAutism™ Item!");
-        return true;
+        else {
+            player.sendMessage("This is NOT a FallingAutism™ Item!");
+        }
+        return isRealItem;
     }
 }

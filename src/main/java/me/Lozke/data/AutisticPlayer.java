@@ -3,26 +3,43 @@
  */
 package me.Lozke.data;
 
+import me.Lozke.FallingAutism;
+import me.Lozke.tasks.EnergyRegenTask;
 import me.Lozke.tasks.HpRegenTask;
 import me.Lozke.tasks.TickStatusesTask;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
+import static org.bukkit.Bukkit.getScheduler;
+
 public class AutisticPlayer {
     public static final int baseHP = 50;
+    private final UUID uniqueId;
 
-    private Map<TimedPlayerStatus, Integer> statusMap;
-
+    private EnergyRegenTask energyRegenTask;
     private HpRegenTask hpRegenTask;
     private TickStatusesTask tickStatusesTask;
 
-    private final UUID uniqueId;
+    private Map<TimedPlayerStatus, Integer> statusMap;
+
+    private int energy;
 
     public AutisticPlayer(UUID uniqueId) {
         this.uniqueId = uniqueId;
+
+        energyRegenTask = new EnergyRegenTask(this);
+        setEnergy(100);
+        //Want status map to exist before trying to run tasks using it
         this.statusMap = new HashMap<>();
         hpRegenTask = new HpRegenTask(uniqueId);
         tickStatusesTask = new TickStatusesTask(this);
+    }
+
+    private AutisticPlayer getAutisticPlayerInstance() {
+        return this;
     }
 
     public UUID getUniqueId() {
@@ -31,6 +48,10 @@ public class AutisticPlayer {
 
     public Map<TimedPlayerStatus, Integer> getStatusMap() {
         return statusMap;
+    }
+
+    public void setStatusMap(Map<TimedPlayerStatus, Integer> statusMap) {
+       this.statusMap = statusMap;
     }
 
     public Set<TimedPlayerStatus> getStatuses() {
@@ -67,6 +88,45 @@ public class AutisticPlayer {
         //Handle hp regen
         if(!statusMap.containsKey(TimedPlayerStatus.MOB_COMBAT) && !statusMap.containsKey(TimedPlayerStatus.PLAYER_COMBAT)) {
             hpRegenTask = new HpRegenTask(uniqueId);
+        }
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        if (energy > 100) {
+            energy = 100;
+        }
+        if (energy < 0) {
+            energy = 0;
+        }
+        this.energy = energy;
+        float energyAsFloat = (float)(energy/100.0);
+
+        Player player = Bukkit.getPlayer(uniqueId);
+
+        player.setLevel(energy);
+        player.setExp(energyAsFloat);
+
+        if (energy == 0) {
+            player.playSound(player.getLocation(), Sound.ENTITY_CAT_HISS, (float)0.5, (float)1.5);
+            if(!energyRegenTask.isCancelled()) {
+                energyRegenTask.cancel();
+                getScheduler().scheduleSyncDelayedTask(FallingAutism.getPluginInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        energyRegenTask = new EnergyRegenTask(getAutisticPlayerInstance());
+                    }
+                }, 30L);
+            }
+        }
+        else if (energy != 100 && energyRegenTask.isCancelled()) {
+            energyRegenTask = new EnergyRegenTask(this);
+        }
+        else if (energy == 100) {
+            energyRegenTask.cancel();
         }
     }
 
