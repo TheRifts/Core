@@ -16,7 +16,6 @@ public class EnergyRegenTask extends BukkitRunnable {
     public EnergyRegenTask(AutisticPlayer autisticPlayer) {
         this.autisticPlayer = autisticPlayer;
         runTaskTimerAsynchronously(FallingAutism.getPluginInstance(), 4L, 4L);
-        Logger.broadcast("Created new energy task: " + this.getTaskId());
     }
 
     @Override
@@ -26,7 +25,6 @@ public class EnergyRegenTask extends BukkitRunnable {
 
     @Override
     public void cancel() {
-        Logger.broadcast("Cancelled energy task: " + this.getTaskId());
         super.cancel();
     }
 }
