@@ -4,8 +4,8 @@
 package me.Lozke.managers;
 
 import me.Lozke.data.AutisticPlayer;
-import me.Lozke.data.TimedPlayerStatus;
-import me.Lozke.tasks.TickStatusesTask;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -15,6 +15,9 @@ public class PlayerManager {
 
     public PlayerManager() {
         autisticPlayers = new HashMap<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            loadPlayer(player);
+        }
     }
 
     public AutisticPlayer getPlayer(UUID uniqueId) {
@@ -25,10 +28,26 @@ public class PlayerManager {
         return new ArrayList<>(autisticPlayers.values());
     }
 
+    public AutisticPlayer addPlayer(Player player) {
+        return addPlayer(player.getUniqueId());
+    }
+
     public AutisticPlayer addPlayer(UUID uniqueId) {
         AutisticPlayer autisticPlayer = new AutisticPlayer(uniqueId);
         autisticPlayers.put(uniqueId, autisticPlayer);
         return autisticPlayer;
+    }
+
+    public void removePlayer(Player player) {
+        removePlayer(player.getUniqueId());
+    }
+
+    public void removePlayer(UUID uniqueId) {
+        autisticPlayers.remove(uniqueId);
+    }
+
+    public void loadPlayer(Player player) {
+        loadPlayer(player.getUniqueId());
     }
 
     public void loadPlayer(UUID uniqueId) {
@@ -38,9 +57,17 @@ public class PlayerManager {
         }
     }
 
+    public void savePlayer(Player player) {
+        savePlayer(player.getUniqueId());
+    }
+
     public void savePlayer(UUID uniqueId) {
         //TODO actually save player data
-        autisticPlayers.get(uniqueId).handleLogout();
-        autisticPlayers.remove(uniqueId);
+    }
+
+    public void saveAllPlayers() {
+        for (UUID uniqueId : autisticPlayers.keySet()) {
+            savePlayer(uniqueId);
+        }
     }
 }

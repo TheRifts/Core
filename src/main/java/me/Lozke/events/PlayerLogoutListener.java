@@ -19,27 +19,20 @@ public class PlayerLogoutListener implements Listener {
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        UUID uniqueId = player.getUniqueId();
-
-        removeBossbar(player);
-        savePlayer(uniqueId);
+        handleEssentialLogout(event.getPlayer());
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
-        Player player = event.getPlayer();
+        handleEssentialLogout(event.getPlayer());
+    }
+
+    private void handleEssentialLogout(Player player) {
         UUID uniqueId = player.getUniqueId();
 
-        removeBossbar(player);
-        savePlayer(uniqueId);
-    }
-
-    private void removeBossbar(Player player) {
-        plugin.getBossBarHandler().removeBar(player);
-    }
-
-    private void savePlayer(UUID uniqueId) {
+        plugin.getPlayerManager().getPlayer(uniqueId).handleLogout();
+        plugin.getBossBarHandler().removeBar(uniqueId);
         plugin.getPlayerManager().savePlayer(uniqueId);
+        plugin.getPlayerManager().removePlayer(uniqueId);
     }
 }

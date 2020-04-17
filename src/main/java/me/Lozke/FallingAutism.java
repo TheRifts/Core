@@ -71,6 +71,7 @@ public class FallingAutism extends JavaPlugin {
         bossBarHandler.removeAll();
         mobManager.saveSpawners();
         mobManager.hideSpawners();
+        playerManager.saveAllPlayers();
         System.out.println("[FallingAutisma] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
     }
 
