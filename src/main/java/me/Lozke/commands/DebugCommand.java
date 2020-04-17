@@ -1,5 +1,6 @@
 package me.Lozke.commands;
 
+import me.Lozke.data.Rarity;
 import me.Lozke.data.Tier;
 import me.Lozke.handlers.ItemHandler;
 import org.bukkit.command.Command;
@@ -21,6 +22,7 @@ public class DebugCommand extends Command {
         int num = 0;
         String type = "";
         int amount = 1;
+        Rarity rarity = Rarity.COMMON;
 
         if (args.length > 0) {
             num = Integer.parseInt(args[0]);
@@ -30,6 +32,13 @@ public class DebugCommand extends Command {
         }
         if (args.length > 2) {
             amount = Integer.parseInt(args[2]);
+        }
+        if (args.length > 3) {
+            for (Rarity rarities : Rarity.types) {
+                if (rarities.ordinal() == Integer.parseInt(args[3])) {
+                    rarity = rarities;
+                }
+            }
         }
 
         for (Tier tier : Tier.types) {
@@ -42,31 +51,31 @@ public class DebugCommand extends Command {
                         inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
                         return true;
                     case "sword":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "SWORD"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "SWORD"));
                         return true;
                     case "axe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "AXE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "AXE"));
                         return true;
                     case "shovel":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "SHOVEL"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "SHOVEL"));
                         return true;
                     case "hoe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, "HOE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "HOE"));
                         return true;
                     case "boots":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier,  rarity));
                         return true;
                     case "leggings":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newLeggings(tier));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newLeggings(tier,  rarity));
                         return true;
                     case "chestplate":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newChestplate(tier));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newChestplate(tier,  rarity));
                         return true;
                     case "helmet":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newHelmet(tier));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newHelmet(tier,  rarity));
                         return true;
                     default:
-                        for (ItemStack item : ItemHandler.newSet(tier)) {
+                        for (ItemStack item : ItemHandler.newSet(tier,  rarity)) {
                             inv.setItem(inv.firstEmpty(), item);
                         }
                         return true;

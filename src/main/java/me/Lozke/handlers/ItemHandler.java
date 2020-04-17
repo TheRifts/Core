@@ -1,6 +1,7 @@
 package me.Lozke.handlers;
 
 import me.Lozke.FallingAutism;
+import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
 import me.Lozke.utils.NumGenerator;
@@ -19,29 +20,29 @@ import java.util.*;
 
 public class ItemHandler {
 
-    public static ItemStack newHelmet(Tier tier) {
-        return createItem(tier.getArmourMaterial(), "_HELMET");
+    public static ItemStack newHelmet(Tier tier, Rarity rarity) {
+        return createItem(tier, rarity, tier.getArmourMaterial(), "_HELMET");
     }
 
-    public static ItemStack newChestplate(Tier tier) {
-        return createItem(tier.getArmourMaterial(), "_CHESTPLATE");
+    public static ItemStack newChestplate(Tier tier, Rarity rarity) {
+        return createItem(tier, rarity, tier.getArmourMaterial(), "_CHESTPLATE");
     }
 
-    public static ItemStack newLeggings(Tier tier) {
-        return createItem(tier.getArmourMaterial(), "_LEGGINGS");
+    public static ItemStack newLeggings(Tier tier, Rarity rarity) {
+        return createItem(tier, rarity, tier.getArmourMaterial(), "_LEGGINGS");
     }
 
-    public static ItemStack newBoots(Tier tier) {
-        return createItem(tier.getArmourMaterial(), "_BOOTS");
+    public static ItemStack newBoots(Tier tier, Rarity rarity) {
+        return createItem(tier, rarity, tier.getArmourMaterial(), "_BOOTS");
     }
 
     //lol this would be the perfect place to return a Set<ItemStack>... just saying...
-    public static ItemStack[] newSet(Tier tier) {
-        return new ItemStack[]{newHelmet(tier), newChestplate(tier), newLeggings(tier), newBoots(tier)};
+    public static ItemStack[] newSet(Tier tier, Rarity rarity) {
+        return new ItemStack[]{newHelmet(tier, rarity), newChestplate(tier, rarity), newLeggings(tier, rarity), newBoots(tier, rarity)};
     }
 
-    public static ItemStack getWeapon(Tier tier, String type) {
-        return createItem(tier.getWeaponMaterial(), "_" + type.toUpperCase());
+    public static ItemStack getWeapon(Tier tier, Rarity rarity, String type) {
+        return createItem(tier, rarity, tier.getWeaponMaterial(), "_" + type.toUpperCase());
     }
 
     public static ItemStack newScrap(Tier tier) {
@@ -64,7 +65,7 @@ public class ItemHandler {
         return orb;
     }
 
-    private static ItemStack createItem(String material, String itemType) {
+    private static ItemStack createItem(Tier tier, Rarity rarity, String material, String itemType) {
         ItemStack item = null;
         ItemMeta itemMeta = null;
         PersistentDataContainer dataContainer = null;
@@ -91,6 +92,8 @@ public class ItemHandler {
                 break;
         }
         dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
+        dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
+        dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
         return format(item);
@@ -166,8 +169,9 @@ public class ItemHandler {
                     }
                 }
                 sb.append(meta.getDisplayName());
-                meta.setDisplayName(Text.colorize("&f" + sb.toString()));
+                meta.setDisplayName(Text.colorize(getTier(item).getColorCode() + sb.toString()));
             }
+            list.add(Text.colorize(getRarity(item).getColorCode() + "&l" + getRarity(item).name()));
         }
         meta.setLore(list);
         item.setItemMeta(meta);
@@ -208,5 +212,31 @@ public class ItemHandler {
                 }
             }
         }
+    }
+
+    public static Tier getTier(ItemStack item) {
+        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+            String data = dataContainer.get(NamespacedKeys.tier, PersistentDataType.STRING);
+            for (Tier tier : Tier.types) {
+                if (tier.name().equalsIgnoreCase(data)) {
+                    return tier;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Rarity getRarity(ItemStack item) {
+        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+            String data = dataContainer.get(NamespacedKeys.rarity, PersistentDataType.STRING);
+            for (Rarity rarity : Rarity.types) {
+                if (rarity.name().equalsIgnoreCase(data)) {
+                    return rarity;
+                }
+            }
+        }
+        return null;
     }
 }

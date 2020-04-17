@@ -13,5 +13,7 @@ public class NamespacedKeys {
     final public static NamespacedKey DMG = new NamespacedKey(plugin, "autistic-DMG");
     final public static NamespacedKey spawnerWandToggle = new NamespacedKey(plugin, "spawnerwand-toggle"); //Let's convert this to a boolean data type!
     final public static NamespacedKey attributes = new NamespacedKey(plugin, "autistic-Attributes");
+    final public static NamespacedKey tier = new NamespacedKey(plugin, "tier");
+    final public static NamespacedKey rarity = new NamespacedKey(plugin, "rarity");
     final public static PersistentDataType<byte[], Map> MAP_PERSISTENT_DATA_TYPE = new MapDataType();
 }
