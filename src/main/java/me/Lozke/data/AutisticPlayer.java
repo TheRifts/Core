@@ -16,7 +16,7 @@ import java.util.*;
 import static org.bukkit.Bukkit.getScheduler;
 
 public class AutisticPlayer {
-    public static final int fullEnergy = 100;
+    public static final float fullEnergy = 100;
     public static final int baseHP = 50;
     private final UUID uniqueId;
 
@@ -26,7 +26,7 @@ public class AutisticPlayer {
 
     private Map<TimedPlayerStatus, Integer> statusMap;
 
-    private int energy;
+    private float energy;
 
     public AutisticPlayer(UUID uniqueId) {
         this.uniqueId = uniqueId;
@@ -92,11 +92,15 @@ public class AutisticPlayer {
         }
     }
 
-    public int getEnergy() {
+    public boolean hasEnergy() {
+        return energy != 0;
+    }
+
+    public float getEnergy() {
         return energy;
     }
 
-    public void setEnergy(int energy) {
+    public void setEnergy(float energy) {
         if (energy > fullEnergy) {
             energy = fullEnergy;
         }
@@ -104,12 +108,13 @@ public class AutisticPlayer {
             energy = 0;
         }
         this.energy = energy;
-        float energyAsFloat = energy/(float)fullEnergy;
+        int level = (int)energy;
+        float exp = energy/fullEnergy;
 
         Player player = Bukkit.getPlayer(uniqueId);
 
-        player.setLevel(energy);
-        player.setExp(energyAsFloat);
+        player.setLevel(level);
+        player.setExp(exp);
 
         if (energy == 0) {
             player.playSound(player.getLocation(), Sound.ENTITY_CAT_HISS, (float)0.7, (float)1.5);

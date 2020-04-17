@@ -1,5 +1,6 @@
 package me.Lozke.utils;
 
+import me.Lozke.data.Tier;
 import me.Lozke.data.items.NamespacedKeys;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -11,6 +12,8 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 
 public class Items {
+    private static final int noWeaponEnergy = 5;
+    private static final int weaponEnergy = 8;
 
     public static ItemStack formatItem(ItemStack item, String name, String[] lore) {
         ItemMeta im = item.getItemMeta();
@@ -36,22 +39,43 @@ public class Items {
     }
 
     public static boolean isRealItem(ItemStack item) {
-        if (item != null) {
-            if(item.hasItemMeta()) {
-                PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-                if (container.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-                    return true;
-                }
-            }
+        if (item != null && item.hasItemMeta()) {
+            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+            return container.has(NamespacedKeys.realItem, PersistentDataType.STRING);
         }
         return false;
     }
 
-    public static boolean isMeleeWeapon(ItemStack item) {
-        String name = item.getType().name();
-        if(name.contains("SWORD") || name.contains("AXE") || name.contains("HOE") || name.contains("SHOVEL")) {
-            return true;
+    public static boolean isTiered(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+            if(container.has(NamespacedKeys.tier, PersistentDataType.STRING));
         }
         return false;
+    }
+
+    public static boolean isWeapon(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+            return container.has(NamespacedKeys.DMG, PersistentDataType.INTEGER);
+        }
+        return false;
+    }
+
+    public static int getTier(ItemStack item) {
+        if (isRealItem(item) && isTiered(item)) {
+            PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+            return Tier.valueOf(container.get(NamespacedKeys.tier, PersistentDataType.STRING)).getTierNumber();
+        }
+        return 0;
+    }
+
+    public static float getItemEnergyCost(ItemStack item) {
+        if (Items.isRealItem(item) && Items.isWeapon(item)) {
+            return weaponEnergy+Items.getTier(item);
+        }
+        else {
+            return noWeaponEnergy;
+        }
     }
 }

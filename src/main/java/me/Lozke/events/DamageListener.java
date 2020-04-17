@@ -7,8 +7,11 @@ import me.Lozke.data.TimedPlayerStatus;
 import me.Lozke.managers.PlayerManager;
 import me.Lozke.utils.Items;
 import me.Lozke.utils.Logger;
+import org.bukkit.EntityEffect;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,19 +35,48 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        //Get those involved
         Entity damager = event.getDamager();
         Entity damaged = event.getEntity();
 
-        event.setDamage(getDamage(damager));
-
-        handleTimedStatuses(damager, damaged);
-        handleTimedStatuses(damaged, damager);
-
-        if(isPlayerDeath(damaged, event.getDamage())) {
-            handlePlayerDeath((Player)damaged);
+        //Make sure the damager is able to deal damage (energy)
+        if(!canDamage(damager)) {
+            event.setCancelled(true);
+            return;
         }
 
+        //Log the amount of damage to be dealt
+        event.setDamage(getDamage(damager));
 
+        //Deal with combat timers
+        handleTimedStatuses(damager, damaged);
+        handleTimedStatuses(damaged, damager);
+        
+        if(damaged instanceof LivingEntity) {
+            LivingEntity damagedAsLE = (LivingEntity)damaged;
+            if(isDeath(damagedAsLE, event.getDamage())) {
+                //Handle death
+                if(damaged instanceof Player) {
+                    event.setCancelled(true);
+                    handlePlayerDeath((Player)damaged);
+                    return;
+                }
+                else {
+                    event.setDamage(damagedAsLE.getHealth());
+                }
+            }
+
+            //Deal damage
+            event.setCancelled(true);
+            dealDamage((LivingEntity)damaged, event.getDamage());
+        }
+    }
+
+    public boolean canDamage(Entity damager) {
+        if (damager instanceof Player) {
+            return plugin.getPlayerManager().getPlayer(damager.getUniqueId()).hasEnergy();
+        }
+        return true;
     }
 
     private double getDamage(Entity damager) {
@@ -60,6 +92,11 @@ public class DamageListener implements Listener {
             }
         }
         return 1;
+    }
+
+    private void dealDamage(LivingEntity damaged, double damage) {
+        damaged.setHealth(damaged.getHealth()-damage);
+        damaged.playEffect(EntityEffect.HURT);
     }
 
     private void handleTimedStatuses(Entity player, Entity entity) {
@@ -82,12 +119,8 @@ public class DamageListener implements Listener {
         }
     }
 
-    private boolean isPlayerDeath(Entity damaged, double damage) {
-        if(damaged instanceof Player) {
-            Player playerDamaged = (Player)damaged;
-            return damage >= playerDamaged.getHealth();
-        }
-        return false;
+    private boolean isDeath(LivingEntity damaged, double damage) {
+        return damage >= damaged.getHealth();
     }
 
     private void handlePlayerDeath(Player killedPlayer) {
@@ -95,6 +128,7 @@ public class DamageListener implements Listener {
         AutisticPlayer autisticPlayer = plugin.getPlayerManager().getPlayer(uniqueId);
 
         Logger.broadcast("PLAYER " + killedPlayer.getName() + " DIED LOL");
+        killedPlayer.playSound(killedPlayer.getLocation(), Sound.BLOCK_ANVIL_LAND, (float)1.0, (float)0.75);
 
         //Teleport player
         killedPlayer.teleport(killedPlayer.getWorld().getSpawnLocation());
@@ -110,7 +144,9 @@ public class DamageListener implements Listener {
 
         //Refill energy bar
         autisticPlayer.setEnergy(AutisticPlayer.fullEnergy);
+    }
 
+    private void handleDeath(LivingEntity killedEntity) {
 
     }
 }

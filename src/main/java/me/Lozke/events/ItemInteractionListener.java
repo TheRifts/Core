@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class ItemInteractionListener implements Listener {
-    private static final int noWeaponEnergy = 5;
-
     private MobManager mobManager;
     private List<UUID> ignoredPlayers;
 
@@ -182,23 +180,10 @@ public class ItemInteractionListener implements Listener {
         if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
             AutisticPlayer autisticPlayer = FallingAutism.getPluginInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             ItemStack item = event.getItem();
-            updateEnergy(autisticPlayer, item);
-        }
-    }
-
-    private void updateEnergy(AutisticPlayer autisticPlayer, ItemStack item) {
-        int energy = autisticPlayer.getEnergy();
-        if(energy > 0) {
-            autisticPlayer.setEnergy(energy-getItemEnergyCost(item));
-        }
-    }
-
-    private int getItemEnergyCost(ItemStack item) {
-        if (Items.isRealItem(item) && Items.isMeleeWeapon(item)) {
-            return noWeaponEnergy+5; //TODO replace with real cost
-        }
-        else {
-            return noWeaponEnergy;
+            float energy = autisticPlayer.getEnergy();
+            if(energy > 0) {
+                autisticPlayer.setEnergy(energy-Items.getItemEnergyCost(item));
+            }
         }
     }
 }
