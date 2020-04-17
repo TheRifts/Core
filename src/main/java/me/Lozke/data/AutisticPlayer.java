@@ -16,6 +16,7 @@ import java.util.*;
 import static org.bukkit.Bukkit.getScheduler;
 
 public class AutisticPlayer {
+    public static final int fullEnergy = 100;
     public static final int baseHP = 50;
     private final UUID uniqueId;
 
@@ -31,7 +32,7 @@ public class AutisticPlayer {
         this.uniqueId = uniqueId;
 
         energyRegenTask = new EnergyRegenTask(this);
-        setEnergy(100);
+        setEnergy(fullEnergy);
         //Want status map to exist before trying to run tasks using it
         this.statusMap = new HashMap<>();
         hpRegenTask = new HpRegenTask(uniqueId);
@@ -96,14 +97,14 @@ public class AutisticPlayer {
     }
 
     public void setEnergy(int energy) {
-        if (energy > 100) {
-            energy = 100;
+        if (energy > fullEnergy) {
+            energy = fullEnergy;
         }
         if (energy < 0) {
             energy = 0;
         }
         this.energy = energy;
-        float energyAsFloat = (float)(energy/100.0);
+        float energyAsFloat = energy/(float)fullEnergy;
 
         Player player = Bukkit.getPlayer(uniqueId);
 
@@ -111,7 +112,7 @@ public class AutisticPlayer {
         player.setExp(energyAsFloat);
 
         if (energy == 0) {
-            player.playSound(player.getLocation(), Sound.ENTITY_CAT_HISS, (float)0.5, (float)1.5);
+            player.playSound(player.getLocation(), Sound.ENTITY_CAT_HISS, (float)0.7, (float)1.5);
             if(!energyRegenTask.isCancelled()) {
                 energyRegenTask.cancel();
                 getScheduler().scheduleSyncDelayedTask(FallingAutism.getPluginInstance(), new Runnable() {
@@ -122,10 +123,10 @@ public class AutisticPlayer {
                 }, 30L);
             }
         }
-        else if (energy != 100 && energyRegenTask.isCancelled()) {
+        else if (energy != fullEnergy && energyRegenTask.isCancelled()) {
             energyRegenTask = new EnergyRegenTask(this);
         }
-        else if (energy == 100) {
+        else if (energy == fullEnergy) {
             energyRegenTask.cancel();
         }
     }

@@ -81,7 +81,7 @@ public class TickStatusesTask extends BukkitRunnable {
                         .append(TimedPlayerStatus.timeSuffix)
                         .append(TimedPlayerStatus.spacer);
             }
-            if (recentlyEndedStatuses.contains(status)) {
+            else if (recentlyEndedStatuses.contains(status)) {
                 message.append(status.getEndMessage())
                         .append(TimedPlayerStatus.spacer);
             }
