@@ -9,6 +9,7 @@ import me.Lozke.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -104,7 +105,7 @@ public class ItemHandler {
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
         HashMap<String, Integer> map = new HashMap<>();
         for (AutisticAttribute attribute : attributes) {
-            map.put(attribute.name(), NumGenerator.Roll(attribute.getMinValue(), attribute.getMaxValue()));
+            map.put(attribute.name(), NumGenerator.rollInclusive(attribute.getMinValue(), attribute.getMaxValue()));
         }
         dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
         item.setItemMeta(meta);
@@ -120,7 +121,7 @@ public class ItemHandler {
             attributes = AutisticAttribute.weaponValues;
         }
         while (randomAttributes.size() < amount && attributes.length > 0) {
-            AutisticAttribute attribute = attributes[NumGenerator.Roll(attributes.length - 1)];
+            AutisticAttribute attribute = attributes[NumGenerator.index(attributes.length)];
             if (!randomAttributes.contains(attribute)) {
                 randomAttributes.add(attribute);
             }

@@ -3,12 +3,11 @@ package me.Lozke.tasks;
 import me.Lozke.FallingAutism;
 import me.Lozke.data.MobSpawner;
 import me.Lozke.managers.MobManager;
+import me.Lozke.utils.NumGenerator;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Random;
 
 public class TickSpawnersTask extends BukkitRunnable {
 
@@ -29,9 +28,8 @@ public class TickSpawnersTask extends BukkitRunnable {
             if (timeLeft == 0) {
                 Location[] locations = new Location[spawner.getAmount()];
                 for (int i = 0; i < spawner.getAmount(); i++) {
-                    Random rnd = new Random();
-                    double a = rnd.nextDouble() * 2 * Math.PI;
-                    double dist = rnd.nextDouble() * spawner.getRadius();
+                    double a = NumGenerator.fraction() * 2 * Math.PI;
+                    double dist = NumGenerator.fraction() * spawner.getRadius();
                     locations[i] = spawner.getLocation().clone().add(dist * Math.sin(a), 0, dist * Math.cos(a)).add(0.5, 0, 0.5);
                 }
                 new BukkitRunnable() {
