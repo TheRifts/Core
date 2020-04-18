@@ -6,7 +6,6 @@ import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.TimedPlayerStatus;
 import me.Lozke.managers.PlayerManager;
 import me.Lozke.utils.Items;
-import me.Lozke.utils.Logger;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -51,25 +50,19 @@ public class DamageListener implements Listener {
         //Deal with combat timers
         handleTimedStatuses(damager, damaged);
         handleTimedStatuses(damaged, damager);
-        
+
+        //Ensure health values remain valid (on death)
         if(damaged instanceof LivingEntity) {
-            LivingEntity damagedAsLE = (LivingEntity)damaged;
-            if(isDeath(damagedAsLE, event.getDamage())) {
-                //Handle death
-                if(damaged instanceof Player) {
-                    event.setCancelled(true);
-                    handlePlayerDeath((Player)damaged);
-                    return;
-                }
-                else {
-                    event.setDamage(damagedAsLE.getHealth());
-                }
+            LivingEntity damagedLivingEntity = (LivingEntity)damaged;
+            if(isDeath(damagedLivingEntity, event.getDamage())) {
+                event.setDamage(damagedLivingEntity.getHealth());
             }
 
-            //Deal damage
-            event.setCancelled(true);
+            //Deal Damage
             dealDamage((LivingEntity)damaged, event.getDamage());
+            event.setCancelled(true);
         }
+
     }
 
     public boolean canDamage(Entity damager) {
@@ -80,17 +73,24 @@ public class DamageListener implements Listener {
     }
 
     private double getDamage(Entity damager) {
+        ItemStack item = null;
         if (damager instanceof  Player) {
             Player playerDamager = (Player)damager;
-            ItemStack item = playerDamager.getInventory().getItemInMainHand();
-
-            if (Items.isRealItem(item)) {
-                PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-                if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
-                    return dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
-                }
+            item = playerDamager.getInventory().getItemInMainHand();
+        }
+        if (damager instanceof Monster) {
+            Monster monster = (Monster)damager;
+            if (monster.getEquipment() != null) {
+                item = monster.getEquipment().getItemInMainHand();
             }
         }
+        if (Items.isRealItem(item)) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
+                return dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
+            }
+        }
+
         return 1;
     }
 
@@ -123,11 +123,17 @@ public class DamageListener implements Listener {
         return damage >= damaged.getHealth();
     }
 
-    private void handlePlayerDeath(Player killedPlayer) {
+    /*
+    private void handlePlayerDeath(Player killedPlayer, Entity killer) {
         UUID uniqueId = killedPlayer.getUniqueId();
         AutisticPlayer autisticPlayer = plugin.getPlayerManager().getPlayer(uniqueId);
 
-        Logger.broadcast("PLAYER " + killedPlayer.getName() + " DIED LOL");
+        //Send death message
+        for (Entity nearbyEntity : killedPlayer.getWorld().getNearbyEntities(killedPlayer.getLocation(), 100, 100, 100)) {
+            if (nearbyEntity instanceof Player) {
+                nearbyEntity.sendMessage(killedPlayer.getName() + " was slain by " + killer.getName());
+            }
+        }
         killedPlayer.playSound(killedPlayer.getLocation(), Sound.BLOCK_ANVIL_LAND, (float)1.0, (float)0.75);
 
         //Teleport player
@@ -145,8 +151,5 @@ public class DamageListener implements Listener {
         //Refill energy bar
         autisticPlayer.setEnergy(AutisticPlayer.fullEnergy);
     }
-
-    private void handleDeath(LivingEntity killedEntity) {
-
-    }
+     */
 }

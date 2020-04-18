@@ -6,16 +6,20 @@ import me.Lozke.handlers.BossBarHandler;
 import me.Lozke.managers.MobManager;
 import me.Lozke.managers.PlayerManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class FallingAutism extends JavaPlugin {
 
     private static FallingAutism plugin;
+    private List<World> playWorlds;
     private MobManager mobManager;
     private PlayerManager playerManager;
     private BossBarHandler bossBarHandler;
@@ -25,6 +29,7 @@ public class FallingAutism extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        playWorlds = getServer().getWorlds();
 
         gearData = this.getConfig();
 
@@ -32,6 +37,26 @@ public class FallingAutism extends JavaPlugin {
         mobManager.loadSpawners();
         playerManager = new PlayerManager();
         bossBarHandler = new BossBarHandler(this);
+
+        for (World world : playWorlds) {
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+            world.setGameRule(GameRule.DISABLE_RAIDS, true);
+            world.setGameRule(GameRule.DO_ENTITY_DROPS, false);
+            world.setGameRule(GameRule.DO_FIRE_TICK, false);
+            world.setGameRule(GameRule.DO_INSOMNIA, false);
+            world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+            world.setGameRule(GameRule.DO_MOB_LOOT, false);
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+            world.setGameRule(GameRule.DO_PATROL_SPAWNING, false);
+            world.setGameRule(GameRule.DO_TILE_DROPS, false);
+            world.setGameRule(GameRule.DO_TRADER_SPAWNING, false);
+            world.setGameRule(GameRule.MAX_ENTITY_CRAMMING, 0);
+            world.setGameRule(GameRule.MOB_GRIEFING, false);
+            world.setGameRule(GameRule.NATURAL_REGENERATION, false);
+            world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+            world.setGameRule(GameRule.SPAWN_RADIUS, 0);
+            world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+        }
 
         //Turn this into the same setup as commands
         //Turn this into a Factory
@@ -42,6 +67,8 @@ public class FallingAutism extends JavaPlugin {
         pm.registerEvents(new ItemInteractionListener(), this);
         pm.registerEvents(new SpawnerWandToggleListener(), this);
         pm.registerEvents(new DamageListener(this), this);
+        pm.registerEvents(new PlayerDeathListener(this), this);
+        pm.registerEvents(new PlayerRespawnListener(this), this);
 
         //Migrate this to a Factory
         try {
