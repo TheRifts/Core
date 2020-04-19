@@ -135,6 +135,7 @@ public class ItemHandler {
     }
 
     //CURRENT CHANCES FOR A GIVEN NUMBER OF ATTRIBUTES
+    
     //Calculations:
     /*
     assumes maxAttributes = 7
@@ -296,17 +297,17 @@ public class ItemHandler {
                 percentageMap = sortByValue(percentageMap);
 
                 StringBuilder sb = new StringBuilder();
-                for (Object key : map.keySet()) {
+                for (Object key : valueMap.keySet()) {
                     AutisticAttribute autisticAttribute = AutisticAttribute.valueOf(String.valueOf(key));
                     String loreDisplay = autisticAttribute.getLoreDisplayName();
                     String affix = autisticAttribute.getItemDisplayName();
-                    int value = (int) map.get(key);
-                    String statColor = percentageToColor((double)(int)value / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
+                    int value = (int) valueMap.get(key);
+                    String statColor = percentageToColor((double)percentageMap.get(key));
                     String[] split = loreDisplay.split(": ");
                     String lore = "&7" + split[0] + ": " + statColor + split[1].replace("{value}", String.valueOf(value));
                     list.add(Text.colorize(lore));
                     if (!affix.equalsIgnoreCase("")) {
-                        prefix.append(affix).append(" ");
+                        sb.append(affix).append(" ");
                     }
                 }
 
@@ -321,7 +322,7 @@ public class ItemHandler {
                 itemName = itemName.substring(0,2).toUpperCase() + itemName.substring(2);
 
                 Tier tier = getTier(item);
-                meta.setDisplayName(Text.colorize(tier.getColorCode() + prefix.toString() + tier.getItemDisplayName() + itemName));
+                meta.setDisplayName(Text.colorize(tier.getColorCode() + sb.toString() + tier.getItemDisplayName() + itemName));
             }
             list.add(Text.colorize(getRarity(item).getColorCode() + "&l" + getRarity(item).name()));
         }
@@ -445,10 +446,10 @@ public class ItemHandler {
     public static ItemType getItemType(ItemStack item) {
         if (isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
+            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
                 return ItemType.Weapon;
             }
-            else if (dataContainer.has(NamespacedKeys.HP, PersistentDataType.INTEGER)) {
+            else if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
                 return ItemType.Armour;
             }
             return null;

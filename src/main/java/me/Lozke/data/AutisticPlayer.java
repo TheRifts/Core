@@ -7,7 +7,6 @@ import me.Lozke.FallingAutism;
 import me.Lozke.tasks.EnergyRegenTask;
 import me.Lozke.tasks.HPRegenTask;
 import me.Lozke.tasks.TickStatusesTask;
-import me.Lozke.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;

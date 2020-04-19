@@ -19,8 +19,8 @@ public class ArmorChangeListener implements Listener {
     @EventHandler
     public void onArmourChange(PlayerArmorChangeEvent event) {
         AutisticPlayer autisticPlayer;
-        boolean oldItemIsReal = Items.isRealItem(event.getOldItem());
-        boolean newItemIsReal = Items.isRealItem(event.getNewItem());
+        boolean oldItemIsReal = ItemHandler.isRealItem(event.getOldItem());
+        boolean newItemIsReal = ItemHandler.isRealItem(event.getNewItem());
         if (oldItemIsReal || newItemIsReal) {
             autisticPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             if (oldItemIsReal) {
