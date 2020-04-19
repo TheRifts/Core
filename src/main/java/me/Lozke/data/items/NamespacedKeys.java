@@ -16,4 +16,5 @@ public class NamespacedKeys {
     final public static NamespacedKey tier = new NamespacedKey(plugin, "tier");
     final public static NamespacedKey rarity = new NamespacedKey(plugin, "rarity");
     final public static PersistentDataType<byte[], Map> MAP_PERSISTENT_DATA_TYPE = new MapDataType();
+    final public static NamespacedKey canOrb = new NamespacedKey(plugin, "can-orb"); //Let's convert this to a boolean data type!
 }

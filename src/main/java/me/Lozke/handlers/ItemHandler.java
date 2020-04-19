@@ -4,6 +4,7 @@ import me.Lozke.FallingAutism;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
+import me.Lozke.utils.Logger;
 import me.Lozke.utils.NumGenerator;
 import me.Lozke.utils.Text;
 import org.bukkit.Material;
@@ -20,6 +21,10 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 
 public class ItemHandler {
+    private static final int noWeaponEnergy = 5;
+    private static final int weaponEnergy = 8;
+
+    private static final int maxAttributes = 7;
 
     public static ItemStack newHelmet(Tier tier, Rarity rarity) {
         return createItem(tier, rarity, tier.getArmourMaterial(), "_HELMET");
@@ -66,6 +71,16 @@ public class ItemHandler {
         return orb;
     }
 
+    public static ItemStack newShard(Tier tier) {
+        return newShard(tier, 1);
+    }
+
+    public static ItemStack newShard(Tier tier, int amount) {
+        ItemStack shard = setTier(Shard.types[tier.ordinal()].getItem(), tier);
+        shard.setAmount(amount);
+        return shard;
+    }
+
     private static ItemStack createItem(Tier tier, Rarity rarity, String material, String itemType) {
         ItemStack item = null;
         ItemMeta itemMeta = null;
@@ -76,7 +91,7 @@ public class ItemHandler {
             case "_LEGGINGS":
             case "_BOOTS":
                 item = new ItemStack(Material.valueOf(material + itemType));
-                addAttributes(item, getRandomAttributes(ItemType.Armour, 8));
+                addAttributes(item, getRandomAttributes(ItemType.Armour));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
                 dataContainer.set(NamespacedKeys.HP, PersistentDataType.INTEGER, new Random().nextInt(FallingAutism.getGearData().getInt("Helmet.LO")));
@@ -86,7 +101,7 @@ public class ItemHandler {
             case "_SHOVEL":
             case "_HOE":
                 item = new ItemStack(Material.valueOf(material + itemType));
-                addAttributes(item, getRandomAttributes(ItemType.Weapon, 8));
+                addAttributes(item, getRandomAttributes(ItemType.Weapon));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
                 dataContainer.set(NamespacedKeys.DMG, PersistentDataType.INTEGER, 5000);
@@ -95,6 +110,7 @@ public class ItemHandler {
         dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
         dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
         dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
+        dataContainer.set(NamespacedKeys.canOrb, PersistentDataType.INTEGER, 1);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
         return format(item);
@@ -111,22 +127,123 @@ public class ItemHandler {
         item.setItemMeta(meta);
     }
 
-    public static AutisticAttribute[] getRandomAttributes(ItemType itemType, int amount) {
-        ArrayList<AutisticAttribute> randomAttributes = new ArrayList();
-        AutisticAttribute[] attributes = new AutisticAttribute[0];
-        if (itemType.equals(ItemType.Armour)) {
-            attributes = AutisticAttribute.armourValues;
+    //CURRENT CHANCES FOR A GIVEN NUMBER OF ATTRIBUTES
+    //Calculations:
+    /*
+    assumes maxAttributes = 7
+
+    First a uniform chance of 0 to 3.
+    Next a repeated 65% chance to continue adding more up to maxAttributes.
+    If 7 a 2/3 chance to be a uniform chance of 1 to maxAttributes-1.
+
+    0:  0.25 * 0.35
+     = 0.0875
+    1:  0.25 * 0.35 +
+        0.25 * 0.65 * 0.35
+     = 0.144375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.15601323561197916
+    2:  0.25 * 0.35 +
+        0.25 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.35
+     = 0.18134375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.19298198561197916
+    3:  0.25 * 0.35 +
+        0.25 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.35
+     = 0.2053734375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.21701167311197916
+    4:  0.25 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35
+     = 0.133492734375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.14513096998697916
+    5:  0.25 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35
+     = 0.08677027734375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.09840851295572916
+    6:  0.25 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.35
+     = 0.0564006802734375 + 0.1047441205078125 * 1/3 * 1/6
+     = 0.068038915885416
+    7:  0.25 * 0.65 * 0.65 * 0.65 * 0.65 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 +
+        0.25 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65 * 0.65
+     = 0.1047441205078125 * 1/3
+     = 0.0349147068359375
+     */
+    //Values
+    /*
+    0: 8.75%
+    1: 15.60%
+    2: 19.30%
+    3: 21.70%
+    4: 14.52%
+    5: 9.84%
+    6: 6.80%
+    7: 3.49%
+     */
+    public static AutisticAttribute[] getRandomAttributes(ItemType itemType) {
+        //First a uniform chance of 0 to 3.
+        int amount = NumGenerator.rollInclusive(0, 3);
+        //Next a repeated 65% chance to continue adding more up to maxAttributes.
+        while (amount < maxAttributes && NumGenerator.roll(100) <= 65) {
+            amount++;
         }
-        if (itemType.equals(ItemType.Weapon)) {
-            attributes = AutisticAttribute.weaponValues;
-        }
-        while (randomAttributes.size() < amount && attributes.length > 0) {
-            AutisticAttribute attribute = attributes[NumGenerator.index(attributes.length)];
-            if (!randomAttributes.contains(attribute)) {
-                randomAttributes.add(attribute);
+        //If maxAttributes a 2/3 chance to be a uniform chance of 1 to maxAttributes-1.
+        if(amount == maxAttributes) {
+            if(NumGenerator.roll(3) < 3) {
+                amount = NumGenerator.roll(maxAttributes-1);
             }
         }
-        return randomAttributes.toArray(new AutisticAttribute[0]);
+
+        ArrayList<AutisticAttribute> randomAttributes = new ArrayList<>();
+        ArrayList<AutisticAttribute> attributes = new ArrayList<>();
+        if (itemType.equals(ItemType.Armour)) {
+            Collections.addAll(attributes, AutisticAttribute.armourValues);
+        }
+        if (itemType.equals(ItemType.Weapon)) {
+            Collections.addAll(attributes, AutisticAttribute.weaponValues);
+        }
+        while (randomAttributes.size() < amount && attributes.size() > 0) {
+            int index = NumGenerator.index(attributes.size());
+            AutisticAttribute attribute = attributes.get(index);
+            attributes.remove(index);
+
+            randomAttributes.add(attribute);
+        }
+        randomAttributes.toArray();
+        return randomAttributes.toArray(new AutisticAttribute[randomAttributes.size()]);
+    }
+
+    public static void randomizeAttributes(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        Map map = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
+        ItemType type = getItemType(itemStack);
+        if(type == null) {
+            Logger.log("Orb failed due to null item type");
+            return;
+        }
+        dataContainer.remove(NamespacedKeys.attributes);
+        addAttributes(itemStack, getRandomAttributes(type));
+        format(itemStack);
+    }
+
+    public static void randomizeStats(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        Map map = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
+        map.replaceAll((k, v) -> NumGenerator.rollInclusive(AutisticAttribute.valueOf(String.valueOf(k)).getMinValue(), AutisticAttribute.valueOf(String.valueOf(k)).getMaxValue()));
+        dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
+        itemStack.setItemMeta(itemMeta);
+        format(itemStack);
     }
 
     //Thanks stackoverflow!
@@ -159,18 +276,30 @@ public class ItemHandler {
             list.add("");
             if (dataContainer.has(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE)) {
                 Map map = sortByValue(dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE));
-                StringBuilder sb = new StringBuilder();
+                StringBuilder prefix = new StringBuilder();
                 for (Object key : map.keySet()) {
-                    String loreDisplay = AutisticAttribute.valueOf(String.valueOf(key)).getLoreDisplayName();
-                    String itemName = AutisticAttribute.valueOf(String.valueOf(key)).getItemDisplayName();
+                    AutisticAttribute autisticAttribute = AutisticAttribute.valueOf(String.valueOf(key));
+                    String loreDisplay = autisticAttribute.getLoreDisplayName();
+                    String affix = autisticAttribute.getItemDisplayName();
                     String statColor = percentageToColor((double)(int)map.get(key) / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
                     list.add(Text.colorize("&7" + loreDisplay.replace("{value}", statColor + "+" + map.get(key))));
-                    if (!itemName.equalsIgnoreCase("")) {
-                        sb.append(itemName + " ");
+                    if (!affix.equalsIgnoreCase("")) {
+                        prefix.append(affix).append(" ");
                     }
                 }
-                sb.append(meta.getDisplayName());
-                meta.setDisplayName(Text.colorize(getTier(item).getColorCode() + sb.toString()));
+
+                String itemName = item.getType().toString().toLowerCase();
+                if(itemName.contains("_")) {
+                    itemName = itemName.substring(itemName.lastIndexOf("_"));
+                    itemName = itemName.replace("_", " ");
+                }
+                else {
+                    itemName = " " + itemName;
+                }
+                itemName = itemName.substring(0,2).toUpperCase() + itemName.substring(2);
+
+                Tier tier = getTier(item);
+                meta.setDisplayName(Text.colorize(tier.getColorCode() + prefix.toString() + tier.getItemDisplayName() + itemName));
             }
             list.add(Text.colorize(getRarity(item).getColorCode() + "&l" + getRarity(item).name()));
         }
@@ -215,28 +344,71 @@ public class ItemHandler {
         }
     }
 
+    public static boolean isRealItem(ItemStack item) {
+        if (item != null && item.hasItemMeta()) {
+            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.realItem, PersistentDataType.STRING);
+        }
+        return false;
+    }
+
     public static Tier getTier(ItemStack item) {
-        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-            String data = dataContainer.get(NamespacedKeys.tier, PersistentDataType.STRING);
-            for (Tier tier : Tier.types) {
-                if (tier.name().equalsIgnoreCase(data)) {
-                    return tier;
-                }
-            }
+        if (isTiered(item)) {
+            return Tier.valueOf(item.getItemMeta().getPersistentDataContainer().get(NamespacedKeys.tier, PersistentDataType.STRING));
         }
         return null;
     }
 
+    public static boolean isTiered(ItemStack item) {
+        if (item != null && item.hasItemMeta()) {
+            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.tier, PersistentDataType.STRING);
+        }
+        return false;
+    }
+
+    public static ItemStack setTier(ItemStack item, Tier tier) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+        dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+
     public static Rarity getRarity(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            return Rarity.valueOf(dataContainer.get(NamespacedKeys.rarity, PersistentDataType.STRING));
+        }
+        return null;
+    }
+
+    public static ItemStack setRarity(ItemStack item, Rarity rarity) {
+        ItemMeta meta = item.getItemMeta();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-            String data = dataContainer.get(NamespacedKeys.rarity, PersistentDataType.STRING);
-            for (Rarity rarity : Rarity.types) {
-                if (rarity.name().equalsIgnoreCase(data)) {
-                    return rarity;
-                }
+        dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static float getItemEnergyCost(ItemStack item) {
+        if (isRealItem(item) && getItemType(item) == ItemType.Weapon) {
+            return weaponEnergy+getTier(item).getTierNumber();
+        }
+        else {
+            return noWeaponEnergy;
+        }
+    }
+
+    public static ItemType getItemType(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
+                return ItemType.Weapon;
             }
+            else if (dataContainer.has(NamespacedKeys.HP, PersistentDataType.INTEGER)) {
+                return ItemType.Armour;
+            }
+            return null;
         }
         return null;
     }

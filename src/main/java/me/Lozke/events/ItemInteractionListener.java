@@ -3,8 +3,8 @@ package me.Lozke.events;
 import me.Lozke.FallingAutism;
 import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.items.NamespacedKeys;
+import me.Lozke.handlers.ItemHandler;
 import me.Lozke.managers.MobManager;
-import me.Lozke.utils.Items;
 import me.Lozke.utils.Text;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -182,7 +182,7 @@ public class ItemInteractionListener implements Listener {
             ItemStack item = event.getItem();
             float energy = autisticPlayer.getEnergy();
             if(energy > 0) {
-                autisticPlayer.setEnergy(energy-Items.getItemEnergyCost(item));
+                autisticPlayer.setEnergy(energy- ItemHandler.getItemEnergyCost(item));
             }
         }
     }

@@ -47,6 +47,9 @@ public class DebugCommand extends Command {
                     case "orb":
                         inv.setItem(inv.firstEmpty(), ItemHandler.newOrb(tier, amount));
                         return true;
+                    case "shard":
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newShard(tier, amount));
+                        return true;
                     case "scrap":
                         inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
                         return true;

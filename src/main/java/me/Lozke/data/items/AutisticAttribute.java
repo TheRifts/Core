@@ -4,22 +4,22 @@ import java.util.ArrayList;
 
 public enum AutisticAttribute {
 
-    VIT(ItemType.Armour, "VIT: {value}", "", 1, 1, 5),
-    STR(ItemType.Armour, "STR: {value}", "", 1, 1, 5),
-    DEX(ItemType.Armour, "DEX: {value}", "", 1, 1, 5),
-    INT(ItemType.Armour, "INT: {value}", "", 1, 1, 5),
+    VIT(ItemType.Armour, "VIT: {value}", "Vigorous", 1, 1, 5),
+    STR(ItemType.Armour, "STR: {value}", "Mighty", 1, 1, 5),
+    DEX(ItemType.Armour, "DEX: {value}", "Capable", 1, 1, 5),
+    INT(ItemType.Armour, "INT: {value}", "Discerning", 1, 1, 5),
     BLOCK(ItemType.Armour, "BLOCK: {value}%", "Protective", 1, 1, 5),
     DODGE(ItemType.Armour, "DODGE: {value}%", "Agile", 1, 1, 5),
     REFLECTION(ItemType.Armour, "REFLECTION: {value}%", "Reflective", 1, 1, 5),
     THORNS(ItemType.Armour, "THORNS: {value}%", "Spiked", 1, 1, 5),
     ELEMENTAL_RESISTANCE(ItemType.Armour, "ELEMENTAL RESISTANCE: {value}%", "Elemental Resistant", 1, 1, 5),
-    GEM_FIND(ItemType.Armour, "GEM FIND: {value}%", "", 1, 1, 5),
-    ITEM_FIND(ItemType.Armour, "ITEM FIND: {value}%", "", 1, 1, 5),
+    GEM_FIND(ItemType.Armour, "GEM FIND: {value}%", "Opulent", 1, 1, 5),
+    ITEM_FIND(ItemType.Armour, "ITEM FIND: {value}%", "Lucky", 1, 1, 5),
     VS_PLAYER(ItemType.Weapon, "vs. PLAYERS: {value}%", "Slaying", 1, 1, 5),
     VS_MONSTER(ItemType.Weapon, "vs. MONSTERS: {value}%", "Slaughter", 1, 1, 5),
-    FIRE(ItemType.Weapon, "FIRE DMG: {value}", "Fire", 1, 1, 5),
-    ICE(ItemType.Weapon, "ICE DMG: {value}", "Ice", 1, 1, 5),
-    POISON(ItemType.Weapon, "POISON DMG: {value}", "Poison", 1, 1, 5),
+    FIRE(ItemType.Weapon, "FIRE DMG: {value}", "Fiery", 1, 1, 5),
+    ICE(ItemType.Weapon, "ICE DMG: {value}", "Icy", 1, 1, 5),
+    POISON(ItemType.Weapon, "POISON DMG: {value}", "Poisonous", 1, 1, 5),
     PURE(ItemType.Weapon, "PURE DMG: {value}", "Pure", 1, 1, 5),
     CRIT_HIT(ItemType.Weapon, "CRITICAL HIT: {value}%", "Deadly", 1, 1, 5),
     BLUNT_HIT(ItemType.Weapon, "BLUNT HIT: {value}%", "Blunt", 1, 1, 5),
@@ -73,18 +73,18 @@ public enum AutisticAttribute {
         return itemType;
     }
     public String getLoreDisplayName() {
-            return loreDisplayName;
+        return loreDisplayName;
     }
     public String getItemDisplayName() {
-            return itemDisplayName;
+        return itemDisplayName;
     }
     public int getDisplayWeight() {
-            return displayWeight;
+        return displayWeight;
     }
     public int getMinValue() {
-            return minValue;
+        return minValue;
     }
     public int getMaxValue() {
-            return maxValue;
+        return maxValue;
     }
 }

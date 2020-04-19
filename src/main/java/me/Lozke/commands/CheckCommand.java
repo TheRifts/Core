@@ -2,7 +2,7 @@ package me.Lozke.commands;
 
 import me.Lozke.data.items.AutisticAttribute;
 import me.Lozke.data.items.NamespacedKeys;
-import me.Lozke.utils.Items;
+import me.Lozke.handlers.ItemHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ public class CheckCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         Player player = (Player) sender;
         ItemStack item = player.getInventory().getItemInMainHand();
-        boolean isRealItem = Items.isRealItem(item);
+        boolean isRealItem = ItemHandler.isRealItem(item);
         if(isRealItem) {
             PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
             player.sendMessage(container.get(NamespacedKeys.realItem, PersistentDataType.STRING));

@@ -7,7 +7,7 @@ import me.Lozke.utils.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public enum Orb {
+public enum Shard {
     T1(),
     T2(),
     T3(),
@@ -15,17 +15,16 @@ public enum Orb {
     T5(),
     T6();
 
-    public static Orb[] types = Orb.values();
+    public static Shard[] types = Shard.values();
 
     public ItemStack getItem() {
-        return ItemHandler.setTier(Items.formatItem(
-                new ItemStack(Material.MAGMA_CREAM),
+        return ItemHandler.setTier(Items.formatItem(new ItemStack(Material.BLAZE_POWDER),
                 Tier.valueOf(this.name()).getColorCode() +
                         this.name() +
-                        " Orb of Alteration",
+                        " Shard of Alteration",
                 new String[]{(Text.colorize("&7Place on equipment to " +
                         Tier.valueOf(this.name()).getColorCode() +
-                        "&nrandomize&7 all bonus attributes"))}),
+                        "&nrandomize&7 all bonus stats"))}),
                 Tier.valueOf(this.name()));
     }
 }

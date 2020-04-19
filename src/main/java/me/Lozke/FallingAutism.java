@@ -67,6 +67,7 @@ public class FallingAutism extends JavaPlugin {
         pm.registerEvents(new ItemInteractionListener(), this);
         pm.registerEvents(new SpawnerWandToggleListener(), this);
         pm.registerEvents(new DamageListener(this), this);
+        pm.registerEvents(new InventoryClickListener(), this);
         pm.registerEvents(new PlayerDeathListener(this), this);
         pm.registerEvents(new PlayerRespawnListener(this), this);
 

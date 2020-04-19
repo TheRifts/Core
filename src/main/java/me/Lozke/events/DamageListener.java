@@ -4,8 +4,8 @@ import me.Lozke.FallingAutism;
 import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.TimedPlayerStatus;
+import me.Lozke.handlers.ItemHandler;
 import me.Lozke.managers.PlayerManager;
-import me.Lozke.utils.Items;
 import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -84,7 +84,7 @@ public class DamageListener implements Listener {
                 item = monster.getEquipment().getItemInMainHand();
             }
         }
-        if (Items.isRealItem(item)) {
+        if (ItemHandler.isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
             if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
                 return dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
