@@ -8,8 +8,6 @@ import me.Lozke.data.AutisticPlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnergyRegenTask extends BukkitRunnable {
-    private static float baseEnergyRegen = (float)1.5;
-
     private AutisticPlayer autisticPlayer;
 
     public EnergyRegenTask(AutisticPlayer autisticPlayer) {
@@ -19,6 +17,6 @@ public class EnergyRegenTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        autisticPlayer.setEnergy(autisticPlayer.getEnergy()+baseEnergyRegen);
+        autisticPlayer.setEnergy(autisticPlayer.getEnergy()+autisticPlayer.getEnergyRegen());
     }
 }

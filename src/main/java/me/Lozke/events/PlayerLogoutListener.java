@@ -30,7 +30,6 @@ public class PlayerLogoutListener implements Listener {
     private void handleEssentialLogout(Player player) {
         UUID uniqueId = player.getUniqueId();
 
-        plugin.getPlayerManager().getPlayer(uniqueId).handleLogout();
         plugin.getBossBarHandler().removeBar(uniqueId);
         plugin.getPlayerManager().savePlayer(uniqueId);
         plugin.getPlayerManager().removePlayer(uniqueId);

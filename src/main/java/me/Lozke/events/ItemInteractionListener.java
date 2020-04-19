@@ -33,10 +33,14 @@ public class ItemInteractionListener implements Listener {
     private MobManager mobManager;
     private List<UUID> ignoredPlayers;
 
+    private FallingAutism plugin;
 
-    public ItemInteractionListener() {
+
+    public ItemInteractionListener(FallingAutism plugin) {
         mobManager = FallingAutism.getPluginInstance().getMobManager();
         ignoredPlayers = new ArrayList<>();
+
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -178,7 +182,7 @@ public class ItemInteractionListener implements Listener {
         Action action = event.getAction();
 
         if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-            AutisticPlayer autisticPlayer = FallingAutism.getPluginInstance().getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
+            AutisticPlayer autisticPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
             ItemStack item = event.getItem();
             float energy = autisticPlayer.getEnergy();
             if(energy > 0) {

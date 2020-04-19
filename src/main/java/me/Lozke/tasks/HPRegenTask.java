@@ -4,31 +4,28 @@
 package me.Lozke.tasks;
 
 import me.Lozke.FallingAutism;
+import me.Lozke.data.AutisticPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
+public class HPRegenTask extends BukkitRunnable {
+    private AutisticPlayer autisticPlayer;
 
-public class HpRegenTask extends BukkitRunnable {
-    private static long baseHPRegen = 5;
-
-    private UUID uniqueId;
-
-    public HpRegenTask(UUID uniqueId) {
-        this.uniqueId = uniqueId;
+    public HPRegenTask(AutisticPlayer autisticPlayer) {
+        this.autisticPlayer = autisticPlayer;
         runTaskTimerAsynchronously(FallingAutism.getPluginInstance(), 0L, 20L);
     }
 
     @Override
     public void run() {
-        Player player = Bukkit.getPlayer(uniqueId);
+        Player player = Bukkit.getPlayer(autisticPlayer.getUniqueId());
         if (player != null) {
             double health = player.getHealth();
             double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
             if(health != maxHealth) {
-                health+= baseHPRegen;
+                health+= autisticPlayer.getHPRegen();
                 if(health > maxHealth) {
                     health = maxHealth;
                 }

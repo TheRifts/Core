@@ -63,8 +63,8 @@ public class FallingAutism extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerLoginListener(this), this);
         pm.registerEvents(new PlayerLogoutListener(this), this);
-        pm.registerEvents(new ArmourChangeListener(), this);
-        pm.registerEvents(new ItemInteractionListener(), this);
+        pm.registerEvents(new ArmorChangeListener(this), this);
+        pm.registerEvents(new ItemInteractionListener(this), this);
         pm.registerEvents(new SpawnerWandToggleListener(), this);
         pm.registerEvents(new DamageListener(this), this);
         pm.registerEvents(new InventoryClickListener(), this);

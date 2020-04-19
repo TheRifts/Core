@@ -7,8 +7,6 @@ import me.Lozke.data.TimedPlayerStatus;
 import me.Lozke.handlers.ItemHandler;
 import me.Lozke.managers.PlayerManager;
 import org.bukkit.EntityEffect;
-import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -19,10 +17,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class DamageListener implements Listener {
 
@@ -86,8 +80,8 @@ public class DamageListener implements Listener {
         }
         if (ItemHandler.isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
-                return dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER);
+            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
+                return dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER);
             }
         }
 

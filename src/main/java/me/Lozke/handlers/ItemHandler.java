@@ -1,16 +1,17 @@
 package me.Lozke.handlers;
 
 import me.Lozke.FallingAutism;
+import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
 import me.Lozke.utils.Logger;
 import me.Lozke.utils.NumGenerator;
 import me.Lozke.utils.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -94,7 +95,13 @@ public class ItemHandler {
                 addAttributes(item, getRandomAttributes(ItemType.Armour));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(NamespacedKeys.HP, PersistentDataType.INTEGER, new Random().nextInt(FallingAutism.getGearData().getInt("Helmet.LO")));
+                if (NumGenerator.roll(2) == 1) {
+                    dataContainer.set(NamespacedKeys.hpRegen, PersistentDataType.INTEGER, 50);
+                }
+                else {
+                    dataContainer.set(NamespacedKeys.energyRegen, PersistentDataType.INTEGER, 3);
+                }
+                dataContainer.set(NamespacedKeys.healthPoints, PersistentDataType.INTEGER, new Random().nextInt(FallingAutism.getGearData().getInt("Helmet.LO")));
                 break;
             case "_SWORD":
             case "_AXE":
@@ -104,7 +111,7 @@ public class ItemHandler {
                 addAttributes(item, getRandomAttributes(ItemType.Weapon));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(NamespacedKeys.DMG, PersistentDataType.INTEGER, 5000);
+                dataContainer.set(NamespacedKeys.damage, PersistentDataType.INTEGER, 5000);
                 break;
         }
         dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
@@ -265,24 +272,36 @@ public class ItemHandler {
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         List<String> list = new ArrayList<>();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-            if (dataContainer.has(NamespacedKeys.HP, PersistentDataType.INTEGER)) {
-                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.HP, PersistentDataType.INTEGER) / FallingAutism.getGearData().getInt("Helmet.LO"));
-                list.add(Text.colorize("&7HP: " + statColor + "+" + dataContainer.get(NamespacedKeys.HP, PersistentDataType.INTEGER)));
+            if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
+                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER) / FallingAutism.getGearData().getInt("Helmet.LO"));
+                list.add(Text.colorize("&7HP: " + statColor + "+" + dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)));
+                if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
+                    list.add(Text.colorize("&7HP/s: &c+" + dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)));
+                }
+                if (dataContainer.has(NamespacedKeys.energyRegen, PersistentDataType.INTEGER)) {
+                    list.add(Text.colorize("&7ENERGY: &c+" + dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER) + "%"));
+                }
             }
-            if (dataContainer.has(NamespacedKeys.DMG, PersistentDataType.INTEGER)) {
-                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER) / 5000);
-                list.add(Text.colorize("&7DMG" + statColor + "+"  + dataContainer.get(NamespacedKeys.DMG, PersistentDataType.INTEGER)));
+            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
+                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER) / 5000);
+                list.add(Text.colorize("&7DMG" + statColor + "+"  + dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER)));
             }
             list.add("");
             if (dataContainer.has(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE)) {
-                Map map = sortByValue(dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE));
-                StringBuilder prefix = new StringBuilder();
-                for (Object key : map.keySet()) {
+                Map valueMap = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
+                Map percentageMap = new HashMap();
+                for (Object key : valueMap.keySet()) {
+                    percentageMap.put(key, (double)(int)valueMap.get(key) / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
+                }
+                percentageMap = sortByValue(percentageMap);
+
+                StringBuilder sb = new StringBuilder();
+                for (Object key : percentageMap.keySet()) {
                     AutisticAttribute autisticAttribute = AutisticAttribute.valueOf(String.valueOf(key));
                     String loreDisplay = autisticAttribute.getLoreDisplayName();
                     String affix = autisticAttribute.getItemDisplayName();
-                    String statColor = percentageToColor((double)(int)map.get(key) / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
-                    list.add(Text.colorize("&7" + loreDisplay.replace("{value}", statColor + "+" + map.get(key))));
+                    String statColor = percentageToColor((double)percentageMap.get(key));
+                    list.add(Text.colorize("&7" + loreDisplay.replace("{value}", statColor + "+" + valueMap.get(key))));
                     if (!affix.equalsIgnoreCase("")) {
                         prefix.append(affix).append(" ");
                     }
@@ -323,22 +342,43 @@ public class ItemHandler {
         }
     }
 
-    public static void handleStats(Player player, ItemStack item, boolean equipped) {
+    public static void handleStats(AutisticPlayer autisticPlayer, ItemStack item, boolean equipped) {
+        Player player = Bukkit.getPlayer(autisticPlayer.getUniqueId());
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-            AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            int itemHP = dataContainer.get(NamespacedKeys.HP, PersistentDataType.INTEGER);
-            if (equipped) {
-                maxHealth.setBaseValue((int) maxHealth.getValue() + itemHP);
-            }
-            else {
-                maxHealth.setBaseValue((int) maxHealth.getValue() - itemHP);
-                if (player.getHealth() > maxHealth.getValue()) {
-                    try {
-                        player.setHealth(player.getHealth() - itemHP);
-                    } catch (IllegalArgumentException exception) {
-                        player.setHealth(maxHealth.getValue());
+            if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
+                AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                int itemHP = dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER);
+                if (equipped) {
+                    maxHealth.setBaseValue((int) maxHealth.getValue() + itemHP);
+                }
+                else {
+                    maxHealth.setBaseValue((int) maxHealth.getValue() - itemHP);
+                    if (player.getHealth() > maxHealth.getValue()) {
+                        try {
+                            player.setHealth(player.getHealth() - itemHP);
+                        } catch (IllegalArgumentException exception) {
+                            player.setHealth(maxHealth.getValue());
+                        }
                     }
+                }
+            }
+            if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
+                int itemHPRegen = dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER);
+                if (equipped) {
+                    autisticPlayer.setHpRegen(autisticPlayer.getHPRegen() + itemHPRegen);
+                }
+                else {
+                    autisticPlayer.setHpRegen(autisticPlayer.getHPRegen() - itemHPRegen);
+                }
+            }
+            if (dataContainer.has(NamespacedKeys.energyRegen, PersistentDataType.INTEGER)) {
+                int itemEnergyRegen = dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER);
+                if (equipped) {
+                    autisticPlayer.setEnergyRegen(autisticPlayer.getEnergyRegen() + AutisticPlayer.baseEnergyRegen*itemEnergyRegen/AutisticPlayer.fullEnergy);
+                }
+                else {
+                    autisticPlayer.setEnergyRegen(autisticPlayer.getEnergyRegen() - AutisticPlayer.baseEnergyRegen*itemEnergyRegen/AutisticPlayer.fullEnergy);
                 }
             }
         }

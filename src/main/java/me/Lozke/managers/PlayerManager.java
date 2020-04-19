@@ -43,6 +43,7 @@ public class PlayerManager {
     }
 
     public void removePlayer(UUID uniqueId) {
+        autisticPlayers.get(uniqueId).handleLogout();
         autisticPlayers.remove(uniqueId);
     }
 

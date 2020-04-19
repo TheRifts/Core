@@ -5,8 +5,9 @@ package me.Lozke.data;
 
 import me.Lozke.FallingAutism;
 import me.Lozke.tasks.EnergyRegenTask;
-import me.Lozke.tasks.HpRegenTask;
+import me.Lozke.tasks.HPRegenTask;
 import me.Lozke.tasks.TickStatusesTask;
+import me.Lozke.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -18,25 +19,33 @@ import static org.bukkit.Bukkit.getScheduler;
 public class AutisticPlayer {
     public static final float fullEnergy = 100;
     public static final int baseHP = 50;
+    public static final int baseHPRegen = 5;
+    public static final float baseEnergyRegen = (float)1.5;
+
     private final UUID uniqueId;
 
     private EnergyRegenTask energyRegenTask;
-    private HpRegenTask hpRegenTask;
+    private HPRegenTask hpRegenTask;
     private TickStatusesTask tickStatusesTask;
 
     private Map<TimedPlayerStatus, Integer> statusMap;
 
     private float energy;
+    private float energyRegen;
+    private int HPRegen;
 
     public AutisticPlayer(UUID uniqueId) {
         this.uniqueId = uniqueId;
 
         energyRegenTask = new EnergyRegenTask(this);
-        setEnergy(fullEnergy);
         //Want status map to exist before trying to run tasks using it
         this.statusMap = new HashMap<>();
-        hpRegenTask = new HpRegenTask(uniqueId);
+        hpRegenTask = new HPRegenTask(this);
         tickStatusesTask = new TickStatusesTask(this);
+
+        setEnergy(fullEnergy);
+        HPRegen = baseHPRegen;
+        energyRegen = baseEnergyRegen;
     }
 
     private AutisticPlayer getAutisticPlayerInstance() {
@@ -88,7 +97,7 @@ public class AutisticPlayer {
         tickStatusesTask.sendMessage(statusMap);
         //Handle hp regen
         if(!statusMap.containsKey(TimedPlayerStatus.MOB_COMBAT) && !statusMap.containsKey(TimedPlayerStatus.PLAYER_COMBAT)) {
-            hpRegenTask = new HpRegenTask(uniqueId);
+            hpRegenTask = new HPRegenTask(this);
         }
     }
 
@@ -140,5 +149,21 @@ public class AutisticPlayer {
         energyRegenTask.cancel();
         hpRegenTask.cancel();
         tickStatusesTask.cancel();
+    }
+
+    public int getHPRegen() {
+        return HPRegen;
+    }
+
+    public void setHpRegen(int HPRegen) {
+        this.HPRegen = HPRegen;
+    }
+
+    public float getEnergyRegen() {
+        return energyRegen;
+    }
+
+    public void setEnergyRegen(float energyRegen) {
+        this.energyRegen = energyRegen;
     }
 }
