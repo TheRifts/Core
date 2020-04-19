@@ -296,12 +296,15 @@ public class ItemHandler {
                 percentageMap = sortByValue(percentageMap);
 
                 StringBuilder sb = new StringBuilder();
-                for (Object key : percentageMap.keySet()) {
+                for (Object key : map.keySet()) {
                     AutisticAttribute autisticAttribute = AutisticAttribute.valueOf(String.valueOf(key));
                     String loreDisplay = autisticAttribute.getLoreDisplayName();
                     String affix = autisticAttribute.getItemDisplayName();
-                    String statColor = percentageToColor((double)percentageMap.get(key));
-                    list.add(Text.colorize("&7" + loreDisplay.replace("{value}", statColor + "+" + valueMap.get(key))));
+                    int value = (int) map.get(key);
+                    String statColor = percentageToColor((double)(int)value / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
+                    String[] split = loreDisplay.split(": ");
+                    String lore = "&7" + split[0] + ": " + statColor + split[1].replace("{value}", String.valueOf(value));
+                    list.add(Text.colorize(lore));
                     if (!affix.equalsIgnoreCase("")) {
                         prefix.append(affix).append(" ");
                     }
