@@ -1,14 +1,13 @@
 package me.Lozke.handlers;
 
 import me.Lozke.FallingAutism;
-import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
+import me.Lozke.managers.PlayerManager;
 import me.Lozke.utils.Logger;
 import me.Lozke.utils.NumGenerator;
 import me.Lozke.utils.Text;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -22,25 +21,24 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 
 public class ItemHandler {
+
     private static final int noWeaponEnergy = 5;
     private static final int weaponEnergy = 8;
 
     private static final int maxAttributes = 7;
 
+    //ITEM CREATION
     public static ItemStack newHelmet(Tier tier, Rarity rarity) {
-        return createItem(tier, rarity, tier.getArmourMaterial(), "_HELMET");
+        return createItem(tier, rarity, tier.getArmorMaterial(), "_HELMET");
     }
-
     public static ItemStack newChestplate(Tier tier, Rarity rarity) {
-        return createItem(tier, rarity, tier.getArmourMaterial(), "_CHESTPLATE");
+        return createItem(tier, rarity, tier.getArmorMaterial(), "_CHESTPLATE");
     }
-
     public static ItemStack newLeggings(Tier tier, Rarity rarity) {
-        return createItem(tier, rarity, tier.getArmourMaterial(), "_LEGGINGS");
+        return createItem(tier, rarity, tier.getArmorMaterial(), "_LEGGINGS");
     }
-
     public static ItemStack newBoots(Tier tier, Rarity rarity) {
-        return createItem(tier, rarity, tier.getArmourMaterial(), "_BOOTS");
+        return createItem(tier, rarity, tier.getArmorMaterial(), "_BOOTS");
     }
 
     //lol this would be the perfect place to return a Set<ItemStack>... just saying...
@@ -48,14 +46,13 @@ public class ItemHandler {
         return new ItemStack[]{newHelmet(tier, rarity), newChestplate(tier, rarity), newLeggings(tier, rarity), newBoots(tier, rarity)};
     }
 
-    public static ItemStack getWeapon(Tier tier, Rarity rarity, String type) {
+    public static ItemStack newWeapon(Tier tier, Rarity rarity, String type) {
         return createItem(tier, rarity, tier.getWeaponMaterial(), "_" + type.toUpperCase());
     }
 
     public static ItemStack newScrap(Tier tier) {
         return newScrap(tier, 1);
     }
-
     public static ItemStack newScrap(Tier tier, int amount) {
         ItemStack scrap = Scrap.types[tier.ordinal()].getItem();
         scrap.setAmount(amount);
@@ -65,7 +62,6 @@ public class ItemHandler {
     public static ItemStack newOrb(Tier tier) {
         return newOrb(tier, 1);
     }
-
     public static ItemStack newOrb(Tier tier, int amount) {
         ItemStack orb = Orb.types[tier.ordinal()].getItem();
         orb.setAmount(amount);
@@ -75,12 +71,12 @@ public class ItemHandler {
     public static ItemStack newShard(Tier tier) {
         return newShard(tier, 1);
     }
-
     public static ItemStack newShard(Tier tier, int amount) {
         ItemStack shard = setTier(Shard.types[tier.ordinal()].getItem(), tier);
         shard.setAmount(amount);
         return shard;
     }
+
 
     private static ItemStack createItem(Tier tier, Rarity rarity, String material, String itemType) {
         ItemStack item = null;
@@ -92,7 +88,7 @@ public class ItemHandler {
             case "_LEGGINGS":
             case "_BOOTS":
                 item = new ItemStack(Material.valueOf(material + itemType));
-                addAttributes(item, getRandomAttributes(ItemType.Armour));
+                addAttributes(item, getRandomAttributes(ItemType.ARMOR));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
                 if (NumGenerator.roll(2) == 1) {
@@ -108,7 +104,7 @@ public class ItemHandler {
             case "_SHOVEL":
             case "_HOE":
                 item = new ItemStack(Material.valueOf(material + itemType));
-                addAttributes(item, getRandomAttributes(ItemType.Weapon));
+                addAttributes(item, getRandomAttributes(ItemType.WEAPON));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
                 dataContainer.set(NamespacedKeys.damage, PersistentDataType.INTEGER, 5000);
@@ -123,20 +119,21 @@ public class ItemHandler {
         return format(item);
     }
 
-    public static void addAttributes(ItemStack item, AutisticAttribute... attributes) {
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        HashMap<String, Integer> map = new HashMap<>();
-        for (AutisticAttribute attribute : attributes) {
-            map.put(attribute.name(), NumGenerator.rollInclusive(attribute.getMinValue(), attribute.getMaxValue()));
+    //GENERAL ITEM UTILITIES
+    public static void randomizeAttributes(ItemStack itemStack) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
+        Map map = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
+        ItemType type = getItemType(itemStack);
+        if(type == null) {
+            Logger.log("Orb failed due to null item type");
+            return;
         }
-        dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
-        item.setItemMeta(meta);
+        dataContainer.remove(NamespacedKeys.attributes);
+        addAttributes(itemStack, getRandomAttributes(type));
+        format(itemStack);
     }
-
-    //CURRENT CHANCES FOR A GIVEN NUMBER OF ATTRIBUTES
-    
-    //Calculations:
+    //Calculations for odds of different #s of attributes
     /*
     assumes maxAttributes = 7
 
@@ -186,7 +183,7 @@ public class ItemHandler {
      = 0.1047441205078125 * 1/3
      = 0.0349147068359375
      */
-    //Values
+    //Values for odds of different #s of attributes
     /*
     0: 8.75%
     1: 15.60%
@@ -213,10 +210,10 @@ public class ItemHandler {
 
         ArrayList<AutisticAttribute> randomAttributes = new ArrayList<>();
         ArrayList<AutisticAttribute> attributes = new ArrayList<>();
-        if (itemType.equals(ItemType.Armour)) {
+        if (itemType.equals(ItemType.ARMOR)) {
             Collections.addAll(attributes, AutisticAttribute.armourValues);
         }
-        if (itemType.equals(ItemType.Weapon)) {
+        if (itemType.equals(ItemType.WEAPON)) {
             Collections.addAll(attributes, AutisticAttribute.weaponValues);
         }
         while (randomAttributes.size() < amount && attributes.size() > 0) {
@@ -230,20 +227,6 @@ public class ItemHandler {
         return randomAttributes.toArray(new AutisticAttribute[randomAttributes.size()]);
     }
 
-    public static void randomizeAttributes(ItemStack itemStack) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-        Map map = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
-        ItemType type = getItemType(itemStack);
-        if(type == null) {
-            Logger.log("Orb failed due to null item type");
-            return;
-        }
-        dataContainer.remove(NamespacedKeys.attributes);
-        addAttributes(itemStack, getRandomAttributes(type));
-        format(itemStack);
-    }
-
     public static void randomizeStats(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
@@ -254,18 +237,15 @@ public class ItemHandler {
         format(itemStack);
     }
 
-    //Thanks stackoverflow!
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        list.sort(Map.Entry.comparingByValue());
-        Collections.reverse(list);
-
-        Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
+    public static void addAttributes(ItemStack item, AutisticAttribute... attributes) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (AutisticAttribute attribute : attributes) {
+            map.put(attribute.name(), NumGenerator.rollInclusive(attribute.getMinValue(), attribute.getMaxValue()));
         }
-
-        return result;
+        dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
+        item.setItemMeta(meta);
     }
 
     public static ItemStack format(ItemStack item) {
@@ -330,7 +310,19 @@ public class ItemHandler {
         item.setItemMeta(meta);
         return item;
     }
+    //Thanks stackoverflow!
+    private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        Collections.reverse(list);
 
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
     private static String percentageToColor(double percentage) {
         if (percentage == 1) {
             return "&a&l";
@@ -346,14 +338,81 @@ public class ItemHandler {
         }
     }
 
-    public static void handleStats(AutisticPlayer autisticPlayer, ItemStack item, boolean equipped) {
-        Player player = Bukkit.getPlayer(autisticPlayer.getUniqueId());
+    public static boolean isRealItem(ItemStack item) {
+        if (item != null && item.hasItemMeta()) {
+            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.realItem, PersistentDataType.STRING);
+        }
+        return false;
+    }
+
+    public static boolean isTiered(ItemStack item) {
+        if (item != null && item.hasItemMeta()) {
+            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.tier, PersistentDataType.STRING);
+        }
+        return false;
+    }
+    public static Tier getTier(ItemStack item) {
+        if (isTiered(item)) {
+            return Tier.valueOf(item.getItemMeta().getPersistentDataContainer().get(NamespacedKeys.tier, PersistentDataType.STRING));
+        }
+        return null;
+    }
+    public static ItemStack setTier(ItemStack item, Tier tier) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+        dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static Rarity getRarity(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            return Rarity.valueOf(dataContainer.get(NamespacedKeys.rarity, PersistentDataType.STRING));
+        }
+        return null;
+    }
+    public static ItemStack setRarity(ItemStack item, Rarity rarity) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+        dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static float getItemEnergyCost(ItemStack item) {
+        if (isRealItem(item) && getItemType(item) == ItemType.WEAPON) {
+            return weaponEnergy+getTier(item).getTierNumber();
+        }
+        else {
+            return noWeaponEnergy;
+        }
+    }
+
+    public static ItemType getItemType(ItemStack item) {
+        if (isRealItem(item)) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
+                return ItemType.WEAPON;
+            }
+            else if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
+                return ItemType.ARMOR;
+            }
+            return null;
+        }
+        return null;
+    }
+
+    //PLAYER STAT UPDATES
+    public static void handleStats(Player player, ItemStack item, boolean equipped) {
+        PlayerManager manager = FallingAutism.getPluginInstance().getPlayerManager();
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
             if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
                 AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 int itemHP = dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER);
                 if (equipped) {
+                    //TODO move health management under domain of player manager
                     maxHealth.setBaseValue((int) maxHealth.getValue() + itemHP);
                 }
                 else {
@@ -368,92 +427,29 @@ public class ItemHandler {
                 }
             }
             if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
-                int itemHPRegen = dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER);
+                int itemHpRegen = dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER);
+                int newHpRegen = manager.getHPRegen(player);
                 if (equipped) {
-                    autisticPlayer.setHpRegen(autisticPlayer.getHPRegen() + itemHPRegen);
+                    newHpRegen+= itemHpRegen;
                 }
                 else {
-                    autisticPlayer.setHpRegen(autisticPlayer.getHPRegen() - itemHPRegen);
+                    newHpRegen-= itemHpRegen;
                 }
+                manager.updateHpRegen(player, newHpRegen);
             }
             if (dataContainer.has(NamespacedKeys.energyRegen, PersistentDataType.INTEGER)) {
-                int itemEnergyRegen = dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER);
+                int itemEnergyRegenPercent = dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER);
+                float itemEnergyRegen = PlayerManager.baseEnergyRegen*itemEnergyRegenPercent/PlayerManager.fullEnergy;
+                float newEnergyRegen = manager.getEnergyRegen(player);
                 if (equipped) {
-                    autisticPlayer.setEnergyRegen(autisticPlayer.getEnergyRegen() + AutisticPlayer.baseEnergyRegen*itemEnergyRegen/AutisticPlayer.fullEnergy);
+                    newEnergyRegen+= itemEnergyRegen;
                 }
                 else {
-                    autisticPlayer.setEnergyRegen(autisticPlayer.getEnergyRegen() - AutisticPlayer.baseEnergyRegen*itemEnergyRegen/AutisticPlayer.fullEnergy);
+                    newEnergyRegen-= itemEnergyRegen;
                 }
+                manager.updateEnergyRegen(player, newEnergyRegen);
             }
         }
     }
 
-    public static boolean isRealItem(ItemStack item) {
-        if (item != null && item.hasItemMeta()) {
-            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.realItem, PersistentDataType.STRING);
-        }
-        return false;
-    }
-
-    public static Tier getTier(ItemStack item) {
-        if (isTiered(item)) {
-            return Tier.valueOf(item.getItemMeta().getPersistentDataContainer().get(NamespacedKeys.tier, PersistentDataType.STRING));
-        }
-        return null;
-    }
-
-    public static boolean isTiered(ItemStack item) {
-        if (item != null && item.hasItemMeta()) {
-            return item.getItemMeta().getPersistentDataContainer().has(NamespacedKeys.tier, PersistentDataType.STRING);
-        }
-        return false;
-    }
-
-    public static ItemStack setTier(ItemStack item, Tier tier) {
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-
-    public static Rarity getRarity(ItemStack item) {
-        if (isRealItem(item)) {
-            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            return Rarity.valueOf(dataContainer.get(NamespacedKeys.rarity, PersistentDataType.STRING));
-        }
-        return null;
-    }
-
-    public static ItemStack setRarity(ItemStack item, Rarity rarity) {
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static float getItemEnergyCost(ItemStack item) {
-        if (isRealItem(item) && getItemType(item) == ItemType.Weapon) {
-            return weaponEnergy+getTier(item).getTierNumber();
-        }
-        else {
-            return noWeaponEnergy;
-        }
-    }
-
-    public static ItemType getItemType(ItemStack item) {
-        if (isRealItem(item)) {
-            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
-                return ItemType.Weapon;
-            }
-            else if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
-                return ItemType.Armour;
-            }
-            return null;
-        }
-        return null;
-    }
 }

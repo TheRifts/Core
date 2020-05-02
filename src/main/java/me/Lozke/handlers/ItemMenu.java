@@ -15,6 +15,7 @@ public class ItemMenu {
     private String title;
     private ItemStack[] items;
 
+
     public ItemMenu(InventoryType type, int size, String title, ItemStack... items) {
         this.type = type;
         this.size = size;
@@ -28,42 +29,30 @@ public class ItemMenu {
         this.items = items == null || items.length < inventory.getSize() ? new ItemStack[inventory.getSize()] : items;
         displayItems();
     }
-
     public ItemMenu(InventoryType type, String title, ItemStack... items) {
         this(type, 0, title, items);
     }
-
     public ItemMenu(int size, String title, ItemStack... items) {
         this(null, size, title, items);
     }
 
-    public void setParent(ItemMenu parent) {
-        this.parent = parent;
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+    public void openMenu(Player player) {
+        player.openInventory(inventory);
     }
 
     public ItemMenu getParent() {
         return parent;
     }
-
+    public void setParent(ItemMenu parent) {
+        this.parent = parent;
+    }
     public void openParent(Player player) {
         if (parent != null) {
             parent.openMenu(player);
-        }
-    }
-
-    public void openMenu(Player player) {
-        player.openInventory(inventory);
-    }
-
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void displayItems() {
-        if (items != null) {
-            for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
-                inventory.setItem(slot, items[slot]);
-            }
         }
     }
 
@@ -71,16 +60,20 @@ public class ItemMenu {
         inventory.setItem(slot, itemStack);
         items[slot] = itemStack;
     }
-
     public void setDisplayItem(int slot, ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
         items[slot] = itemStack;
     }
-
     public void addDisplayItem(ItemStack itemStack) {
         setDisplayItem(inventory.firstEmpty(), itemStack);
     }
-
+    public void displayItems() {
+        if (items != null) {
+            for (int slot = 0; slot < inventory.getSize() && slot < items.length; slot++) {
+                inventory.setItem(slot, items[slot]);
+            }
+        }
+    }
     public void clearItems() {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             inventory.setItem(slot, null);

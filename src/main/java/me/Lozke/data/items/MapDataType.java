@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapDataType implements PersistentDataType<byte[], Map> {
+
     @Override
     public Class<byte[]> getPrimitiveType() {
         return byte[].class;

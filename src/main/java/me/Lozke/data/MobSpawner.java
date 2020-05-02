@@ -22,6 +22,7 @@ public class MobSpawner {
     private transient int timeLeft;
     private transient BukkitTask task;
 
+
     public MobSpawner(MobSpawner mobSpawner) {
         this.location = mobSpawner.getSerializedLocation();
         this.tier = mobSpawner.getTier();
@@ -34,7 +35,6 @@ public class MobSpawner {
         this.radius = mobSpawner.getRadius();
         this.amount = mobSpawner.getAmount();
     }
-
     public MobSpawner(Location location, Tier tier, Rarity rarity, String mobType, boolean elite, boolean spawnerActive, int timer, int radius, int amount) {
         this.location = location.serialize();
         this.tier = tier;
@@ -48,10 +48,23 @@ public class MobSpawner {
         this.amount = amount;
     }
 
+
+    public Location getLocation() {
+        return Location.deserialize(location);
+    }
+    public Map<String, Object> getSerializedLocation() {
+        return location;
+    }
+    public void setLocation(Location location) {
+        this.location = location.serialize();
+    }
+    public void setLocation(Map<String,Object> serialiezedLocation) {
+        this.location = serialiezedLocation;
+    }
+
     public Tier getTier() {
         return tier;
     }
-
     public void setTier(Tier tier) {
         this.tier = tier;
         showSpawner();
@@ -60,7 +73,6 @@ public class MobSpawner {
     public Rarity getRarity() {
         return rarity;
     }
-
     public void setRarity(Rarity rarity) {
         this.rarity = rarity;
     }
@@ -68,7 +80,6 @@ public class MobSpawner {
     public String getMobType() {
         return mobType;
     }
-
     public void setMobType(String mobType) {
         this.mobType = mobType;
     }
@@ -76,7 +87,6 @@ public class MobSpawner {
     public boolean isElite() {
         return elite;
     }
-
     public void toggleElite() {
         this.elite = !elite;
         showSpawner();
@@ -85,7 +95,6 @@ public class MobSpawner {
     public boolean isSpawnerActive() {
         return spawnerActive;
     }
-
     public void toggleSpawnerActive() {
         this.spawnerActive = !spawnerActive;
     }
@@ -93,7 +102,6 @@ public class MobSpawner {
     public int getSpawnTime() {
         return spawnTime;
     }
-
     public void setSpawnTime(int time) {
         this.spawnTime = time;
         if(timeLeft>spawnTime) {
@@ -104,7 +112,6 @@ public class MobSpawner {
     public int getTimeLeft() {
         return timeLeft;
     }
-
     public void setTimeLeft(int time) {
         this.timeLeft = time;
     }
@@ -112,7 +119,6 @@ public class MobSpawner {
     public int getRadius() {
         return radius;
     }
-
     public void setRadius(int radius) {
         this.radius = radius;
     }
@@ -120,26 +126,10 @@ public class MobSpawner {
     public int getAmount() {
         return amount;
     }
-
     public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public Location getLocation() {
-        return Location.deserialize(location);
-    }
-
-    public Map<String, Object> getSerializedLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location.serialize();
-    }
-
-    public void setLocation(Map<String,Object> serialiezedLocation) {
-        this.location = serialiezedLocation;
-    }
 
     public MobSpawner copy() {
         return new MobSpawner(this);
@@ -155,6 +145,10 @@ public class MobSpawner {
         } else {
             Location.deserialize(location).getBlock().setType(Material.getMaterial(tier.getMaterialColor() + "_CONCRETE"));
         }
+        return this;
+    }
+    public MobSpawner hideSpawner() {
+        Location.deserialize(location).getBlock().setType(Material.AIR);
         return this;
     }
 }

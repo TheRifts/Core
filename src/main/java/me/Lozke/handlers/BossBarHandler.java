@@ -17,41 +17,41 @@ public class BossBarHandler extends BukkitRunnable {
 
     private Map<UUID, BossBar> activeBars = new ConcurrentHashMap<>();
 
+
     public BossBarHandler(FallingAutism plugin) {
         runTaskTimer(plugin, 0L , 1L);
         Bukkit.getOnlinePlayers().forEach(this::createBar);
     }
 
+
     public void createBar(Player player) {
         createBar(player.getUniqueId());
     }
-
-    public void createBar(UUID uniqueID) {
-        if (hasBar(uniqueID)) {
+    public void createBar(UUID uuid) {
+        if (hasBar(uuid)) {
             return;
         }
         BossBar bossbar = Bukkit.createBossBar(
                 "",
                 BarColor.RED,
                 BarStyle.SOLID);
-        activeBars.put(uniqueID, bossbar);
-        updateBar(uniqueID);
-        bossbar.addPlayer(Bukkit.getPlayer(uniqueID));
+        activeBars.put(uuid, bossbar);
+        updateBar(uuid);
+        bossbar.addPlayer(Bukkit.getPlayer(uuid));
     }
 
     public void updateBar(Player player) {
         updateBar(player.getUniqueId());
     }
-
-    public void updateBar(UUID uniqueId) {
-        if (!hasBar(uniqueId)) {
-            createBar(uniqueId);
+    public void updateBar(UUID uuid) {
+        if (!hasBar(uuid)) {
+            createBar(uuid);
             return;
         }
-        Player player = Bukkit.getPlayer(uniqueId);
+        Player player = Bukkit.getPlayer(uuid);
         int maxHealth = (int) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         int health = (int) player.getHealth();
-        BossBar bossbar = activeBars.get(uniqueId);
+        BossBar bossbar = activeBars.get(uuid);
         bossbar.setTitle("HP " + health + "/" + maxHealth);
         double progress = (double) health/maxHealth;
         if (progress > 1.0) {
@@ -60,7 +60,6 @@ public class BossBarHandler extends BukkitRunnable {
         }
         bossbar.setProgress(progress);
     }
-
     public void updateAll() {
         activeBars.keySet().forEach(this::updateBar);
     }
@@ -68,15 +67,13 @@ public class BossBarHandler extends BukkitRunnable {
     public void removeBar(Player player) {
         removeBar(player.getUniqueId());
     }
-
-    public void removeBar(UUID uniqueId) {
-        if (!hasBar(Bukkit.getPlayer(uniqueId))) {
+    public void removeBar(UUID uuid) {
+        if (!hasBar(Bukkit.getPlayer(uuid))) {
             return;
         }
-        activeBars.get(uniqueId).removeAll();
-        activeBars.remove(uniqueId);
+        activeBars.get(uuid).removeAll();
+        activeBars.remove(uuid);
     }
-
     public void removeAll() {
         activeBars.keySet().forEach(this::removeBar);
     }
@@ -84,11 +81,11 @@ public class BossBarHandler extends BukkitRunnable {
     public boolean hasBar(Player player) {
         return hasBar(player.getUniqueId());
     }
-
-    public boolean hasBar(UUID uniqueId) {
-        return activeBars.containsKey(uniqueId);
+    public boolean hasBar(UUID uuid) {
+        return activeBars.containsKey(uuid);
     }
 
+    
     @Override
     public void run() {
         updateAll();

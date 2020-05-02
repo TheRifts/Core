@@ -54,16 +54,16 @@ public class DebugCommand extends Command {
                         inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
                         return true;
                     case "sword":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "SWORD"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SWORD"));
                         return true;
                     case "axe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "AXE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "AXE"));
                         return true;
                     case "shovel":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "SHOVEL"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SHOVEL"));
                         return true;
                     case "hoe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.getWeapon(tier, rarity, "HOE"));
+                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "HOE"));
                         return true;
                     case "boots":
                         inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier,  rarity));

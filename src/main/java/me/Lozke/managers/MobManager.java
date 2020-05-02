@@ -65,7 +65,7 @@ public class MobManager {
     public void hideSpawners() {
         visible = false;
         for (MobSpawner spawner : mobSpawners) {
-            spawner.getLocation().getBlock().setType(Material.AIR);
+            spawner.hideSpawner();
         }
     }
 

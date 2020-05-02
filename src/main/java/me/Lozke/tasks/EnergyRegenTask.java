@@ -4,19 +4,30 @@
 package me.Lozke.tasks;
 
 import me.Lozke.FallingAutism;
-import me.Lozke.data.AutisticPlayer;
+import me.Lozke.managers.PlayerManager;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class EnergyRegenTask extends BukkitRunnable {
-    private AutisticPlayer autisticPlayer;
 
-    public EnergyRegenTask(AutisticPlayer autisticPlayer) {
-        this.autisticPlayer = autisticPlayer;
-        runTaskTimerAsynchronously(FallingAutism.getPluginInstance(), 2L, 2L);
+    private Player player;
+    private PlayerManager manager;
+
+
+    public EnergyRegenTask(Player player) {
+        this.player = player;
+        this.manager = FallingAutism.getPluginInstance().getPlayerManager();
+        runTaskTimerAsynchronously(FallingAutism.getPluginInstance(), 20L, 2L);
     }
+
 
     @Override
     public void run() {
-        autisticPlayer.setEnergy(autisticPlayer.getEnergy()+autisticPlayer.getEnergyRegen());
+        if (this.isCancelled() || manager == null) {
+            this.cancel();
+        }
+        else {
+            manager.updateEnergy(player, manager.getEnergy(player) + manager.getEnergyRegen(player));
+        }
     }
 }

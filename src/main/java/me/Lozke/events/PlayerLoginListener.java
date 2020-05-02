@@ -12,17 +12,19 @@ public class PlayerLoginListener implements Listener {
 
     private FallingAutism plugin;
 
+
     public PlayerLoginListener(FallingAutism plugin) {
         this.plugin = plugin;
     }
 
+
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        UUID uniqueId = player.getUniqueId();
+        UUID uuid = player.getUniqueId();
 
         player.setHealthScale(20.0);
         plugin.getBossBarHandler().createBar(player);
-        plugin.getPlayerManager().loadPlayer(uniqueId);
+        plugin.getPlayerManager().loadPlayer(uuid);
     }
 }

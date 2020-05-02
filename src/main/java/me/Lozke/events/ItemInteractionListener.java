@@ -1,13 +1,12 @@
 package me.Lozke.events;
 
 import me.Lozke.FallingAutism;
-import me.Lozke.data.AutisticPlayer;
+import me.Lozke.data.ActionBarMessage;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.handlers.ItemHandler;
-import me.Lozke.managers.MobManager;
+import me.Lozke.tasks.actionbar.ActionBarMessageTickTask;
 import me.Lozke.utils.Text;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,23 +24,24 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ItemInteractionListener implements Listener {
-    private MobManager mobManager;
-    private List<UUID> ignoredPlayers;
+
+    private static int weight = 10;
 
     private FallingAutism plugin;
 
+    private List<UUID> ignoredPlayers;
+    private Map<UUID, ActionBarMessageTickTask> messages;
+
 
     public ItemInteractionListener(FallingAutism plugin) {
-        mobManager = FallingAutism.getPluginInstance().getMobManager();
-        ignoredPlayers = new ArrayList<>();
-
         this.plugin = plugin;
+        ignoredPlayers = new ArrayList<>();
+        messages = new HashMap<>();
     }
+
 
     @EventHandler
     public void onInteraction(PlayerInteractEvent event) {
@@ -54,19 +54,20 @@ public class ItemInteractionListener implements Listener {
         handleEnergy(event);
     }
 
+
     private void handleSpawnerWand(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        UUID uniqueId = player.getUniqueId();
+        UUID uuid = player.getUniqueId();
 
         //Prevent event from firing twice if spawner is at edge of melee range
-        if(ignoredPlayers.contains(uniqueId)) {
+        if(ignoredPlayers.contains(uuid)) {
             return;
         }
-        ignoredPlayers.add(uniqueId);
+        ignoredPlayers.add(uuid);
         new BukkitRunnable() {
             @Override
             public void run() {
-                ignoredPlayers.remove(uniqueId);
+                ignoredPlayers.remove(uuid);
             }
         }.runTaskLaterAsynchronously(FallingAutism.getPluginInstance(), 1);
 
@@ -92,7 +93,7 @@ public class ItemInteractionListener implements Listener {
                 location = player.getTargetBlockExact(50).getLocation(); //We should consider calculating the actual maximum range instead of capping it at 50
             }
         } catch (NullPointerException ignore) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cOut Of Range")));
+            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&cOut Of Range", weight), uuid));
             return;
         }
 
@@ -104,31 +105,31 @@ public class ItemInteractionListener implements Listener {
                 switch(event.getAction()) {
                     case LEFT_CLICK_BLOCK:
                     case LEFT_CLICK_AIR:
-                        if(mobManager.isSpawner(location)) {
-                            mobManager.removeSpawner(location);
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&aSpawner Removed")));
+                        if(plugin.getMobManager().isSpawner(location)) {
+                            plugin.getMobManager().removeSpawner(location);
+                            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&aSpawner Removed", weight), uuid));
                         }
                         else {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cNo Spawner Found")));
+                            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&cNo Spawner Found", weight), uuid));
                         }
                         break;
                     case RIGHT_CLICK_BLOCK:
                         placeSpawner(location, event.getBlockFace());
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&aSpawner Placed")));
+                        handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&aSpawner Placed", weight), uuid));
                         break;
                     case RIGHT_CLICK_AIR:
                         List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks(null, 50);
                         if(lastTwoTargetBlocks.size()!=2) {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cPlacement Failure")));
+                            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&cPlacement Failure", weight), uuid));
                             return;
                         }
                         BlockFace blockFace = lastTwoTargetBlocks.get(1).getFace(lastTwoTargetBlocks.get(0));
                         if(blockFace==null) {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cPlacement Failure")));
+                            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&cPlacement Failure", weight), uuid));
                             return;
                         }
                         placeSpawner(location, blockFace);
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&aSpawner Placed")));
+                        handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&aSpawner Placed", weight), uuid));
                         break;
                 }
             }
@@ -136,18 +137,23 @@ public class ItemInteractionListener implements Listener {
                 switch(event.getAction()) {
                     case LEFT_CLICK_BLOCK:
                     case LEFT_CLICK_AIR:
-                        if (mobManager.isSpawner(location)) {
-                            player.openInventory(mobManager.openGUI(location));
-                        }
-                        else {
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cNo Spawner Found")));
-                        }
-                        break;
+                    // Temporarily added right click cases
                     case RIGHT_CLICK_BLOCK:
                     case RIGHT_CLICK_AIR:
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Text.colorize("&cFixed Spawns Not Implemented")));
+                        if (plugin.getMobManager().isSpawner(location)) {
+                            player.openInventory(plugin.getMobManager().openGUI(location));
+                        }
+                        else {
+                            handleNewMessage(new ActionBarMessageTickTask(new ActionBarMessage("&cNo Spawner Found", weight), uuid));
+                        }
+                        break;
+                        /*
+                    case RIGHT_CLICK_BLOCK:
+                    case RIGHT_CLICK_AIR:
+                        handleNewMessage(uuid, new ActionBarMessageTickTask(new ActionBarMessage("&cFixed Spawns Not Implemented", weight), uuid));
                         //TODO placing fixed spawn locations
                         break;
+                         */
                 }
             }
         }
@@ -175,19 +181,29 @@ public class ItemInteractionListener implements Listener {
                 location.add(0, -1, 0);
                 break;
         }
-        mobManager.createSpawner(location);
+        plugin.getMobManager().createSpawner(location);
     }
 
     private void handleEnergy(PlayerInteractEvent event) {
         Action action = event.getAction();
+        Player player = event.getPlayer();
 
-        if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-            AutisticPlayer autisticPlayer = plugin.getPlayerManager().getPlayer(event.getPlayer().getUniqueId());
-            ItemStack item = event.getItem();
-            float energy = autisticPlayer.getEnergy();
-            if(energy > 0) {
-                autisticPlayer.setEnergy(energy- ItemHandler.getItemEnergyCost(item));
+        if (player.getGameMode() == GameMode.SURVIVAL) {
+            if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+                ItemStack item = event.getItem();
+                plugin.getPlayerManager().updateEnergy(player.getUniqueId(), plugin.getPlayerManager().getEnergy(player.getUniqueId()) - ItemHandler.getItemEnergyCost(item));
             }
         }
+    }
+
+    private void handleNewMessage(ActionBarMessageTickTask newMessageTickTask) {
+        UUID recipient = newMessageTickTask.getRecipient();
+        if (messages.containsKey(recipient)) {
+            ActionBarMessageTickTask existingMessageTickTask = messages.get(recipient);
+            if(!existingMessageTickTask.isCancelled()) {
+                messages.get(recipient).cancel();
+            }
+        }
+        messages.put(recipient, newMessageTickTask);
     }
 }

@@ -26,130 +26,13 @@ public class SpawnerEditor implements Listener {
     private Page currentPage;
     private Page previousPage;
 
+
     public SpawnerEditor(me.Lozke.data.MobSpawner spawner) {
         this.spawner = spawner;
         Bukkit.getPluginManager().registerEvents(this, FallingAutism.getPluginInstance());
         setPage(Page.Main);
     }
 
-    private void createIcons() {
-        //durrrrrr uhrurhhhhh
-    }
-
-    private void setPage(Page page) {
-        int slot = 0;
-        if (menu == null || !menu.getInventory().getType().equals(page.inventoryType)) {
-            menu = new ItemMenu(page.inventoryType, "");
-        }
-        else {
-            menu.clearItems();
-        }
-        switch (page) {
-            case Main:
-                currentPage = page;
-                menu.addDisplayItem(Items.formatItem(new ItemStack(spawner.getTier().getMaterial()),
-                        spawner.getTier().getColorCode() + spawner.getTier() + " &r(" + spawner.getRarity().getColorCode() + spawner.getRarity().getSymbol() + "&r)",
-                        new String[]{Text.colorize("&8Left click to edit tier"),
-                                Text.colorize("&8Right click to edit rarity")}));
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD),
-                        Text.colorize("&fMob Editor")));
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NETHER_STAR),
-                        Text.colorize("&fSpawner Mechanics")));
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.CLOCK),
-                        "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTime(),
-                        new String[]{Text.colorize("&8Left click to increase spawn time by 10"),
-                                Text.colorize("&8Right click to decrease spawn time by 10"),
-                                Text.colorize("&8Shift click to change by 100"),
-                                Text.colorize("&8Middle click to force spawn (spawner must be on)"),
-                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (!currentPage.equals(Page.Main) || menu.getInventory().getViewers().size() == 0 || !spawner.isSpawnerActive()){
-                            cancel();
-                            return;
-                        }
-                        menu.updateSlot(3, Items.formatItem(new ItemStack(Material.CLOCK),
-                                "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTime(),
-                                new String[]{Text.colorize("&8Left click to increase spawn time by 10"),
-                                        Text.colorize("&8Right click to decrease spawn time by 10"),
-                                        Text.colorize("&8Shift click to change by 100"),
-                                        Text.colorize("&8Middle click to force spawn (spawner must be on)"),
-                                        Text.colorize("&8Press drop key on this item to set to minimum value")}));
-                    }
-                }.runTaskTimer(FallingAutism.getPluginInstance(), 0, 20);
-                if (spawner.isSpawnerActive()) {
-                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.LIME_DYE),
-                            "&fSpawner Status: &a&lON"));
-                }
-                else {
-                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.GRAY_DYE),
-                            "&fSpawner Status: &c&lOFF"));
-                }
-                break;
-            case Tier:
-                currentPage = page;
-                for (Tier tier : Tier.types) {
-                    if (spawner.getTier() == tier) {
-                        ItemStack itemStack = Items.makeGlow(Items.formatItem(new ItemStack(tier.getMaterial()),
-                                Text.colorize(tier.getColorCode() + tier.name())));
-                        Items.makeGlow(itemStack);
-                        menu.addDisplayItem(itemStack);
-                    }
-                    else {
-                        menu.addDisplayItem(Items.formatItem(new ItemStack(tier.getMaterial()),
-                                Text.colorize(tier.getColorCode() + tier.name())));
-                    }
-                    slot++;
-                }
-                break;
-            case Rarity:
-                currentPage = page;
-                for (Rarity rarity : Rarity.types) {
-                    menu.addDisplayItem(Items.formatItem(rarity.getIcon(),
-                            Text.colorize(rarity.getColorCode() + rarity.name())));
-                    slot++;
-                }
-                break;
-            case MobEditor:
-                currentPage = page;
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD),
-                        Text.colorize("&fType: " + spawner.getMobType()),
-                        new String[] {Text.colorize("&8Click to change type")}));
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NAME_TAG),
-                        Text.colorize("&fName: " + spawner.getMobType()),
-                        new String[] {Text.colorize("&8Click to change name")}));
-                if (spawner.isElite()) {
-                    ItemStack item = Items.formatItem(new ItemStack(Material.ENDER_EYE),
-                            Text.colorize("&fToggle Elite Status"));
-                    Items.makeGlow(item);
-                    menu.addDisplayItem(item);
-                }
-                else {
-                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ENDER_PEARL),
-                            Text.colorize("&fToggle Elite Status")));
-                }
-                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE),
-                        Text.colorize("&cReturn")));
-                break;
-            case SpawnerEditor:
-                currentPage = page;
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.BARRIER),
-                        Text.colorize("&fEdit Radius (" + spawner.getRadius() + ")"),
-                        new String[]{Text.colorize("&8Left click to increase by 1"), Text.colorize("&8Right click to decrease by 1"),
-                                Text.colorize("&8Shift click to change by 10"),
-                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
-                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.BARRIER),
-                        Text.colorize("&fEdit Amount (" + spawner.getAmount() + ")"),
-                        new String[]{Text.colorize("&8Left click to increase by 1"),
-                                Text.colorize("&8Right click to decrease by 1"),
-                                Text.colorize("&8Shift click to change by 10"),
-                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
-                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE),
-                        Text.colorize("&cReturn")));
-                break;
-        }
-    }
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
@@ -303,6 +186,122 @@ public class SpawnerEditor implements Listener {
         }
     }
 
+    private void createIcons() {
+        //TODO durrrrrr uhrurhhhhh
+    }
+
+    private void setPage(Page page) {
+        if (menu == null || !menu.getInventory().getType().equals(page.inventoryType)) {
+            menu = new ItemMenu(page.inventoryType, "");
+        }
+        else {
+            menu.clearItems();
+        }
+        switch (page) {
+            case Main:
+                currentPage = page;
+                menu.addDisplayItem(Items.formatItem(new ItemStack(spawner.getTier().getMaterial()),
+                        spawner.getTier().getColorCode() + spawner.getTier() + " &r(" + spawner.getRarity().getColorCode() + spawner.getRarity().getSymbol() + "&r)",
+                        new String[]{Text.colorize("&8Left click to edit tier"),
+                                Text.colorize("&8Right click to edit rarity")}));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD),
+                        Text.colorize("&fMob Editor")));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NETHER_STAR),
+                        Text.colorize("&fSpawner Mechanics")));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.CLOCK),
+                        "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTime(),
+                        new String[]{Text.colorize("&8Left click to increase spawn time by 10"),
+                                Text.colorize("&8Right click to decrease spawn time by 10"),
+                                Text.colorize("&8Shift click to change by 100"),
+                                Text.colorize("&8Middle click to force spawn (spawner must be on)"),
+                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!currentPage.equals(Page.Main) || menu.getInventory().getViewers().size() == 0 || !spawner.isSpawnerActive()){
+                            cancel();
+                            return;
+                        }
+                        menu.updateSlot(3, Items.formatItem(new ItemStack(Material.CLOCK),
+                                "&fSpawn Timer: " + spawner.getTimeLeft() + "/" + spawner.getSpawnTime(),
+                                new String[]{Text.colorize("&8Left click to increase spawn time by 10"),
+                                        Text.colorize("&8Right click to decrease spawn time by 10"),
+                                        Text.colorize("&8Shift click to change by 100"),
+                                        Text.colorize("&8Middle click to force spawn (spawner must be on)"),
+                                        Text.colorize("&8Press drop key on this item to set to minimum value")}));
+                    }
+                }.runTaskTimer(FallingAutism.getPluginInstance(), 0, 20);
+                if (spawner.isSpawnerActive()) {
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.LIME_DYE),
+                            "&fSpawner Status: &a&lON"));
+                }
+                else {
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.GRAY_DYE),
+                            "&fSpawner Status: &c&lOFF"));
+                }
+                break;
+            case Tier:
+                currentPage = page;
+                for (Tier tier : Tier.types) {
+                    if (spawner.getTier() == tier) {
+                        ItemStack itemStack = Items.makeGlow(Items.formatItem(new ItemStack(tier.getMaterial()),
+                                Text.colorize(tier.getColorCode() + tier.name())));
+                        Items.makeGlow(itemStack);
+                        menu.addDisplayItem(itemStack);
+                    }
+                    else {
+                        menu.addDisplayItem(Items.formatItem(new ItemStack(tier.getMaterial()),
+                                Text.colorize(tier.getColorCode() + tier.name())));
+                    }
+                }
+                break;
+            case Rarity:
+                currentPage = page;
+                for (Rarity rarity : Rarity.types) {
+                    menu.addDisplayItem(Items.formatItem(rarity.getIcon(),
+                            Text.colorize(rarity.getColorCode() + rarity.name())));
+                }
+                break;
+            case MobEditor:
+                currentPage = page;
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ZOMBIE_HEAD),
+                        Text.colorize("&fType: " + spawner.getMobType()),
+                        new String[] {Text.colorize("&8Click to change type")}));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.NAME_TAG),
+                        Text.colorize("&fName: " + spawner.getMobType()),
+                        new String[] {Text.colorize("&8Click to change name")}));
+                if (spawner.isElite()) {
+                    ItemStack item = Items.formatItem(new ItemStack(Material.ENDER_EYE),
+                            Text.colorize("&fToggle Elite Status"));
+                    Items.makeGlow(item);
+                    menu.addDisplayItem(item);
+                }
+                else {
+                    menu.addDisplayItem(Items.formatItem(new ItemStack(Material.ENDER_PEARL),
+                            Text.colorize("&fToggle Elite Status")));
+                }
+                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE),
+                        Text.colorize("&cReturn")));
+                break;
+            case SpawnerEditor:
+                currentPage = page;
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.BARRIER),
+                        Text.colorize("&fEdit Radius (" + spawner.getRadius() + ")"),
+                        new String[]{Text.colorize("&8Left click to increase by 1"), Text.colorize("&8Right click to decrease by 1"),
+                                Text.colorize("&8Shift click to change by 10"),
+                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
+                menu.addDisplayItem(Items.formatItem(new ItemStack(Material.BARRIER),
+                        Text.colorize("&fEdit Amount (" + spawner.getAmount() + ")"),
+                        new String[]{Text.colorize("&8Left click to increase by 1"),
+                                Text.colorize("&8Right click to decrease by 1"),
+                                Text.colorize("&8Shift click to change by 10"),
+                                Text.colorize("&8Press drop key on this item to set to minimum value")}));
+                menu.setDisplayItem(menu.getInventory().getSize() - 1, Items.formatItem(new ItemStack(Material.RED_CONCRETE),
+                        Text.colorize("&cReturn")));
+                break;
+        }
+    }
+
     public void openGUI(Player player) {
         player.openInventory(menu.getInventory());
     }
@@ -320,9 +319,11 @@ public class SpawnerEditor implements Listener {
 
         InventoryType inventoryType;
 
+
         Page(InventoryType inventoryType) {
             this.inventoryType = inventoryType;
         }
+
 
         public InventoryType getInventoryType() {
             return inventoryType;

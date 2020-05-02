@@ -9,9 +9,11 @@ public class ItemClickEvent {
     private boolean close = false;
     private boolean update = false;
 
+
     public ItemClickEvent(Player player) {
         this.player = player;
     }
+
 
     public Player getPlayer() {
         return player;
@@ -20,7 +22,6 @@ public class ItemClickEvent {
     public boolean willGoBack() {
         return goBack;
     }
-
     public void setWillGoBack(boolean goBack) {
         this.goBack = goBack;
         if (goBack) {
@@ -32,7 +33,6 @@ public class ItemClickEvent {
     public boolean willClose() {
         return close;
     }
-
     public void setWillClose(boolean close) {
         this.close = close;
         if (close) {
@@ -44,7 +44,6 @@ public class ItemClickEvent {
     public boolean willUpdate() {
         return update;
     }
-
     public void setWillUpdate(boolean update) {
         this.update = update;
         if (update) {

@@ -1,7 +1,6 @@
 package me.Lozke.events;
 
 import me.Lozke.FallingAutism;
-import me.Lozke.data.AutisticPlayer;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.data.TimedPlayerStatus;
 import me.Lozke.handlers.ItemHandler;
@@ -18,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.UUID;
+
 public class DamageListener implements Listener {
 
     private FallingAutism plugin;
@@ -25,6 +26,7 @@ public class DamageListener implements Listener {
     public DamageListener(FallingAutism plugin) {
         this.plugin = plugin;
     }
+
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
@@ -59,9 +61,10 @@ public class DamageListener implements Listener {
 
     }
 
+
     public boolean canDamage(Entity damager) {
         if (damager instanceof Player) {
-            return plugin.getPlayerManager().getPlayer(damager.getUniqueId()).hasEnergy();
+            return plugin.getPlayerManager().hasEnergy(damager.getUniqueId());
         }
         return true;
     }
@@ -98,52 +101,22 @@ public class DamageListener implements Listener {
             return;
         }
 
-        PlayerManager manager = FallingAutism.getPluginInstance().getPlayerManager();
+        UUID uuid = player.getUniqueId();
+        PlayerManager manager = plugin.getPlayerManager();
 
-        AutisticPlayer autisticPlayer = manager.getPlayer(player.getUniqueId());
-        if (autisticPlayer == null) {
-            autisticPlayer = manager.addPlayer(player.getUniqueId());
+        if(!manager.isAutisticPlayer(uuid)) {
+            return;
         }
 
         if (entity instanceof Monster) {
-            autisticPlayer.setStatus(TimedPlayerStatus.MOB_COMBAT);
+            manager.updateStatus(uuid, TimedPlayerStatus.MOB_COMBAT, true);
         }
         else if (entity instanceof Player) {
-            autisticPlayer.setStatus(TimedPlayerStatus.PLAYER_COMBAT);
+            manager.updateStatus(uuid, TimedPlayerStatus.PLAYER_COMBAT, true);
         }
     }
 
     private boolean isDeath(LivingEntity damaged, double damage) {
         return damage >= damaged.getHealth();
     }
-
-    /*
-    private void handlePlayerDeath(Player killedPlayer, Entity killer) {
-        UUID uniqueId = killedPlayer.getUniqueId();
-        AutisticPlayer autisticPlayer = plugin.getPlayerManager().getPlayer(uniqueId);
-
-        //Send death message
-        for (Entity nearbyEntity : killedPlayer.getWorld().getNearbyEntities(killedPlayer.getLocation(), 100, 100, 100)) {
-            if (nearbyEntity instanceof Player) {
-                nearbyEntity.sendMessage(killedPlayer.getName() + " was slain by " + killer.getName());
-            }
-        }
-        killedPlayer.playSound(killedPlayer.getLocation(), Sound.BLOCK_ANVIL_LAND, (float)1.0, (float)0.75);
-
-        //Teleport player
-        killedPlayer.teleport(killedPlayer.getWorld().getSpawnLocation());
-
-        //Heal to full health
-        killedPlayer.setHealth(killedPlayer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-
-        //Remove all statuses
-        List<TimedPlayerStatus> statusesToRemove = new ArrayList<>(autisticPlayer.getStatuses());
-        for(TimedPlayerStatus status : statusesToRemove) {
-            autisticPlayer.removeStatus(status);
-        }
-
-        //Refill energy bar
-        autisticPlayer.setEnergy(AutisticPlayer.fullEnergy);
-    }
-     */
 }

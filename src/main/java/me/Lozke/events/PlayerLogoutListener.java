@@ -13,9 +13,11 @@ public class PlayerLogoutListener implements Listener {
 
     FallingAutism plugin;
 
+
     public PlayerLogoutListener(FallingAutism plugin) {
         this.plugin = plugin;
     }
+
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
@@ -27,11 +29,12 @@ public class PlayerLogoutListener implements Listener {
         handleEssentialLogout(event.getPlayer());
     }
 
-    private void handleEssentialLogout(Player player) {
-        UUID uniqueId = player.getUniqueId();
 
-        plugin.getBossBarHandler().removeBar(uniqueId);
-        plugin.getPlayerManager().savePlayer(uniqueId);
-        plugin.getPlayerManager().removePlayer(uniqueId);
+    private void handleEssentialLogout(Player player) {
+        UUID uuid = player.getUniqueId();
+
+        plugin.getBossBarHandler().removeBar(uuid);
+        plugin.getPlayerManager().savePlayer(uuid);
+        plugin.getPlayerManager().removePlayer(uuid);
     }
 }

@@ -10,21 +10,22 @@ public enum Tier {
     T5(5, "YELLOW", Material.YELLOW_CONCRETE,"GOLDEN","GOLDEN", "&e", "Incredible"); //Heavenly
     //T6 Demonic
 
+
     public static Tier[] types = Tier.values();
 
     private final int tierNumber;
     private final String materialColor;
     private final Material material;
-    private final String armourMaterial;
+    private final String armorMaterial;
     private final String weaponMaterial;
     private final String colorCode;
     private final String itemDisplayName;
 
-    Tier(int tierNumber, String materialColor, Material material, String armourMaterial, String weaponMaterial, String colorCode, String itemDisplayName) {
+    Tier(int tierNumber, String materialColor, Material material, String armorMaterial, String weaponMaterial, String colorCode, String itemDisplayName) {
         this.tierNumber = tierNumber;
         this.materialColor = materialColor;
         this.material = material;
-        this.armourMaterial = armourMaterial;
+        this.armorMaterial = armorMaterial;
         this.weaponMaterial = weaponMaterial;
         this.colorCode = colorCode;
         this.itemDisplayName = itemDisplayName;
@@ -33,27 +34,21 @@ public enum Tier {
     public int getTierNumber() {
         return tierNumber;
     }
-
     public String getMaterialColor() {
         return materialColor;
     }
-
     public Material getMaterial() {
         return material;
     }
-
-    public String getArmourMaterial() {
-        return armourMaterial;
+    public String getArmorMaterial() {
+        return armorMaterial;
     }
-
     public String getWeaponMaterial() {
         return weaponMaterial;
     }
-
     public String getColorCode() {
         return colorCode;
     }
-
     public String getItemDisplayName() {
         return itemDisplayName;
     }
