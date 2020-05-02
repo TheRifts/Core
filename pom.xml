@@ -35,6 +35,14 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Lozke Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Lozke/FallingAutism-Core</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
