@@ -4,14 +4,10 @@ import me.Lozke.FallingAutism;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
-import me.Lozke.managers.PlayerManager;
 import me.Lozke.utils.Logger;
 import me.Lozke.utils.NumGenerator;
 import me.Lozke.utils.Text;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -402,54 +398,4 @@ public class ItemHandler {
         }
         return null;
     }
-
-    //PLAYER STAT UPDATES
-    public static void handleStats(Player player, ItemStack item, boolean equipped) {
-        PlayerManager manager = FallingAutism.getPluginInstance().getPlayerManager();
-        PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-        if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
-            if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
-                AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                int itemHP = dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER);
-                if (equipped) {
-                    //TODO move health management under domain of player manager
-                    maxHealth.setBaseValue((int) maxHealth.getValue() + itemHP);
-                }
-                else {
-                    maxHealth.setBaseValue((int) maxHealth.getValue() - itemHP);
-                    if (player.getHealth() > maxHealth.getValue()) {
-                        try {
-                            player.setHealth(player.getHealth() - itemHP);
-                        } catch (IllegalArgumentException exception) {
-                            player.setHealth(maxHealth.getValue());
-                        }
-                    }
-                }
-            }
-            if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
-                int itemHpRegen = dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER);
-                int newHpRegen = manager.getHPRegen(player);
-                if (equipped) {
-                    newHpRegen+= itemHpRegen;
-                }
-                else {
-                    newHpRegen-= itemHpRegen;
-                }
-                manager.updateHpRegen(player, newHpRegen);
-            }
-            if (dataContainer.has(NamespacedKeys.energyRegen, PersistentDataType.INTEGER)) {
-                int itemEnergyRegenPercent = dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER);
-                float itemEnergyRegen = PlayerManager.baseEnergyRegen*itemEnergyRegenPercent/PlayerManager.fullEnergy;
-                float newEnergyRegen = manager.getEnergyRegen(player);
-                if (equipped) {
-                    newEnergyRegen+= itemEnergyRegen;
-                }
-                else {
-                    newEnergyRegen-= itemEnergyRegen;
-                }
-                manager.updateEnergyRegen(player, newEnergyRegen);
-            }
-        }
-    }
-
 }

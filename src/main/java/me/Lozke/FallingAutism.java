@@ -4,8 +4,6 @@ import me.Lozke.commands.*;
 import me.Lozke.events.*;
 import me.Lozke.tasks.actionbar.ActionBarMessenger;
 import me.Lozke.handlers.BossBarHandler;
-import me.Lozke.managers.MobManager;
-import me.Lozke.managers.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -21,11 +19,8 @@ public class FallingAutism extends JavaPlugin {
     private static FallingAutism plugin;
     private static FileConfiguration gearData;
 
-    private MobManager mobManager;
-    private PlayerManager playerManager;
     private BossBarHandler bossBarHandler;
     private ActionBarMessenger actionBarMessenger;
-
 
     @Override
     public void onEnable() {
@@ -56,15 +51,7 @@ public class FallingAutism extends JavaPlugin {
         //Turn this into the same setup as commands
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new PlayerLoginListener(this), this);
-        pm.registerEvents(new PlayerLogoutListener(this), this);
-        pm.registerEvents(new ArmorChangeListener(), this);
-        pm.registerEvents(new ItemInteractionListener(this), this);
-        pm.registerEvents(new SpawnerWandToggleListener(), this);
-        pm.registerEvents(new DamageListener(this), this);
         pm.registerEvents(new ModifyingItemByClickListener(), this);
-        pm.registerEvents(new PlayerDeathListener(), this);
-        pm.registerEvents(new PlayerRespawnListener(this), this);
 
         //Migrate this to a Factory
         try {
@@ -74,19 +61,12 @@ public class FallingAutism extends JavaPlugin {
             commandMap.register(this.getName(), new DebugCommand());
             commandMap.register(this.getName(), new BossBarCommand());
             commandMap.register(this.getName(), new CheckCommand());
-            commandMap.register(this.getName(), new HPCommand());
             commandMap.register(this.getName(), new ItemRename());
             commandMap.register(this.getName(), new Reload());
-            commandMap.register(this.getName(), new Spawners());
-            commandMap.register(this.getName(), new SpawnerWand());
-            commandMap.register(this.getName(), new SpawnMob());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        mobManager = new MobManager(this);
-        mobManager.loadSpawners();
-        playerManager = new PlayerManager();
         bossBarHandler = new BossBarHandler(this);
         actionBarMessenger = new ActionBarMessenger();
 
@@ -96,31 +76,22 @@ public class FallingAutism extends JavaPlugin {
     @Override
     public void onDisable() {
         bossBarHandler.removeAll();
-        mobManager.saveSpawners();
-        mobManager.hideSpawners();
-        playerManager.saveAllPlayers();
-        playerManager.removeAllPlayers();
         Bukkit.getScheduler().cancelTasks(this);
         System.out.println("[FallingAutisma] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
     }
 
-
     public static FallingAutism getPluginInstance() {
         return plugin;
     }
+
     public static FileConfiguration getGearData() {
         return gearData;
     }
 
-    public MobManager getMobManager() {
-        return mobManager;
-    }
-    public PlayerManager getPlayerManager() {
-        return playerManager;
-    }
     public BossBarHandler getBossBarHandler() {
         return bossBarHandler;
     }
+
     public ActionBarMessenger getActionBarMessenger() {
         return actionBarMessenger;
     }
