@@ -106,7 +106,7 @@ public class ItemHandler {
                 dataContainer.set(NamespacedKeys.damage, PersistentDataType.INTEGER, 5000);
                 break;
         }
-        dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified RetardRealms™ Item");
+        dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified AgorianRifts™ Item");
         dataContainer.set(NamespacedKeys.tier, PersistentDataType.STRING, tier.name());
         dataContainer.set(NamespacedKeys.rarity, PersistentDataType.STRING, rarity.name());
         dataContainer.set(NamespacedKeys.canOrb, PersistentDataType.INTEGER, 1);

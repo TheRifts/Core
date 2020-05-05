@@ -12,7 +12,6 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.rmi.runtime.Log;
 
 import java.lang.reflect.Field;
 
