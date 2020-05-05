@@ -1,6 +1,6 @@
 package me.Lozke.tasks.actionbar;
 
-import me.Lozke.FallingAutism;
+import me.Lozke.AgorianRifts;
 import me.Lozke.data.ActionBarMessage;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,14 +10,14 @@ import static org.bukkit.Bukkit.getScheduler;
 
 public class ActionBarMessageTickTask extends BukkitRunnable {
 
-    private FallingAutism plugin;
+    private AgorianRifts plugin;
 
     private ActionBarMessage message;
     private UUID recipient;
 
 
     public ActionBarMessageTickTask(ActionBarMessage message, UUID recipient) {
-        this.plugin = FallingAutism.getPluginInstance();
+        this.plugin = AgorianRifts.getPluginInstance();
         this.message = message;
         this.recipient = recipient;
 
@@ -33,7 +33,7 @@ public class ActionBarMessageTickTask extends BukkitRunnable {
             public void run() {
                 plugin.getActionBarMessenger().displayMessage(recipient);
             }
-        }.runTask(FallingAutism.getPluginInstance());
+        }.runTask(AgorianRifts.getPluginInstance());
         //Send follow-up messages
         runTaskTimerAsynchronously(plugin, 20, 20);
     }

@@ -4,6 +4,7 @@ import me.Lozke.commands.*;
 import me.Lozke.events.*;
 import me.Lozke.tasks.actionbar.ActionBarMessenger;
 import me.Lozke.handlers.BossBarHandler;
+import me.Lozke.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -11,12 +12,13 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.rmi.runtime.Log;
 
 import java.lang.reflect.Field;
 
-public class FallingAutism extends JavaPlugin {
+public class AgorianRifts extends JavaPlugin {
 
-    private static FallingAutism plugin;
+    private static AgorianRifts plugin;
     private static FileConfiguration gearData;
 
     private BossBarHandler bossBarHandler;
@@ -62,7 +64,6 @@ public class FallingAutism extends JavaPlugin {
             commandMap.register(this.getName(), new BossBarCommand());
             commandMap.register(this.getName(), new CheckCommand());
             commandMap.register(this.getName(), new ItemRename());
-            commandMap.register(this.getName(), new Reload());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -70,17 +71,17 @@ public class FallingAutism extends JavaPlugin {
         bossBarHandler = new BossBarHandler(this);
         actionBarMessenger = new ActionBarMessenger();
 
-        System.out.println("[FallingAutism] The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
+        Logger.log("The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
     }
 
     @Override
     public void onDisable() {
         bossBarHandler.removeAll();
         Bukkit.getScheduler().cancelTasks(this);
-        System.out.println("[FallingAutisma] The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
+        Logger.log("The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
     }
 
-    public static FallingAutism getPluginInstance() {
+    public static AgorianRifts getPluginInstance() {
         return plugin;
     }
 

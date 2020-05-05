@@ -2,7 +2,7 @@ package me.Lozke.data.items;
 
 import java.util.ArrayList;
 
-public enum AutisticAttribute {
+public enum Attribute {
     VIT(ItemType.ARMOR, "VIT: +{value}", "", 1, 1, 5),
     STR(ItemType.ARMOR, "STR: +{value}", "", 1, 1, 5),
     DEX(ItemType.ARMOR, "DEX: +{value}", "", 1, 1, 5),
@@ -29,27 +29,27 @@ public enum AutisticAttribute {
     LIFE_STEAL(ItemType.WEAPON, "LIFE STEAL: +{value}%", "Vampyric", 1, 1, 5);
 
 
-    public static final AutisticAttribute[] allValues = AutisticAttribute.values();
-    public static final AutisticAttribute[] armourValues = getArmorValues();
-    public static final AutisticAttribute[] weaponValues = getWeaponValues();
+    public static final Attribute[] allValues = Attribute.values();
+    public static final Attribute[] armourValues = getArmorValues();
+    public static final Attribute[] weaponValues = getWeaponValues();
 
-    private static AutisticAttribute[] getArmorValues() {
-        ArrayList<AutisticAttribute> array = new ArrayList();
-        for (AutisticAttribute attribute : allValues) {
+    private static Attribute[] getArmorValues() {
+        ArrayList<Attribute> array = new ArrayList();
+        for (Attribute attribute : allValues) {
             if (attribute.getItemType().equals(ItemType.ARMOR)) {
                 array.add(attribute);
             }
         }
-        return array.toArray(new AutisticAttribute[0]);
+        return array.toArray(new Attribute[0]);
     }
-    private static AutisticAttribute[] getWeaponValues() {
-        ArrayList<AutisticAttribute> array = new ArrayList();
-        for (AutisticAttribute attribute : allValues) {
+    private static Attribute[] getWeaponValues() {
+        ArrayList<Attribute> array = new ArrayList();
+        for (Attribute attribute : allValues) {
             if (attribute.getItemType().equals(ItemType.WEAPON)) {
                 array.add(attribute);
             }
         }
-        return array.toArray(new AutisticAttribute[0]);
+        return array.toArray(new Attribute[0]);
     }
 
     private final ItemType itemType;
@@ -60,7 +60,7 @@ public enum AutisticAttribute {
     private final int maxValue;
 
 
-    AutisticAttribute(ItemType itemType, String loreDisplayName, String itemDisplayName, int displayWeight, int minValue, int maxValue) {
+    Attribute(ItemType itemType, String loreDisplayName, String itemDisplayName, int displayWeight, int minValue, int maxValue) {
         this.itemType = itemType;
         this.loreDisplayName = loreDisplayName;
         this.itemDisplayName = itemDisplayName;

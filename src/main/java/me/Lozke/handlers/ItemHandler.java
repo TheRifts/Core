@@ -1,6 +1,6 @@
 package me.Lozke.handlers;
 
-import me.Lozke.FallingAutism;
+import me.Lozke.AgorianRifts;
 import me.Lozke.data.Rarity;
 import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
@@ -93,7 +93,7 @@ public class ItemHandler {
                 else {
                     dataContainer.set(NamespacedKeys.energyRegen, PersistentDataType.INTEGER, 3);
                 }
-                dataContainer.set(NamespacedKeys.healthPoints, PersistentDataType.INTEGER, new Random().nextInt(FallingAutism.getGearData().getInt("Helmet.LO")));
+                dataContainer.set(NamespacedKeys.healthPoints, PersistentDataType.INTEGER, new Random().nextInt(AgorianRifts.getGearData().getInt("Helmet.LO")));
                 break;
             case "_SWORD":
             case "_AXE":
@@ -190,7 +190,7 @@ public class ItemHandler {
     6: 6.80%
     7: 3.49%
      */
-    public static AutisticAttribute[] getRandomAttributes(ItemType itemType) {
+    public static Attribute[] getRandomAttributes(ItemType itemType) {
         //First a uniform chance of 0 to 3.
         int amount = NumGenerator.rollInclusive(0, 3);
         //Next a repeated 65% chance to continue adding more up to maxAttributes.
@@ -204,40 +204,40 @@ public class ItemHandler {
             }
         }
 
-        ArrayList<AutisticAttribute> randomAttributes = new ArrayList<>();
-        ArrayList<AutisticAttribute> attributes = new ArrayList<>();
+        ArrayList<Attribute> randomAttributes = new ArrayList<>();
+        ArrayList<Attribute> attributes = new ArrayList<>();
         if (itemType.equals(ItemType.ARMOR)) {
-            Collections.addAll(attributes, AutisticAttribute.armourValues);
+            Collections.addAll(attributes, Attribute.armourValues);
         }
         if (itemType.equals(ItemType.WEAPON)) {
-            Collections.addAll(attributes, AutisticAttribute.weaponValues);
+            Collections.addAll(attributes, Attribute.weaponValues);
         }
         while (randomAttributes.size() < amount && attributes.size() > 0) {
             int index = NumGenerator.index(attributes.size());
-            AutisticAttribute attribute = attributes.get(index);
+            Attribute attribute = attributes.get(index);
             attributes.remove(index);
 
             randomAttributes.add(attribute);
         }
         randomAttributes.toArray();
-        return randomAttributes.toArray(new AutisticAttribute[randomAttributes.size()]);
+        return randomAttributes.toArray(new Attribute[randomAttributes.size()]);
     }
 
     public static void randomizeStats(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
         Map map = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
-        map.replaceAll((k, v) -> NumGenerator.rollInclusive(AutisticAttribute.valueOf(String.valueOf(k)).getMinValue(), AutisticAttribute.valueOf(String.valueOf(k)).getMaxValue()));
+        map.replaceAll((k, v) -> NumGenerator.rollInclusive(Attribute.valueOf(String.valueOf(k)).getMinValue(), Attribute.valueOf(String.valueOf(k)).getMaxValue()));
         dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
         itemStack.setItemMeta(itemMeta);
         format(itemStack);
     }
 
-    public static void addAttributes(ItemStack item, AutisticAttribute... attributes) {
+    public static void addAttributes(ItemStack item, Attribute... attributes) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
         HashMap<String, Integer> map = new HashMap<>();
-        for (AutisticAttribute attribute : attributes) {
+        for (Attribute attribute : attributes) {
             map.put(attribute.name(), NumGenerator.rollInclusive(attribute.getMinValue(), attribute.getMaxValue()));
         }
         dataContainer.set(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE, map);
@@ -250,7 +250,7 @@ public class ItemHandler {
         List<String> list = new ArrayList<>();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
             if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
-                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER) / FallingAutism.getGearData().getInt("Helmet.LO"));
+                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER) / AgorianRifts.getGearData().getInt("Helmet.LO"));
                 list.add(Text.colorize("&7HP: " + statColor + "+" + dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)));
                 if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
                     list.add(Text.colorize("&7HP/s: &c+" + dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)));
@@ -268,15 +268,15 @@ public class ItemHandler {
                 Map valueMap = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
                 Map percentageMap = new HashMap();
                 for (Object key : valueMap.keySet()) {
-                    percentageMap.put(key, (double)(int)valueMap.get(key) / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue());
+                    percentageMap.put(key, (double)(int)valueMap.get(key) / Attribute.valueOf(String.valueOf(key)).getMaxValue());
                 }
                 percentageMap = sortByValue(percentageMap);
 
                 StringBuilder sb = new StringBuilder();
                 for (Object key : valueMap.keySet()) {
-                    AutisticAttribute autisticAttribute = AutisticAttribute.valueOf(String.valueOf(key));
-                    String loreDisplay = autisticAttribute.getLoreDisplayName();
-                    String affix = autisticAttribute.getItemDisplayName();
+                    Attribute attribute = Attribute.valueOf(String.valueOf(key));
+                    String loreDisplay = attribute.getLoreDisplayName();
+                    String affix = attribute.getItemDisplayName();
                     int value = (int) valueMap.get(key);
                     String statColor = percentageToColor((double)percentageMap.get(key));
                     String[] split = loreDisplay.split(": ");

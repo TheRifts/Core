@@ -1,6 +1,6 @@
 package me.Lozke.commands;
 
-import me.Lozke.data.items.AutisticAttribute;
+import me.Lozke.data.items.Attribute;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.handlers.ItemHandler;
 import org.bukkit.command.Command;
@@ -29,13 +29,13 @@ public class CheckCommand extends Command {
             if (container.has(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE)) {
                 Map map = container.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
                 for (Object key : map.keySet()) {
-                    player.sendMessage(key + ": " + map.get(key) + " // " + ((double)(int)map.get(key) / AutisticAttribute.valueOf(String.valueOf(key)).getMaxValue()) * 100);
+                    player.sendMessage(key + ": " + map.get(key) + " // " + ((double)(int)map.get(key) / Attribute.valueOf(String.valueOf(key)).getMaxValue()) * 100);
                 }
             }
             return true;
         }
         else {
-            player.sendMessage("This is NOT a FallingAutism™ Item!");
+            player.sendMessage("This is NOT a Agorian Rifts™ Item!");
         }
         return isRealItem;
     }

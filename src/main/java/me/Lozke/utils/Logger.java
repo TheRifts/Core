@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 
 public class Logger {
 
-    public static final String prefix = "[FallingAutism] ";
+    public static final String prefix = "[Agorian Rifts] ";
     public static final java.util.logging.Logger logger = Bukkit.getServer().getLogger();
 
     public static void log(String message) {
