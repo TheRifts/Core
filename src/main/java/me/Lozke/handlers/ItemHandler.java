@@ -39,7 +39,7 @@ public class ItemHandler {
 
     //lol this would be the perfect place to return a Set<ItemStack>... just saying...
     public static ItemStack[] newSet(Tier tier, Rarity rarity) {
-        return new ItemStack[]{newHelmet(tier, rarity), newChestplate(tier, rarity), newLeggings(tier, rarity), newBoots(tier, rarity)};
+        return new ItemStack[]{newBoots(tier, rarity), newLeggings(tier, rarity), newChestplate(tier, rarity), newHelmet(tier, rarity)};
     }
 
     public static ItemStack newWeapon(Tier tier, Rarity rarity, String type) {
