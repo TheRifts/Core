@@ -3,6 +3,7 @@ package me.Lozke.events;
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.handlers.ItemHandler;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,8 +19,18 @@ public class DamageListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamage(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
+        Entity damaged = event.getEntity();
 
         event.setDamage(getDamage(damager));
+
+        if (damaged instanceof LivingEntity) {
+            LivingEntity damagedLivingEntity = (LivingEntity)damaged;
+
+            //Ensure health values remain valid
+            if (isDeath(damagedLivingEntity, event.getDamage())) {
+                event.setDamage(damagedLivingEntity.getHealth());
+            }
+        }
     }
 
 
@@ -43,5 +54,9 @@ public class DamageListener implements Listener {
         }
 
         return 1;
+    }
+
+    private boolean isDeath(LivingEntity damaged, double damage) {
+        return damage >= damaged.getHealth();
     }
 }
