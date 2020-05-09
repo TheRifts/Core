@@ -53,6 +53,7 @@ public class AgorianRifts extends JavaPlugin {
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new ModifyingItemByClickListener(), this);
+        pm.registerEvents(new DamageListener(), this);
 
         //Migrate this to a Factory
         try {
