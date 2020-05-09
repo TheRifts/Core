@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -17,12 +18,16 @@ import org.bukkit.persistence.PersistentDataType;
 public class DamageListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onDamage(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
+    public void onDamage(EntityDamageEvent event) {
+        Entity damager;
+        if (event instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent)event;
+            damager = edbeEvent.getDamager();
+
+            event.setDamage(getDamage(damager));
+        }
+
         Entity damaged = event.getEntity();
-
-        event.setDamage(getDamage(damager));
-
         if (damaged instanceof LivingEntity) {
             LivingEntity damagedLivingEntity = (LivingEntity)damaged;
 
