@@ -1,22 +1,28 @@
-package me.Lozke.events;
+package me.Lozke.utils.ItemMenu.events;
 
+import me.Lozke.utils.ItemMenu.menus.ItemMenu;
 import org.bukkit.entity.Player;
 
-public class ItemClickEvent {
+public class MenuClickEvent {
 
     private Player player;
+    private ItemMenu menu;
+
     private boolean goBack = false;
     private boolean close = false;
     private boolean update = false;
 
-
-    public ItemClickEvent(Player player) {
+    public MenuClickEvent(Player player, ItemMenu menu) {
         this.player = player;
+        this.menu = menu;
     }
-
 
     public Player getPlayer() {
         return player;
+    }
+
+    public ItemMenu getMenu() {
+        return menu;
     }
 
     public boolean willGoBack() {

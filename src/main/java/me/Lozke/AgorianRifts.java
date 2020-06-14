@@ -1,9 +1,10 @@
 package me.Lozke;
 
 import me.Lozke.commands.*;
-import me.Lozke.events.*;
-import me.Lozke.tasks.actionbar.ActionBarMessenger;
+import me.Lozke.listeners.*;
+import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.handlers.BossBarHandler;
+import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -54,6 +55,7 @@ public class AgorianRifts extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new ModifyingItemByClickListener(), this);
         pm.registerEvents(new DamageListener(), this);
+        pm.registerEvents(new MenuClickListener(), this);
 
         //Migrate this to a Factory
         try {
@@ -64,6 +66,7 @@ public class AgorianRifts extends JavaPlugin {
             commandMap.register(this.getName(), new BossBarCommand());
             commandMap.register(this.getName(), new CheckCommand());
             commandMap.register(this.getName(), new ItemRename());
+            commandMap.register(this.getName(), new TestMenuCommand());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

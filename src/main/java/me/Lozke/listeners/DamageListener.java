@@ -1,4 +1,4 @@
-package me.Lozke.events;
+package me.Lozke.listeners;
 
 import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.handlers.ItemHandler;
