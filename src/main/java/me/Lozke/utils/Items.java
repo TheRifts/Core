@@ -1,5 +1,6 @@
 package me.Lozke.utils;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +10,9 @@ import java.util.Arrays;
 
 public class Items {
 
+    public static ItemStack formatItem(Material material, String name, String[] lore) {
+        return formatItem(new ItemStack(material), name, lore);
+    }
     public static ItemStack formatItem(ItemStack item, String name, String[] lore) {
         ItemMeta im = item.getItemMeta();
         im.setDisplayName(Text.colorize(name));
@@ -17,6 +21,9 @@ public class Items {
         return item;
     }
 
+    public static ItemStack formatItem(Material material, String name) {
+        return formatItem(new ItemStack(material), name);
+    }
     public static ItemStack formatItem(ItemStack item, String name) {
         ItemMeta im = item.getItemMeta();
         im.setDisplayName(Text.colorize(name));
