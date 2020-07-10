@@ -31,11 +31,22 @@ public class Items {
         return item;
     }
 
+    public static ItemStack setLore(ItemStack item, String... name) {
+        return formatItem(item, item.getItemMeta().getDisplayName(), name);
+    }
+
+    //Redo This With Packets?
     public static ItemStack makeGlow(ItemStack item) {
         item.addUnsafeEnchantment(Enchantment.VANISHING_CURSE, 1);
         ItemMeta im = item.getItemMeta();
         im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(im);
+        return item;
+    }
+
+    //Redo This With Packets?
+    public static ItemStack removeGlow(ItemStack item) {
+        item.removeEnchantment(Enchantment.VANISHING_CURSE);
         return item;
     }
 }

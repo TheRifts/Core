@@ -2,6 +2,7 @@ package me.Lozke.utils.ItemMenu.icons;
 
 import me.Lozke.utils.ItemMenu.events.MenuClickEvent;
 import me.Lozke.utils.ItemMenu.menus.ItemMenu;
+import me.Lozke.utils.Items;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -19,6 +20,13 @@ public class MenuIcon {
         this.icon = icon;
         this.displayName = displayName;
         this.lore = Arrays.asList(lore);
+
+        if (!displayName.equals("")) {
+            Items.formatItem(icon, displayName);
+        }
+        if (!(lore[0].equals("") && lore.length == 1)) {
+            Items.setLore(icon, lore);
+        }
     }
 
     public MenuIcon(ItemStack icon, String displayName) {
@@ -28,6 +36,8 @@ public class MenuIcon {
     public MenuIcon(ItemStack icon) {
         this(icon, "", "");
     }
+
+    public MenuIcon () { }
 
     public ItemStack getIcon() {
         return icon;
@@ -42,6 +52,7 @@ public class MenuIcon {
     }
 
     public void setDisplayName(String displayName) {
+        Items.formatItem(icon, displayName);
         this.displayName = displayName;
     }
 
@@ -49,8 +60,19 @@ public class MenuIcon {
         return lore;
     }
 
+    public void setLore(String... strings) {
+        setLore(Arrays.asList(strings));
+    }
     public void setLore(List<String> lore) {
         this.lore = lore;
+    }
+
+    public void updateLore() {
+        Items.setLore(icon, (String[]) lore.toArray());
+    }
+
+    public void updateIcon() {
+        parentMenu.updateIcon(this);
     }
 
     public MenuIcon setParent(ItemMenu menu) {

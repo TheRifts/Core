@@ -8,7 +8,8 @@ public enum Scrap {
     T2(new ItemStack(Material.IRON_BARS)),
     T3(new ItemStack(Material.LIGHT_GRAY_DYE)),
     T4(new ItemStack(Material.LIGHT_BLUE_DYE)),
-    T5(new ItemStack(Material.YELLOW_DYE));
+    T5(new ItemStack(Material.YELLOW_DYE)),
+    T6(new ItemStack(Material.BLACK_DYE));
 
     public static Scrap[] types = Scrap.values();
 

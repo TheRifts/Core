@@ -7,9 +7,8 @@ public enum Tier {
     T2(2, "LIME", Material.LIME_CONCRETE,"CHAINMAIL", "STONE", "&2", "Ordinary"), //Stone/Chain
     T3(3, "LIGHT_BLUE", Material.LIGHT_BLUE_CONCRETE,"IRON", "IRON","&b", "Strong"), //Steel
     T4(4, "PURPLE", Material.PURPLE_CONCRETE,"DIAMOND","DIAMOND","&5", "Fantastic"), //Ivory
-    T5(5, "YELLOW", Material.YELLOW_CONCRETE,"GOLDEN","GOLDEN", "&e", "Incredible"); //Heavenly
-    //T6 Demonic
-
+    T5(5, "YELLOW", Material.YELLOW_CONCRETE,"GOLDEN","GOLDEN", "&e", "Incredible"), //Heavenly
+    T6(6, "BLACK", Material.BLACK_CONCRETE, "NETHERITE", "NETHERITE", "&c", "Super Stronk"); //T6 Demonic
 
     public static Tier[] types = Tier.values();
 

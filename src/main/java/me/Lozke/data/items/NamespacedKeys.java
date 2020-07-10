@@ -16,7 +16,8 @@ public class NamespacedKeys {
     final public static NamespacedKey tier = new NamespacedKey(plugin, "tier");
     final public static NamespacedKey rarity = new NamespacedKey(plugin, "rarity");
     final public static NamespacedKey healthPoints = new NamespacedKey(plugin, "health-points");
-    final public static NamespacedKey damage = new NamespacedKey(plugin, "damage");
+    final public static NamespacedKey dmg_lo = new NamespacedKey(plugin, "dmg-lo");
+    final public static NamespacedKey dmg_hi = new NamespacedKey(plugin, "dmg-hi");
     final public static NamespacedKey hpRegen = new NamespacedKey(plugin, "hp-regen");
     final public static NamespacedKey energyRegen = new NamespacedKey(plugin, "energy-regen");
 

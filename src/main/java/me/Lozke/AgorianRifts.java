@@ -6,6 +6,9 @@ import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.handlers.BossBarHandler;
 import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
+import me.Lozke.utils.config.SmartYamlConfiguration;
+import me.Lozke.utils.config.VersionedConfiguration;
+import me.Lozke.utils.config.VersionedSmartYamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -14,12 +17,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 public class AgorianRifts extends JavaPlugin {
 
     private static AgorianRifts plugin;
-    private static FileConfiguration gearData;
+    private static SmartYamlConfiguration gearData;
 
     private BossBarHandler bossBarHandler;
     private ActionBarMessenger actionBarMessenger;
@@ -28,7 +32,7 @@ public class AgorianRifts extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        gearData = this.getConfig();
+        gearData = defaultSettingsLoad("geardata.yml");
 
         for (World world : getServer().getWorlds()) {
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -54,7 +58,7 @@ public class AgorianRifts extends JavaPlugin {
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new ModifyingItemByClickListener(), this);
-        pm.registerEvents(new DamageListener(), this);
+        pm.registerEvents(new CoreDamageListener(), this);
         pm.registerEvents(new MenuClickListener(), this);
 
         //Migrate this to a Factory
@@ -82,6 +86,11 @@ public class AgorianRifts extends JavaPlugin {
         bossBarHandler.removeAll();
         Bukkit.getScheduler().cancelTasks(this);
         Logger.log("The monkeys have left the building (\u001b[31mPlugin Disabled\u001b[0m)");
+    }
+
+    private VersionedSmartYamlConfiguration defaultSettingsLoad(String name) {
+        return new VersionedSmartYamlConfiguration(new File(getDataFolder(), name),
+                getResource(name), VersionedConfiguration.VersionUpdateType.BACKUP_AND_UPDATE);
     }
 
     public static AgorianRifts getPluginInstance() {

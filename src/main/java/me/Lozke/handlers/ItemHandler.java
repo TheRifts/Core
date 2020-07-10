@@ -2,11 +2,12 @@ package me.Lozke.handlers;
 
 import me.Lozke.AgorianRifts;
 import me.Lozke.data.Rarity;
-import me.Lozke.data.items.*;
 import me.Lozke.data.Tier;
+import me.Lozke.data.items.*;
 import me.Lozke.utils.Logger;
 import me.Lozke.utils.NumGenerator;
 import me.Lozke.utils.Text;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 public class ItemHandler {
@@ -93,7 +96,15 @@ public class ItemHandler {
                 else {
                     dataContainer.set(NamespacedKeys.energyRegen, PersistentDataType.INTEGER, 3);
                 }
-                dataContainer.set(NamespacedKeys.healthPoints, PersistentDataType.INTEGER, new Random().nextInt(AgorianRifts.getGearData().getInt("Helmet.LO")));
+
+                int val = AgorianRifts.getGearData().getInt(tier.name() + "." + itemType.substring(1) + ".HI");
+                double rarityMultiplier = AgorianRifts.getGearData().getInt("MULTIPLIER.ARMOR." + rarity.name()),
+                        tierMultiplier = AgorianRifts.getGearData().getInt("MULTIPLIER.ARMOR." + tier.name());
+                int loRange = (int) Math.ceil(Math.ceil(val * rarityMultiplier) - Math.ceil(val * tierMultiplier)), hiRange = (int) Math.ceil(val * rarityMultiplier);
+                Logger.broadcast(Math.ceil(Math.ceil(val * rarityMultiplier) - Math.ceil(val * tierMultiplier)) + "  " + Math.ceil(val * rarityMultiplier));
+                Logger.broadcast(loRange + " / " + hiRange);
+
+                dataContainer.set(NamespacedKeys.healthPoints, PersistentDataType.INTEGER, NumGenerator.rollInclusive(loRange, hiRange));
                 break;
             case "_SWORD":
             case "_AXE":
@@ -103,7 +114,17 @@ public class ItemHandler {
                 addAttributes(item, getRandomAttributes(ItemType.WEAPON));
                 itemMeta = item.getItemMeta();
                 dataContainer = itemMeta.getPersistentDataContainer();
-                dataContainer.set(NamespacedKeys.damage, PersistentDataType.INTEGER, 5000);
+
+                String valString = tier.name() + "." + itemType.substring(1);
+                int lo = AgorianRifts.getGearData().getInt(valString + ".LO"), hi = AgorianRifts.getGearData().getInt(valString + ".HI");
+                int mid = (lo+hi)/2;
+                double tierMulti = AgorianRifts.getGearData().getDouble("MULTIPLIER.WEAPON." + tier.name()), rarityMulti = AgorianRifts.getGearData().getDouble("MULTIPLIER.WEAPON." + rarity.name());
+
+                lo = (int) ((Math.ceil(Math.ceil(NumGenerator.rollInclusive(lo, mid) * rarityMulti) * tierMulti)) - Math.ceil(hi * 0.5));
+                hi = (int) (Math.ceil(Math.ceil(NumGenerator.rollInclusive(mid, hi) * rarityMulti) * tierMulti));
+
+                dataContainer.set(NamespacedKeys.dmg_lo, PersistentDataType.INTEGER, lo);
+                dataContainer.set(NamespacedKeys.dmg_hi, PersistentDataType.INTEGER, hi);
                 break;
         }
         dataContainer.set(NamespacedKeys.realItem, PersistentDataType.STRING, "Certified AgorianRifts™ Item");
@@ -249,8 +270,17 @@ public class ItemHandler {
         PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
         List<String> list = new ArrayList<>();
         if (dataContainer.has(NamespacedKeys.realItem, PersistentDataType.STRING)) {
+
+            String[] itemType = item.getType().toString().split("_");
+
             if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
-                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER) / AgorianRifts.getGearData().getInt("Helmet.LO"));
+
+                int val = AgorianRifts.getGearData().getInt(getTier(item).name() + "." + itemType[1] + ".HI");
+                double rarityMultiplier = AgorianRifts.getGearData().getInt("MULTIPLIER.ARMOR." + getRarity(item).name()),
+                        tierMultiplier = AgorianRifts.getGearData().getInt("MULTIPLIER.ARMOR." + getTier(item).name());
+                int hiRange = (int) Math.ceil(val * rarityMultiplier);
+
+                ChatColor statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER) / hiRange);
                 list.add(Text.colorize("&7HP: " + statColor + "+" + dataContainer.get(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)));
                 if (dataContainer.has(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)) {
                     list.add(Text.colorize("&7HP/s: &c+" + dataContainer.get(NamespacedKeys.hpRegen, PersistentDataType.INTEGER)));
@@ -259,11 +289,17 @@ public class ItemHandler {
                     list.add(Text.colorize("&7ENERGY: &c+" + dataContainer.get(NamespacedKeys.energyRegen, PersistentDataType.INTEGER) + "%"));
                 }
             }
-            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
-                String statColor = percentageToColor((double)dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER) / 5000);
-                list.add(Text.colorize("&7DMG" + statColor + "+"  + dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER)));
+            if (dataContainer.has(NamespacedKeys.dmg_lo, PersistentDataType.INTEGER) && dataContainer.has(NamespacedKeys.dmg_hi, PersistentDataType.INTEGER)) {
+
+                int loDMG = dataContainer.get(NamespacedKeys.dmg_lo, PersistentDataType.INTEGER);
+                int hiDMG = dataContainer.get(NamespacedKeys.dmg_hi, PersistentDataType.INTEGER);
+                int dmgHI = AgorianRifts.getGearData().getInt(getTier(item).name() + "." + itemType[1] + ".HI");
+
+                ChatColor loStatColor = percentageToColor(loDMG/dmgHI);
+                ChatColor hiStatColor = percentageToColor(hiDMG/dmgHI);
+
+                list.add(Text.colorize("&7DMG: " + loStatColor + loDMG + "&7 - " + hiStatColor + hiDMG));
             }
-            list.add("");
             if (dataContainer.has(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE)) {
                 Map valueMap = dataContainer.get(NamespacedKeys.attributes, NamespacedKeys.MAP_PERSISTENT_DATA_TYPE);
                 Map percentageMap = new HashMap();
@@ -278,7 +314,7 @@ public class ItemHandler {
                     String loreDisplay = attribute.getLoreDisplayName();
                     String affix = attribute.getItemDisplayName();
                     int value = (int) valueMap.get(key);
-                    String statColor = percentageToColor((double)percentageMap.get(key));
+                    ChatColor statColor = percentageToColor((double)percentageMap.get(key));
                     String[] split = loreDisplay.split(": ");
                     String lore = "&7" + split[0] + ": " + statColor + split[1].replace("{value}", String.valueOf(value));
                     list.add(Text.colorize(lore));
@@ -300,38 +336,39 @@ public class ItemHandler {
                 Tier tier = getTier(item);
                 meta.setDisplayName(Text.colorize(tier.getColorCode() + sb.toString() + tier.getItemDisplayName() + itemName));
             }
-            list.add(Text.colorize(getRarity(item).getColorCode() + "&l" + getRarity(item).name()));
+            Rarity rarity = getRarity(item);
+            list.add(Text.colorize(rarity.getColorCode() + "&o" + rarity.name().substring(0, 1) + rarity.name().substring(1).toLowerCase()));
         }
         meta.setLore(list);
         item.setItemMeta(meta);
         return item;
     }
+
     //Thanks stackoverflow!
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
         list.sort(Map.Entry.comparingByValue());
         Collections.reverse(list);
-
         Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : list) {
             result.put(entry.getKey(), entry.getValue());
         }
-
         return result;
     }
-    private static String percentageToColor(double percentage) {
-        if (percentage == 1) {
-            return "&a&l";
+
+    public static net.md_5.bungee.api.ChatColor percentageToColor(double percentage) {
+        if (percentage >= 0.25) {
+            return getRollColor((percentage - 0.25) / 0.75, 0.166666666666667F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F);
         }
-        else if (percentage >= 0.75) {
-            return "&e";
-        }
-        else if (percentage >= 0.25) {
-            return "&6";
-        }
-        else {
-            return "&c";
-        }
+        return getRollColor(percentage / 0.25, 0.166666666666667F, 0.166666666666667F, 0.67F, 1.0F, 0.0F, 0.5F);
+    }
+
+    public static net.md_5.bungee.api.ChatColor getRollColor(double roll, float minHue, float maxHue, float minBright, float maxBright, float minSat, float maxSat) {
+        roll = Math.pow(roll, 2.5f);
+        float hue = minHue + (maxHue - minHue) * (float) roll;
+        float saturation = minSat + (maxSat - minSat) * (float) roll;
+        float brightness = minBright + (maxBright - minBright) * (float) roll;
+        return net.md_5.bungee.api.ChatColor.of(Color.getHSBColor(hue, saturation, brightness));
     }
 
     public static boolean isRealItem(ItemStack item) {
@@ -380,21 +417,26 @@ public class ItemHandler {
         if (isRealItem(item) && getItemType(item) == ItemType.WEAPON) {
             return weaponEnergy+getTier(item).getTierNumber();
         }
-        else {
-            return noWeaponEnergy;
+        return noWeaponEnergy;
+    }
+
+    public static int getDamage(ItemStack item) {
+        if (isRealItem(item) && getItemType(item) == ItemType.WEAPON) {
+            PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            return NumGenerator.rollInclusive(dataContainer.get(NamespacedKeys.dmg_lo, PersistentDataType.INTEGER), dataContainer.get(NamespacedKeys.dmg_hi, PersistentDataType.INTEGER));
         }
+        return 1;
     }
 
     public static ItemType getItemType(ItemStack item) {
         if (isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
+            if (dataContainer.has(NamespacedKeys.dmg_lo, PersistentDataType.INTEGER) && dataContainer.has(NamespacedKeys.dmg_hi, PersistentDataType.INTEGER)) {
                 return ItemType.WEAPON;
             }
             else if (dataContainer.has(NamespacedKeys.healthPoints, PersistentDataType.INTEGER)) {
                 return ItemType.ARMOR;
             }
-            return null;
         }
         return null;
     }

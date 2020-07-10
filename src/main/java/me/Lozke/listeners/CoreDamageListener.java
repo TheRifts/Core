@@ -1,6 +1,5 @@
 package me.Lozke.listeners;
 
-import me.Lozke.data.items.NamespacedKeys;
 import me.Lozke.handlers.ItemHandler;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -9,16 +8,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-public class DamageListener implements Listener {
+public class CoreDamageListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamage(EntityDamageEvent event) {
+        /*
         Entity damager;
         if (event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent edbeEvent = (EntityDamageByEntityEvent)event;
@@ -36,6 +34,7 @@ public class DamageListener implements Listener {
                 event.setDamage(damagedLivingEntity.getHealth());
             }
         }
+         */
     }
 
 
@@ -53,9 +52,11 @@ public class DamageListener implements Listener {
         }
         if (ItemHandler.isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
+            /*
             if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
                 return dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER);
             }
+             */
         }
 
         return 1;

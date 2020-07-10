@@ -2,18 +2,16 @@ package me.Lozke.utils.ItemMenu.events;
 
 import me.Lozke.utils.ItemMenu.menus.ItemMenu;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class MenuClickEvent {
+public class MenuClickEvent extends InventoryClickEvent {
 
     private Player player;
     private ItemMenu menu;
 
-    private boolean goBack = false;
-    private boolean close = false;
-    private boolean update = false;
-
-    public MenuClickEvent(Player player, ItemMenu menu) {
-        this.player = player;
+    public MenuClickEvent(InventoryClickEvent event, ItemMenu menu) {
+        super(event.getView(), event.getSlotType(), event.getRawSlot(), event.getClick(), event.getAction(), event.getHotbarButton());
+        this.player = (Player) event.getWhoClicked();
         this.menu = menu;
     }
 
@@ -25,36 +23,7 @@ public class MenuClickEvent {
         return menu;
     }
 
-    public boolean willGoBack() {
-        return goBack;
-    }
-    public void setWillGoBack(boolean goBack) {
-        this.goBack = goBack;
-        if (goBack) {
-            close = false;
-            update = false;
-        }
-    }
-
-    public boolean willClose() {
-        return close;
-    }
-    public void setWillClose(boolean close) {
-        this.close = close;
-        if (close) {
-            goBack = false;
-            update = false;
-        }
-    }
-
-    public boolean willUpdate() {
-        return update;
-    }
-    public void setWillUpdate(boolean update) {
-        this.update = update;
-        if (update) {
-            goBack = false;
-            close = false;
-        }
+    public void openParent() {
+        menu.getParent().openMenu(player);
     }
 }

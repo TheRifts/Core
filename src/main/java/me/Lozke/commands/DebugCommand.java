@@ -19,72 +19,63 @@ public class DebugCommand extends Command {
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         Player player = (Player) sender;
         Inventory inv = player.getInventory();
-        int num = 0;
+        Tier tier = Tier.T1;
         String type = "";
         int amount = 1;
         Rarity rarity = Rarity.COMMON;
 
         if (args.length > 0) {
-            num = Integer.parseInt(args[0]);
+            tier = Tier.valueOf(args[0].toUpperCase());
         }
         if (args.length > 1) {
-            type = args[1];
+            rarity = Rarity.valueOf(args[1].toUpperCase());
         }
         if (args.length > 2) {
-            amount = Integer.parseInt(args[2]);
+            type = args[2];
         }
         if (args.length > 3) {
-            for (Rarity rarities : Rarity.types) {
-                if (rarities.ordinal() == Integer.parseInt(args[3])) {
-                    rarity = rarities;
-                }
-            }
+            amount = Integer.parseInt(args[3]);
         }
 
-        for (Tier tier : Tier.types) {
-            if (tier.ordinal() == num - 1) {
-                switch (type) {
-                    case "orb":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newOrb(tier, amount));
-                        return true;
-                    case "shard":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newShard(tier, amount));
-                        return true;
-                    case "scrap":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
-                        return true;
-                    case "sword":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SWORD"));
-                        return true;
-                    case "axe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "AXE"));
-                        return true;
-                    case "shovel":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SHOVEL"));
-                        return true;
-                    case "hoe":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "HOE"));
-                        return true;
-                    case "boots":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier,  rarity));
-                        return true;
-                    case "leggings":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newLeggings(tier,  rarity));
-                        return true;
-                    case "chestplate":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newChestplate(tier,  rarity));
-                        return true;
-                    case "helmet":
-                        inv.setItem(inv.firstEmpty(), ItemHandler.newHelmet(tier,  rarity));
-                        return true;
-                    default:
-                        for (ItemStack item : ItemHandler.newSet(tier,  rarity)) {
-                            inv.setItem(inv.firstEmpty(), item);
-                        }
-                        return true;
+        switch (type) {
+            case "orb":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newOrb(tier, amount));
+                return true;
+            case "shard":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newShard(tier, amount));
+                return true;
+            case "scrap":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newScrap(tier, amount));
+                return true;
+            case "sword":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SWORD"));
+                return true;
+            case "axe":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "AXE"));
+                return true;
+            case "shovel":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "SHOVEL"));
+                return true;
+            case "hoe":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newWeapon(tier, rarity, "HOE"));
+                return true;
+            case "boots":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newBoots(tier,  rarity));
+                return true;
+            case "leggings":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newLeggings(tier,  rarity));
+                return true;
+            case "chestplate":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newChestplate(tier,  rarity));
+                return true;
+            case "helmet":
+                inv.setItem(inv.firstEmpty(), ItemHandler.newHelmet(tier,  rarity));
+                return true;
+            default:
+                for (ItemStack item : ItemHandler.newSet(tier,  rarity)) {
+                    inv.setItem(inv.firstEmpty(), item);
                 }
-            }
+                return true;
         }
-        return true;
     }
 }

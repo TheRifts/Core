@@ -14,6 +14,7 @@ public class ReturnIcon extends MenuIcon {
     public void onItemClick(MenuClickEvent event) {
         ItemMenu parent = event.getMenu().getParent();
         if (parent != null) {
+            parent.updateMenu();
             parent.openMenu(event.getPlayer());
         }
     }

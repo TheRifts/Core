@@ -74,13 +74,27 @@ public class ItemMenu {
         return parent;
     }
 
-    public void setParent(ItemMenu parent) {
+    public ItemMenu setParent(ItemMenu parent) {
         this.parent = parent;
+        return this;
     }
 
     public void openParent(Player player) {
         if (parent != null) {
             parent.openMenu(player);
+        }
+    }
+
+    public void updateMenu() {
+        clearItems();
+        displayItems();
+    }
+
+    public void updateIcon(MenuIcon icon) {
+        for (int i = 0; i < icons.length; i++) {
+            if (icons[i] == icon) {
+                updateSlot(i, icon);
+            }
         }
     }
 
@@ -90,6 +104,7 @@ public class ItemMenu {
     public void updateSlot(int slot, MenuIcon icon) {
         inventory.setItem(slot, icon.getIcon());
         icons[slot] = icon;
+        icon.setParent(this);
     }
 
     public void setDisplayItem(int slot, ItemStack itemStack) {
@@ -98,6 +113,7 @@ public class ItemMenu {
     public void setDisplayItem(int slot, MenuIcon icon) {
         inventory.setItem(slot, icon.getIcon());
         icons[slot] = icon;
+        icon.setParent(this);
     }
 
     public void addDisplayItem(ItemStack itemStack) {
@@ -127,7 +143,7 @@ public class ItemMenu {
     public void handleClickEvent(InventoryClickEvent event) {
         int slot = event.getRawSlot();
         if (slot >= 0 && slot <= icons.length && icons[slot] != null && event.getWhoClicked() instanceof Player) {
-            icons[slot].onItemClick(new MenuClickEvent((Player) event.getWhoClicked(), this));
+            icons[slot].onItemClick(new MenuClickEvent(event, this));
         }
     }
 }
