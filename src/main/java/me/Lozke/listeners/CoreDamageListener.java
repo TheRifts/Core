@@ -1,16 +1,10 @@
 package me.Lozke.listeners;
 
-import me.Lozke.handlers.ItemHandler;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 
 public class CoreDamageListener implements Listener {
 
@@ -38,6 +32,7 @@ public class CoreDamageListener implements Listener {
     }
 
 
+    /*
     private double getDamage(Entity damager) {
         ItemStack item = null;
         if (damager instanceof Player) {
@@ -52,15 +47,14 @@ public class CoreDamageListener implements Listener {
         }
         if (ItemHandler.isRealItem(item)) {
             PersistentDataContainer dataContainer = item.getItemMeta().getPersistentDataContainer();
-            /*
             if (dataContainer.has(NamespacedKeys.damage, PersistentDataType.INTEGER)) {
                 return dataContainer.get(NamespacedKeys.damage, PersistentDataType.INTEGER);
             }
-             */
         }
 
         return 1;
     }
+    */
 
     private boolean isDeath(LivingEntity damaged, double damage) {
         return damage >= damaged.getHealth();

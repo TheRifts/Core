@@ -57,7 +57,6 @@ public class AgorianRifts extends JavaPlugin {
         //Turn this into the same setup as commands
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new ModifyingItemByClickListener(), this);
         pm.registerEvents(new CoreDamageListener(), this);
         pm.registerEvents(new MenuClickListener(), this);
 
@@ -66,10 +65,7 @@ public class AgorianRifts extends JavaPlugin {
             Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            commandMap.register(this.getName(), new DebugCommand());
             commandMap.register(this.getName(), new BossBarCommand());
-            commandMap.register(this.getName(), new CheckCommand());
-            commandMap.register(this.getName(), new ItemRename());
             commandMap.register(this.getName(), new TestMenuCommand());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

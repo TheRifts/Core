@@ -139,8 +139,8 @@
   <distributionManagement>
     <repository>
       <id>github</id>
-      <name>GitHub Lozke Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/Lozke/AgorianRifts-Core</url>
+      <name>GitHub AgorianRifts Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/AgorianRifts/Core</url>
     </repository>
   </distributionManagement>
   <properties>

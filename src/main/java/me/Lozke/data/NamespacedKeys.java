@@ -1,4 +1,4 @@
-package me.Lozke.data.items;
+package me.Lozke.data;
 
 import me.Lozke.AgorianRifts;
 import org.bukkit.NamespacedKey;

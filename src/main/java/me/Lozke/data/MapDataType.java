@@ -1,4 +1,4 @@
-package me.Lozke.data.items;
+package me.Lozke.data;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
