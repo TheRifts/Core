@@ -1,17 +1,16 @@
 package me.Lozke.api;
 
 import me.Lozke.data.ARNamespacedKey;
-import me.Lozke.utils.NamespacedKeyWrapper;
 import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.List;
 import java.util.Map;
 
 public interface IARNamespacedKeyWrapper {
-    NamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey, Object key);
-    NamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey);
+    IARNamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey, Object key);
+    IARNamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey);
 
-    NamespacedKeyWrapper removeKey(ARNamespacedKey namespacedKey);
+    IARNamespacedKeyWrapper removeKey(ARNamespacedKey namespacedKey);
 
     boolean hasKey(ARNamespacedKey namespacedKey);
 
