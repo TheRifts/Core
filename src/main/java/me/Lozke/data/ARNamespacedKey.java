@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum ARNamespacedKey {
-    SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), PersistentDataType.STRING, "spawner-wand-toggle"),
+    SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), PersistentDataType.INTEGER, 0),
     REAL_ITEM(new NamespacedKey(getPlugin(), "a-real-item"), PersistentDataType.STRING, "a-real-item"),
     TIER(new NamespacedKey(getPlugin(), "tier"), PersistentDataType.STRING, "tier"),
     RARITY(new NamespacedKey(getPlugin(), "rarity"), PersistentDataType.STRING, "rarity"),
@@ -25,7 +25,12 @@ public enum ARNamespacedKey {
     MAX_GEM_WORTH(new NamespacedKey(getPlugin(), "max-gem-amount"), PersistentDataType.INTEGER, 0),
     HELD_ITEMS(new NamespacedKey(getPlugin(), "held-items"), getMapDataType(), new HashMap<>(0)),
     CAN_ORB(new NamespacedKey(getPlugin(), "can-orb"), PersistentDataType.STRING, "can-orb"),
-    ATTRIBUTES(new NamespacedKey(getPlugin(), "item-attributes"), getMapDataType(), new HashMap<>(0));
+    ATTRIBUTES(new NamespacedKey(getPlugin(), "item-attributes"), getMapDataType(), new HashMap<>(0)),
+    DURABILITY(new NamespacedKey(getPlugin(), "durability"), PersistentDataType.INTEGER, 0),
+    MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
+    USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scroll"), getMapDataType(), new HashMap<>(0)),
+    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, new HashMap<>(0)),
+    SCROLL_FAILED_AMOUNT(new NamespacedKey(getPlugin(), "scroll-failed-amount"), PersistentDataType.INTEGER, new HashMap<>(0));
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 
