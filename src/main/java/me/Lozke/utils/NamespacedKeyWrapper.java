@@ -88,8 +88,8 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespace
     }
 
     public double getDouble(NamespacedKey namespacedKey, Double def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.DOUBLE);
-        return (val == null) ? def : (double) val;
+        Double val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.DOUBLE);
+        return (val == null) ? def : val.doubleValue();
     }
     public double getDouble(NamespacedKey namespacedKey) {
         return getDouble(namespacedKey, null);
