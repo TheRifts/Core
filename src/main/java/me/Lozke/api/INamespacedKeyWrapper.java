@@ -1,7 +1,7 @@
 package me.Lozke.api;
 
-import me.Lozke.data.ListDataType;
-import me.Lozke.data.MapDataType;
+import me.Lozke.data.PersistentDataType.ListDataType;
+import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -64,4 +64,6 @@ public interface INamespacedKeyWrapper {
 
     List getList(NamespacedKey namespacedKey, List def);
     List getList(NamespacedKey namespacedKey);
+
+    Boolean getBoolean(NamespacedKey namespacedKey);
 }

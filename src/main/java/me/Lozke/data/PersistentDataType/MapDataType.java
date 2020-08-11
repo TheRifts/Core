@@ -1,45 +1,44 @@
-package me.Lozke.data;
+package me.Lozke.data.PersistentDataType;
 
-import me.Lozke.utils.Logger;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ListDataType implements PersistentDataType<byte[], List> {
+public class MapDataType implements PersistentDataType<byte[], Map> {
+
     @Override
     public Class<byte[]> getPrimitiveType() {
         return byte[].class;
     }
 
     @Override
-    public Class<List> getComplexType() {
-        return List.class;
+    public Class<Map> getComplexType() {
+        return Map.class;
     }
 
     @Override
-    public byte[] toPrimitive(List list, PersistentDataAdapterContext persistentDataAdapterContext) {
-        list.forEach(obj -> Logger.broadcast(obj.toString() + " " + obj));
+    public byte[] toPrimitive(Map map, PersistentDataAdapterContext persistentDataAdapterContext) {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         try {
             ObjectOutputStream out = new ObjectOutputStream(byteOut);
-            out.writeObject(list);
+            out.writeObject(map);
         } catch (IOException ignored) {
         }
         return byteOut.toByteArray();
     }
 
     @Override
-    public List<Object> fromPrimitive(byte[] bytes, PersistentDataAdapterContext persistentDataAdapterContext) {
-        ArrayList<Object> list = new ArrayList<>();
+    public Map fromPrimitive(byte[] bytes, PersistentDataAdapterContext persistentDataAdapterContext) {
+        HashMap<String, Object> map = new HashMap<>();
         try {
             ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
             ObjectInputStream in = new ObjectInputStream(byteIn);
-            list = (ArrayList<Object>) in.readObject();
+            map = (HashMap<String, Object>) in.readObject();
         } catch (IOException | ClassNotFoundException ignored) {
         }
-        return list;
+        return map;
     }
 }

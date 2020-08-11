@@ -1,44 +1,41 @@
-package me.Lozke.data;
+package me.Lozke.data.PersistentDataType;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
-public class MapDataType implements PersistentDataType<byte[], Map> {
-
+public class BooleanDataType implements PersistentDataType<byte[], Boolean> {
     @Override
     public Class<byte[]> getPrimitiveType() {
         return byte[].class;
     }
 
     @Override
-    public Class<Map> getComplexType() {
-        return Map.class;
+    public Class<Boolean> getComplexType() {
+        return Boolean.class;
     }
 
     @Override
-    public byte[] toPrimitive(Map map, PersistentDataAdapterContext persistentDataAdapterContext) {
+    public byte[] toPrimitive(Boolean aBoolean, PersistentDataAdapterContext persistentDataAdapterContext) {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         try {
             ObjectOutputStream out = new ObjectOutputStream(byteOut);
-            out.writeObject(map);
+            out.writeObject(aBoolean);
         } catch (IOException ignored) {
         }
         return byteOut.toByteArray();
     }
 
     @Override
-    public Map fromPrimitive(byte[] bytes, PersistentDataAdapterContext persistentDataAdapterContext) {
-        HashMap<String, Object> map = new HashMap<>();
+    public Boolean fromPrimitive(byte[] bytes, PersistentDataAdapterContext persistentDataAdapterContext) {
+        Boolean aBoolean = false;
         try {
             ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
             ObjectInputStream in = new ObjectInputStream(byteIn);
-            map = (HashMap<String, Object>) in.readObject();
+            aBoolean = (Boolean) in.readObject();
         } catch (IOException | ClassNotFoundException ignored) {
         }
-        return map;
+        return aBoolean;
     }
 }

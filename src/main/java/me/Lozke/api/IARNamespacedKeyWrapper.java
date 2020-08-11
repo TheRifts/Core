@@ -6,7 +6,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import java.util.List;
 import java.util.Map;
 
-public interface IARNamespacedKeyWrapper {
+public interface IARNamespacedKeyWrapper extends INamespacedKeyWrapper {
     IARNamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey, Object key);
     IARNamespacedKeyWrapper addKey(ARNamespacedKey namespacedKey);
 
@@ -39,4 +39,6 @@ public interface IARNamespacedKeyWrapper {
     Map getMap(ARNamespacedKey namespacedKey);
 
     List getList(ARNamespacedKey namespacedKey);
+
+    Boolean getBoolean(ARNamespacedKey namespacedKey);
 }

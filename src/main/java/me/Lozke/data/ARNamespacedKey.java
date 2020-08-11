@@ -1,6 +1,9 @@
 package me.Lozke.data;
 
 import me.Lozke.AgorianRifts;
+import me.Lozke.data.PersistentDataType.BooleanDataType;
+import me.Lozke.data.PersistentDataType.ListDataType;
+import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum ARNamespacedKey {
-    SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), PersistentDataType.INTEGER, 0),
+    SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), getBooleanDataType(), true),
     REAL_ITEM(new NamespacedKey(getPlugin(), "a-real-item"), PersistentDataType.STRING, "a-real-item"),
     TIER(new NamespacedKey(getPlugin(), "tier"), PersistentDataType.STRING, "tier"),
     RARITY(new NamespacedKey(getPlugin(), "rarity"), PersistentDataType.STRING, "rarity"),
@@ -24,7 +27,7 @@ public enum ARNamespacedKey {
     GEM_WORTH(new NamespacedKey(getPlugin(), "gem-amount"), PersistentDataType.INTEGER, 0),
     MAX_GEM_WORTH(new NamespacedKey(getPlugin(), "max-gem-amount"), PersistentDataType.INTEGER, 0),
     HELD_ITEMS(new NamespacedKey(getPlugin(), "held-items"), getMapDataType(), new HashMap<>(0)),
-    CAN_ORB(new NamespacedKey(getPlugin(), "can-orb"), PersistentDataType.STRING, "can-orb"),
+    CAN_ORB(new NamespacedKey(getPlugin(), "can-orb"), getBooleanDataType(), true),
     ATTRIBUTES(new NamespacedKey(getPlugin(), "item-attributes"), getMapDataType(), new HashMap<>(0)),
     DURABILITY(new NamespacedKey(getPlugin(), "durability"), PersistentDataType.INTEGER, 0),
     MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
@@ -77,6 +80,10 @@ public enum ARNamespacedKey {
 
     private static PersistentDataType<byte[], List> getListDataType() {
         return new ListDataType();
+    }
+
+    private static PersistentDataType<byte[], Boolean> getBooleanDataType() {
+        return new BooleanDataType();
     }
 
     private static AgorianRifts getPlugin() {

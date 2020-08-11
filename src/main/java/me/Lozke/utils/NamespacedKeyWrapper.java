@@ -3,8 +3,9 @@ package me.Lozke.utils;
 import me.Lozke.api.IARNamespacedKeyWrapper;
 import me.Lozke.api.INamespacedKeyWrapper;
 import me.Lozke.data.ARNamespacedKey;
-import me.Lozke.data.ListDataType;
-import me.Lozke.data.MapDataType;
+import me.Lozke.data.PersistentDataType.BooleanDataType;
+import me.Lozke.data.PersistentDataType.ListDataType;
+import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespace
 
     private final MapDataType MAP_DATA_TYPE = new MapDataType();
     private final ListDataType LIST_DATA_TYPE = new ListDataType();
+    private final BooleanDataType BOOLEAN_DATA_TYPE  = new BooleanDataType();
 
     private ItemStack item;
     private ItemMeta itemMeta;
@@ -155,6 +157,15 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespace
         return getList(namespacedKey, null);
     }
 
+    public Boolean getBoolean(NamespacedKey namespacedKey, Boolean def) {
+        Boolean val = itemMeta.getPersistentDataContainer().get(namespacedKey, BOOLEAN_DATA_TYPE);
+        return (val == null) ? def : val;
+    }
+
+    public Boolean getBoolean(NamespacedKey namespacedKey) {
+        return getBoolean(namespacedKey,null);
+    }
+
     /*
      * AR NamespacedKey Hook
      */
@@ -228,5 +239,10 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespace
 
     public List getList(ARNamespacedKey namespacedKey) {
         return getList(namespacedKey.getNamespacedKey(), (List) namespacedKey.getDefaultKey());
+    }
+
+    @Override
+    public Boolean getBoolean(ARNamespacedKey namespacedKey) {
+        return getBoolean(namespacedKey.getNamespacedKey(), (Boolean) namespacedKey.getDefaultKey());
     }
 }
