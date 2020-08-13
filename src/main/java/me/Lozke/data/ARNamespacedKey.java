@@ -16,7 +16,7 @@ import java.util.Map;
 
 public enum ARNamespacedKey {
     SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), getBooleanDataType(), true),
-    REAL_ITEM(new NamespacedKey(getPlugin(), "a-real-item"), PersistentDataType.STRING, "a-real-item"),
+    REAL_ITEM(new NamespacedKey(getPlugin(), "a-real-item"), getBooleanDataType(), true),
     TIER(new NamespacedKey(getPlugin(), "tier"), PersistentDataType.STRING, "tier"),
     RARITY(new NamespacedKey(getPlugin(), "rarity"), PersistentDataType.STRING, "rarity"),
     HEALTH_POINTS(new NamespacedKey(getPlugin(), "health-points"), PersistentDataType.INTEGER, 0),
@@ -32,9 +32,11 @@ public enum ARNamespacedKey {
     DURABILITY(new NamespacedKey(getPlugin(), "durability"), PersistentDataType.INTEGER, 0),
     MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
     USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scroll"), getMapDataType(), new HashMap<>(0)),
-    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, new HashMap<>(0)),
+    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0),
     SCROLL_SUCCESS_CHANCE(new NamespacedKey(getPlugin(),"scroll-success-chance"), PersistentDataType.DOUBLE, 0D),
-    SCROLL_DESTROY_CHANCE(new NamespacedKey(getPlugin(),"scroll-destroy-chance"), PersistentDataType.DOUBLE, 0D);
+    SCROLL_DESTROY_CHANCE(new NamespacedKey(getPlugin(),"scroll-destroy-chance"), PersistentDataType.DOUBLE, 0D),
+    SCROLL_SKIN(new NamespacedKey(getPlugin(), "scroll-skin"), PersistentDataType.STRING, "BLUE"),
+    SCROLL_TYPE(new NamespacedKey(getPlugin(), "scroll-type"), PersistentDataType.STRING, "ARMOR");
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 

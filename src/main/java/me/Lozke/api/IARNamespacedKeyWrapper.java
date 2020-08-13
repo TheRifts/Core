@@ -40,5 +40,5 @@ public interface IARNamespacedKeyWrapper extends INamespacedKeyWrapper {
 
     List getList(ARNamespacedKey namespacedKey);
 
-    Boolean getBoolean(ARNamespacedKey namespacedKey);
+    boolean getBoolean(ARNamespacedKey namespacedKey);
 }

@@ -1,5 +1,6 @@
 package me.Lozke.api;
 
+import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
 import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.NamespacedKey;
@@ -15,11 +16,10 @@ public interface INamespacedKeyWrapper {
 
     MapDataType MAP_DATA_TYPE = new MapDataType();
     ListDataType LIST_DATA_TYPE = new ListDataType();
+    BooleanDataType BOOLEAN_DATA_TYPE = new BooleanDataType();
 
     ItemStack item = null;
     ItemMeta itemMeta = null;
-
-    INamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key);
 
     INamespacedKeyWrapper removeKey(NamespacedKey namespacedKey);
 
@@ -65,5 +65,5 @@ public interface INamespacedKeyWrapper {
     List getList(NamespacedKey namespacedKey, List def);
     List getList(NamespacedKey namespacedKey);
 
-    Boolean getBoolean(NamespacedKey namespacedKey);
+    boolean getBoolean(NamespacedKey namespacedKey);
 }

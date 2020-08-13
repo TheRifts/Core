@@ -3,8 +3,6 @@ package me.Lozke.data.PersistentDataType;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.io.*;
-
 public class BooleanDataType implements PersistentDataType<byte[], Boolean> {
     @Override
     public Class<byte[]> getPrimitiveType() {
@@ -18,24 +16,12 @@ public class BooleanDataType implements PersistentDataType<byte[], Boolean> {
 
     @Override
     public byte[] toPrimitive(Boolean aBoolean, PersistentDataAdapterContext persistentDataAdapterContext) {
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(byteOut);
-            out.writeObject(aBoolean);
-        } catch (IOException ignored) {
-        }
-        return byteOut.toByteArray();
+        aBoolean = aBoolean == null ? false : aBoolean;
+        return new byte[]{(byte) (aBoolean ? 1 : 0)};
     }
 
     @Override
     public Boolean fromPrimitive(byte[] bytes, PersistentDataAdapterContext persistentDataAdapterContext) {
-        Boolean aBoolean = false;
-        try {
-            ByteArrayInputStream byteIn = new ByteArrayInputStream(bytes);
-            ObjectInputStream in = new ObjectInputStream(byteIn);
-            aBoolean = (Boolean) in.readObject();
-        } catch (IOException | ClassNotFoundException ignored) {
-        }
-        return aBoolean;
+        return bytes[0] == 1;
     }
 }

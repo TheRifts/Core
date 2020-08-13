@@ -1,6 +1,7 @@
 package me.Lozke.utils;
 
 import me.Lozke.api.IARNamespacedKeyWrapper;
+import me.Lozke.api.IAddKeyWrapper;
 import me.Lozke.api.INamespacedKeyWrapper;
 import me.Lozke.data.ARNamespacedKey;
 import me.Lozke.data.PersistentDataType.BooleanDataType;
@@ -16,153 +17,222 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 import java.util.Map;
 
-public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespacedKeyWrapper {
+public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapper, IARNamespacedKeyWrapper {
 
     private final MapDataType MAP_DATA_TYPE = new MapDataType();
     private final ListDataType LIST_DATA_TYPE = new ListDataType();
     private final BooleanDataType BOOLEAN_DATA_TYPE  = new BooleanDataType();
 
     private ItemStack item;
-    private ItemMeta itemMeta;
 
     public NamespacedKeyWrapper(ItemStack item) {
         this.item = item;
-        this.itemMeta = (item.getItemMeta() == null) ? Bukkit.getServer().getItemFactory().getItemMeta(item.getType()) : item.getItemMeta();
+    }
+
+    public ItemMeta getItemMeta() {
+        return (item.getItemMeta() == null) ? Bukkit.getServer().getItemFactory().getItemMeta(item.getType()) : item.getItemMeta();
     }
 
     public NamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
+        ItemMeta itemMeta = getItemMeta();
         itemMeta.getPersistentDataContainer().set(namespacedKey, dataType, key);
         item.setItemMeta(itemMeta);
         return this;
     }
 
     public NamespacedKeyWrapper removeKey(NamespacedKey namespacedKey) {
+        ItemMeta itemMeta = getItemMeta();
         itemMeta.getPersistentDataContainer().remove(namespacedKey);
         item.setItemMeta(itemMeta);
         return this;
     }
 
     public boolean hasKey(NamespacedKey namespacedKey, PersistentDataType dataType) {
-        return itemMeta.getPersistentDataContainer().has(namespacedKey, dataType);
+        return getItemMeta().getPersistentDataContainer().has(namespacedKey, dataType);
     }
 
     public Object get(NamespacedKey namespacedKey, PersistentDataType dataType) {
-        return itemMeta.getPersistentDataContainer().get(namespacedKey, dataType);
+        return getItemMeta().getPersistentDataContainer().get(namespacedKey, dataType);
+    }
+
+    public NamespacedKeyWrapper addString(NamespacedKey namespacedKey, String key) {
+        return addKey(namespacedKey,PersistentDataType.STRING, key);
     }
 
     public String getString(NamespacedKey namespacedKey, String def) {
-        return itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
+        String val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
+        return (val == null) ? def : val;
     }
     public String getString(NamespacedKey namespacedKey) {
         return getString(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addByte(NamespacedKey namespacedKey, byte key) {
+        return addKey(namespacedKey,PersistentDataType.BYTE, key);
+    }
+
     public byte getByte(NamespacedKey namespacedKey, Byte def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE);
-        return (val == null) ? def : (byte) val;
+        Byte val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE);
+        return (val == null) ? def : val.byteValue();
     }
     public byte getByte(NamespacedKey namespacedKey) {
         return getByte(namespacedKey, null);
     }
+
+    public NamespacedKeyWrapper addByteArray(NamespacedKey namespacedKey, byte[] key) {
+        return addKey(namespacedKey,PersistentDataType.BYTE_ARRAY, key);
+    }
+
     public byte[] getByteArray(NamespacedKey namespacedKey, byte[] def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE_ARRAY);
+        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE_ARRAY);
         return (val == null) ? def : (byte[]) val;
     }
     public byte[] getByteArray(NamespacedKey namespacedKey) {
         return getByteArray(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addInt(NamespacedKey namespacedKey, int key) {
+        return addKey(namespacedKey,PersistentDataType.INTEGER, key);
+    }
+
     public int getInt(NamespacedKey namespacedKey, Integer def) {
-        Integer val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER);
+        Integer val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER);
         return (val == null) ? def : val.intValue();
     }
     public int getInt(NamespacedKey namespacedKey) {
         return getInt(namespacedKey, null);
     }
+
+    public NamespacedKeyWrapper addIntArray(NamespacedKey namespacedKey, int[] key) {
+        return addKey(namespacedKey,PersistentDataType.INTEGER_ARRAY, key);
+    }
+
     public int[] getIntArray(NamespacedKey namespacedKey, int[] def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER_ARRAY);
+        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER_ARRAY);
         return (val == null) ? def : (int[]) val;
     }
     public int[] getIntArray(NamespacedKey namespacedKey) {
         return getIntArray(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addDouble(NamespacedKey namespacedKey, double key) {
+        return addKey(namespacedKey,PersistentDataType.DOUBLE, key);
+    }
+
     public double getDouble(NamespacedKey namespacedKey, Double def) {
-        Double val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.DOUBLE);
+        Double val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.DOUBLE);
         return (val == null) ? def : val.doubleValue();
     }
     public double getDouble(NamespacedKey namespacedKey) {
         return getDouble(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addFloat(NamespacedKey namespacedKey, float key) {
+        return addKey(namespacedKey,PersistentDataType.FLOAT, key);
+    }
+
     public float getFloat(NamespacedKey namespacedKey, Float def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.FLOAT);
-        return (val == null) ? def : (float) val;
+        Float val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.FLOAT);
+        return (val == null) ? def : val.floatValue();
     }
     public float getFloat(NamespacedKey namespacedKey) {
         return getFloat(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addLong(NamespacedKey namespacedKey, long key) {
+        return addKey(namespacedKey,PersistentDataType.LONG, key);
+    }
+
     public long getLong(NamespacedKey namespacedKey, Long def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG);
-        return (val == null) ? def : (long) val;
+        Long val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG);
+        return (val == null) ? def : val.longValue();
     }
     public long getLong(NamespacedKey namespacedKey) {
         return getLong(namespacedKey, null);
     }
+
+    public NamespacedKeyWrapper addLongArray(NamespacedKey namespacedKey, long[] key) {
+        return addKey(namespacedKey,PersistentDataType.LONG_ARRAY, key);
+    }
+
     public long[] getLongArray(NamespacedKey namespacedKey, long[] def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG_ARRAY);
+        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG_ARRAY);
         return val == null ? def : (long[]) val;
     }
     public long[] getLongArray(NamespacedKey namespacedKey) {
         return getLongArray(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addShort(NamespacedKey namespacedKey, short key) {
+        return addKey(namespacedKey,PersistentDataType.SHORT, key);
+    }
+
     public short getShort(NamespacedKey namespacedKey, Short def) {
-        Object val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.SHORT);
-        return (val == null) ? def : (short) val;
+        Short val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.SHORT);
+        return (val == null) ? def : val.shortValue();
     }
     public short getShort(NamespacedKey namespacedKey) {
         return getShort(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addTagContainer(NamespacedKey namespacedKey, PersistentDataContainer key) {
+        return addKey(namespacedKey,PersistentDataType.TAG_CONTAINER, key);
+    }
+
     public PersistentDataContainer getTagContainer(NamespacedKey namespacedKey, PersistentDataContainer def) {
-        PersistentDataContainer val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER);
+        PersistentDataContainer val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER);
         return (val == null) ? def : val;
     }
     public PersistentDataContainer getTagContainer(NamespacedKey namespacedKey) {
         return getTagContainer(namespacedKey, null);
     }
+
+    public NamespacedKeyWrapper addTagContainerArray(NamespacedKey namespacedKey, PersistentDataContainer[] key) {
+        return addKey(namespacedKey,PersistentDataType.TAG_CONTAINER_ARRAY, key);
+    }
+
     public PersistentDataContainer[] getTagContainerArray(NamespacedKey namespacedKey, PersistentDataContainer[] def) {
-        PersistentDataContainer[] val = itemMeta.getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER_ARRAY);
+        PersistentDataContainer[] val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER_ARRAY);
         return (val == null) ? def : val;
     }
     public PersistentDataContainer[] getTagContainerArray(NamespacedKey namespacedKey) {
         return getTagContainerArray(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addMap(NamespacedKey namespacedKey, Map key) {
+        return addKey(namespacedKey, MAP_DATA_TYPE, key);
+    }
+
     public Map getMap(NamespacedKey namespacedKey, Map def) {
-        Map val = itemMeta.getPersistentDataContainer().get(namespacedKey, MAP_DATA_TYPE);
+        Map val = getItemMeta().getPersistentDataContainer().get(namespacedKey, MAP_DATA_TYPE);
         return (val == null) ? def : val;
     }
     public Map getMap(NamespacedKey namespacedKey) {
         return getMap(namespacedKey, null);
     }
 
+    public NamespacedKeyWrapper addList(NamespacedKey namespacedKey, List key) {
+        return addKey(namespacedKey, LIST_DATA_TYPE, key);
+    }
+
     public List getList(NamespacedKey namespacedKey, List def) {
-        List val = itemMeta.getPersistentDataContainer().get(namespacedKey, LIST_DATA_TYPE);
+        List val = getItemMeta().getPersistentDataContainer().get(namespacedKey, LIST_DATA_TYPE);
         return (val == null) ? def : val;
     }
     public List getList(NamespacedKey namespacedKey) {
         return getList(namespacedKey, null);
     }
 
-    public Boolean getBoolean(NamespacedKey namespacedKey, Boolean def) {
-        Boolean val = itemMeta.getPersistentDataContainer().get(namespacedKey, BOOLEAN_DATA_TYPE);
+    public NamespacedKeyWrapper addBoolean(NamespacedKey namespacedKey, boolean key) {
+        return addKey(namespacedKey, BOOLEAN_DATA_TYPE, key);
+    }
+
+    public boolean getBoolean(NamespacedKey namespacedKey, Boolean def) {
+        Boolean val = getItemMeta().getPersistentDataContainer().get(namespacedKey, BOOLEAN_DATA_TYPE);
         return (val == null) ? def : val;
     }
 
-    public Boolean getBoolean(NamespacedKey namespacedKey) {
+    public boolean getBoolean(NamespacedKey namespacedKey) {
         return getBoolean(namespacedKey,null);
     }
 
@@ -242,7 +312,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IARNamespace
     }
 
     @Override
-    public Boolean getBoolean(ARNamespacedKey namespacedKey) {
-        return getBoolean(namespacedKey.getNamespacedKey(), (Boolean) namespacedKey.getDefaultKey());
+    public boolean getBoolean(ARNamespacedKey namespacedKey) {
+        return getBoolean(namespacedKey.getNamespacedKey(), (boolean) namespacedKey.getDefaultKey());
     }
 }
