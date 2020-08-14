@@ -1,6 +1,5 @@
 package me.Lozke.data.PersistentDataType;
 
-import me.Lozke.utils.Logger;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -21,7 +20,6 @@ public class ListDataType implements PersistentDataType<byte[], List> {
 
     @Override
     public byte[] toPrimitive(List list, PersistentDataAdapterContext persistentDataAdapterContext) {
-        list.forEach(obj -> Logger.broadcast(obj.toString() + " " + obj));
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         try {
             ObjectOutputStream out = new ObjectOutputStream(byteOut);
