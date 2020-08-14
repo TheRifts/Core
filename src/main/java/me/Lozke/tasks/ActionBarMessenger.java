@@ -82,4 +82,6 @@ public class ActionBarMessenger {
     private boolean isInvalidMessage(ActionBarMessageTickTask messageTickTask) {
         return messageTickTask.isInvalid();
     }
+
+    //TODO relocate message maps and handleNewMessage duplicate methods here from mob mechanics
 }

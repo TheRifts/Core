@@ -17,4 +17,6 @@ public class Logger {
     public static void broadcast(String message) {
         Bukkit.broadcastMessage(prefix + message);
     }
+
+    //TODO add warn/error support for logger
 }
