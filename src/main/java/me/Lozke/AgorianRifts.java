@@ -66,7 +66,6 @@ public class AgorianRifts extends JavaPlugin {
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
             commandMap.register(this.getName(), new BossBarCommand());
-            commandMap.register(this.getName(), new TestMenuCommand());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
