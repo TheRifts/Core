@@ -33,7 +33,7 @@ public class Logger {
     }
 
     public static void broadcast(Plugin plugin, String message) {
-        logger.info(getPrefix(plugin) + message);
+        Bukkit.broadcastMessage(getPrefix(plugin) + message);
     }
     public static void broadcast(String message) {
         Bukkit.broadcastMessage(DEFAULT_PREFIX + message);
