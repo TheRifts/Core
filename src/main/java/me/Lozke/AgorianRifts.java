@@ -1,9 +1,10 @@
 package me.Lozke;
 
-import me.Lozke.commands.*;
-import me.Lozke.listeners.*;
-import me.Lozke.tasks.ActionBarMessenger;
+import co.aikar.commands.BukkitCommandManager;
+import me.Lozke.commands.BossBarCommand;
 import me.Lozke.handlers.BossBarHandler;
+import me.Lozke.listeners.CoreDamageListener;
+import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
 import me.Lozke.utils.config.SmartYamlConfiguration;
@@ -12,13 +13,11 @@ import me.Lozke.utils.config.VersionedSmartYamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 public class AgorianRifts extends JavaPlugin {
 
@@ -60,15 +59,8 @@ public class AgorianRifts extends JavaPlugin {
         pm.registerEvents(new CoreDamageListener(), this);
         pm.registerEvents(new MenuClickListener(), this);
 
-        //Migrate this to a Factory
-        try {
-            Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            commandMap.register(this.getName(), new BossBarCommand());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        BukkitCommandManager cM = new BukkitCommandManager(this);
+        cM.registerCommand(new BossBarCommand());
 
         bossBarHandler = new BossBarHandler(this);
         actionBarMessenger = new ActionBarMessenger();
