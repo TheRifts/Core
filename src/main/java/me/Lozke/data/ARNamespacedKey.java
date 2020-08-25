@@ -4,18 +4,17 @@ import me.Lozke.AgorianRifts;
 import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
 import me.Lozke.data.PersistentDataType.MapDataType;
+import me.Lozke.data.PersistentDataType.UUIDDataType;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public enum ARNamespacedKey {
+    UUID(new NamespacedKey(getPlugin(), "uuid"), getUUIDDataType(), java.util.UUID.randomUUID()),
     SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), getBooleanDataType(), true),
     REAL_ITEM(new NamespacedKey(getPlugin(), "a-real-item"), getBooleanDataType(), true),
     TIER(new NamespacedKey(getPlugin(), "tier"), PersistentDataType.STRING, "tier"),
@@ -88,6 +87,10 @@ public enum ARNamespacedKey {
 
     private static PersistentDataType<byte[], Boolean> getBooleanDataType() {
         return new BooleanDataType();
+    }
+
+    private static PersistentDataType<byte[], UUID> getUUIDDataType() {
+        return new UUIDDataType();
     }
 
     private static AgorianRifts getPlugin() {
