@@ -1,6 +1,7 @@
 package me.Lozke;
 
 import co.aikar.commands.BukkitCommandManager;
+import me.Lozke.commands.ActionBarMessageCommand;
 import me.Lozke.commands.BossBarCommand;
 import me.Lozke.handlers.BossBarHandler;
 import me.Lozke.listeners.CoreDamageListener;
@@ -61,9 +62,10 @@ public class AgorianRifts extends JavaPlugin {
 
         BukkitCommandManager cM = new BukkitCommandManager(this);
         cM.registerCommand(new BossBarCommand());
+        cM.registerCommand(new ActionBarMessageCommand());
 
         bossBarHandler = new BossBarHandler(this);
-        actionBarMessenger = new ActionBarMessenger();
+        actionBarMessenger = new ActionBarMessenger(this);
 
         Logger.log("The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
     }
