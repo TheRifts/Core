@@ -4,7 +4,6 @@ import co.aikar.commands.BukkitCommandManager;
 import me.Lozke.commands.ActionBarMessageCommand;
 import me.Lozke.commands.BossBarCommand;
 import me.Lozke.handlers.BossBarHandler;
-import me.Lozke.listeners.CoreDamageListener;
 import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
@@ -57,7 +56,6 @@ public class AgorianRifts extends JavaPlugin {
         //Turn this into the same setup as commands
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new CoreDamageListener(), this);
         pm.registerEvents(new MenuClickListener(), this);
 
         BukkitCommandManager cM = new BukkitCommandManager(this);
