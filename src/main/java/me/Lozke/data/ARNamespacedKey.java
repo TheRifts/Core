@@ -24,6 +24,8 @@ public enum ARNamespacedKey {
     DMG_HI(new NamespacedKey(getPlugin(), "dmg-hi"), PersistentDataType.INTEGER, 0),
     HP_REGEN(new NamespacedKey(getPlugin(), "hp-regen"), PersistentDataType.INTEGER, 0),
     ENERGY_REGEN(new NamespacedKey(getPlugin(), "energy-regen"), PersistentDataType.INTEGER, 0),
+    ARMOR(new NamespacedKey(getPlugin(), "armor-value"), PersistentDataType.INTEGER, 0),
+    DEFENSE(new NamespacedKey(getPlugin(), "defense-value"), PersistentDataType.INTEGER, 0),
     GEM_WORTH(new NamespacedKey(getPlugin(), "gem-amount"), PersistentDataType.INTEGER, 0),
     MAX_GEM_WORTH(new NamespacedKey(getPlugin(), "max-gem-amount"), PersistentDataType.INTEGER, 0),
     HELD_ITEMS(new NamespacedKey(getPlugin(), "held-items"), getMapDataType(), new HashMap<>(0)),
