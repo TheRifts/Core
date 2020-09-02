@@ -33,6 +33,7 @@ public enum ARNamespacedKey {
     ATTRIBUTES(new NamespacedKey(getPlugin(), "item-attributes"), getMapDataType(), new HashMap<>(0)),
     DURABILITY(new NamespacedKey(getPlugin(), "durability"), PersistentDataType.INTEGER, 0),
     MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
+    BROKEN(new NamespacedKey(getPlugin(), "is-broken"), getBooleanDataType(), false),
     USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scroll"), getListDataType(), new ArrayList<>()),
     SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0),
     SCROLL_SUCCESS_CHANCE(new NamespacedKey(getPlugin(),"scroll-success-chance"), PersistentDataType.DOUBLE, 0D),
