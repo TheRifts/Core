@@ -8,7 +8,7 @@ public class BetterItemStack extends ItemStack {
     private NamespacedKeyWrapper namespacedKeyWrapper;
 
     public BetterItemStack(ItemStack stack) {
-        this.namespacedKeyWrapper = new NamespacedKeyWrapper(stack);
+        namespacedKeyWrapper = new NamespacedKeyWrapper(stack.getItemMeta().getPersistentDataContainer());
     }
 
     public BetterItemStack(Material type) {

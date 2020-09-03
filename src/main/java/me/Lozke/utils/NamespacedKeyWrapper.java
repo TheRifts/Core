@@ -23,36 +23,34 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     private final ListDataType LIST_DATA_TYPE = new ListDataType();
     private final BooleanDataType BOOLEAN_DATA_TYPE  = new BooleanDataType();
 
-    private ItemStack item;
+    private PersistentDataContainer dataContainer;
 
-    public NamespacedKeyWrapper(ItemStack item) {
-        this.item = item;
+    public NamespacedKeyWrapper(PersistentDataContainer dataContainer) {
+        this.dataContainer = dataContainer;
     }
 
-    public ItemMeta getItemMeta() {
-        return (item.getItemMeta() == null) ? Bukkit.getServer().getItemFactory().getItemMeta(item.getType()) : item.getItemMeta();
+    public ItemStack applyDataToItem(ItemStack stack) {
+        ItemMeta meta = (stack.getItemMeta() == null) ? Bukkit.getServer().getItemFactory().getItemMeta(stack.getType()) : stack.getItemMeta();
+        stack.setItemMeta(meta);
+        return stack;
     }
 
     public NamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
-        ItemMeta itemMeta = getItemMeta();
-        itemMeta.getPersistentDataContainer().set(namespacedKey, dataType, key);
-        item.setItemMeta(itemMeta);
+        dataContainer.set(namespacedKey, dataType, key);
         return this;
     }
 
     public NamespacedKeyWrapper removeKey(NamespacedKey namespacedKey) {
-        ItemMeta itemMeta = getItemMeta();
-        itemMeta.getPersistentDataContainer().remove(namespacedKey);
-        item.setItemMeta(itemMeta);
+        dataContainer.remove(namespacedKey);
         return this;
     }
 
     public boolean hasKey(NamespacedKey namespacedKey, PersistentDataType dataType) {
-        return getItemMeta().getPersistentDataContainer().has(namespacedKey, dataType);
+        return dataContainer.has(namespacedKey, dataType);
     }
 
     public Object get(NamespacedKey namespacedKey, PersistentDataType dataType) {
-        return getItemMeta().getPersistentDataContainer().get(namespacedKey, dataType);
+        return dataContainer.get(namespacedKey, dataType);
     }
 
     public NamespacedKeyWrapper addString(NamespacedKey namespacedKey, String key) {
@@ -60,7 +58,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public String getString(NamespacedKey namespacedKey, String def) {
-        String val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.STRING);
+        String val = dataContainer.get(namespacedKey, PersistentDataType.STRING);
         return (val == null) ? def : val;
     }
     public String getString(NamespacedKey namespacedKey) {
@@ -72,7 +70,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public byte getByte(NamespacedKey namespacedKey, Byte def) {
-        Byte val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE);
+        Byte val = dataContainer.get(namespacedKey, PersistentDataType.BYTE);
         return (val == null) ? def : val.byteValue();
     }
     public byte getByte(NamespacedKey namespacedKey) {
@@ -84,7 +82,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public byte[] getByteArray(NamespacedKey namespacedKey, byte[] def) {
-        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.BYTE_ARRAY);
+        Object val = dataContainer.get(namespacedKey, PersistentDataType.BYTE_ARRAY);
         return (val == null) ? def : (byte[]) val;
     }
     public byte[] getByteArray(NamespacedKey namespacedKey) {
@@ -96,7 +94,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public int getInt(NamespacedKey namespacedKey, Integer def) {
-        Integer val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER);
+        Integer val = dataContainer.get(namespacedKey, PersistentDataType.INTEGER);
         return (val == null) ? def : val.intValue();
     }
     public int getInt(NamespacedKey namespacedKey) {
@@ -108,7 +106,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public int[] getIntArray(NamespacedKey namespacedKey, int[] def) {
-        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.INTEGER_ARRAY);
+        Object val = dataContainer.get(namespacedKey, PersistentDataType.INTEGER_ARRAY);
         return (val == null) ? def : (int[]) val;
     }
     public int[] getIntArray(NamespacedKey namespacedKey) {
@@ -120,7 +118,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public double getDouble(NamespacedKey namespacedKey, Double def) {
-        Double val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.DOUBLE);
+        Double val = dataContainer.get(namespacedKey, PersistentDataType.DOUBLE);
         return (val == null) ? def : val.doubleValue();
     }
     public double getDouble(NamespacedKey namespacedKey) {
@@ -132,7 +130,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public float getFloat(NamespacedKey namespacedKey, Float def) {
-        Float val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.FLOAT);
+        Float val = dataContainer.get(namespacedKey, PersistentDataType.FLOAT);
         return (val == null) ? def : val.floatValue();
     }
     public float getFloat(NamespacedKey namespacedKey) {
@@ -144,7 +142,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public long getLong(NamespacedKey namespacedKey, Long def) {
-        Long val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG);
+        Long val = dataContainer.get(namespacedKey, PersistentDataType.LONG);
         return (val == null) ? def : val.longValue();
     }
     public long getLong(NamespacedKey namespacedKey) {
@@ -156,7 +154,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public long[] getLongArray(NamespacedKey namespacedKey, long[] def) {
-        Object val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.LONG_ARRAY);
+        Object val = dataContainer.get(namespacedKey, PersistentDataType.LONG_ARRAY);
         return val == null ? def : (long[]) val;
     }
     public long[] getLongArray(NamespacedKey namespacedKey) {
@@ -168,7 +166,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public short getShort(NamespacedKey namespacedKey, Short def) {
-        Short val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.SHORT);
+        Short val = dataContainer.get(namespacedKey, PersistentDataType.SHORT);
         return (val == null) ? def : val.shortValue();
     }
     public short getShort(NamespacedKey namespacedKey) {
@@ -180,7 +178,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public PersistentDataContainer getTagContainer(NamespacedKey namespacedKey, PersistentDataContainer def) {
-        PersistentDataContainer val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER);
+        PersistentDataContainer val = dataContainer.get(namespacedKey, PersistentDataType.TAG_CONTAINER);
         return (val == null) ? def : val;
     }
     public PersistentDataContainer getTagContainer(NamespacedKey namespacedKey) {
@@ -192,7 +190,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public PersistentDataContainer[] getTagContainerArray(NamespacedKey namespacedKey, PersistentDataContainer[] def) {
-        PersistentDataContainer[] val = getItemMeta().getPersistentDataContainer().get(namespacedKey, PersistentDataType.TAG_CONTAINER_ARRAY);
+        PersistentDataContainer[] val = dataContainer.get(namespacedKey, PersistentDataType.TAG_CONTAINER_ARRAY);
         return (val == null) ? def : val;
     }
     public PersistentDataContainer[] getTagContainerArray(NamespacedKey namespacedKey) {
@@ -204,7 +202,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public Map getMap(NamespacedKey namespacedKey, Map def) {
-        Map val = getItemMeta().getPersistentDataContainer().get(namespacedKey, MAP_DATA_TYPE);
+        Map val = dataContainer.get(namespacedKey, MAP_DATA_TYPE);
         return (val == null) ? def : val;
     }
     public Map getMap(NamespacedKey namespacedKey) {
@@ -216,7 +214,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public List getList(NamespacedKey namespacedKey, List def) {
-        List val = getItemMeta().getPersistentDataContainer().get(namespacedKey, LIST_DATA_TYPE);
+        List val = dataContainer.get(namespacedKey, LIST_DATA_TYPE);
         return (val == null) ? def : val;
     }
     public List getList(NamespacedKey namespacedKey) {
@@ -228,7 +226,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public boolean getBoolean(NamespacedKey namespacedKey, Boolean def) {
-        Boolean val = getItemMeta().getPersistentDataContainer().get(namespacedKey, BOOLEAN_DATA_TYPE);
+        Boolean val = dataContainer.get(namespacedKey, BOOLEAN_DATA_TYPE);
         return (val == null) ? def : val;
     }
 

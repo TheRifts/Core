@@ -4,8 +4,6 @@ import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
 import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -18,8 +16,7 @@ public interface INamespacedKeyWrapper {
     ListDataType LIST_DATA_TYPE = new ListDataType();
     BooleanDataType BOOLEAN_DATA_TYPE = new BooleanDataType();
 
-    ItemStack item = null;
-    ItemMeta itemMeta = null;
+    PersistentDataContainer dataContainer = null;
 
     INamespacedKeyWrapper removeKey(NamespacedKey namespacedKey);
 
