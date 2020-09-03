@@ -25,23 +25,27 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
 
     private PersistentDataContainer dataContainer;
 
+    private ItemStack stack;
+    private ItemMeta itemMeta;
+
     public NamespacedKeyWrapper(PersistentDataContainer dataContainer) {
         this.dataContainer = dataContainer;
     }
-
-    public ItemStack applyDataToItem(ItemStack stack) {
-        ItemMeta meta = (stack.getItemMeta() == null) ? Bukkit.getServer().getItemFactory().getItemMeta(stack.getType()) : stack.getItemMeta();
-        stack.setItemMeta(meta);
-        return stack;
+    public NamespacedKeyWrapper(ItemStack stack) {
+        this.stack = stack;
+        this.itemMeta = (stack.getItemMeta() == null) ? Bukkit.getItemFactory().getItemMeta(stack.getType()) : stack.getItemMeta();
+        this.dataContainer = itemMeta.getPersistentDataContainer();
     }
 
     public NamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
         dataContainer.set(namespacedKey, dataType, key);
+        if (stack != null) stack.setItemMeta(itemMeta);
         return this;
     }
 
     public NamespacedKeyWrapper removeKey(NamespacedKey namespacedKey) {
         dataContainer.remove(namespacedKey);
+        if (stack != null) stack.setItemMeta(itemMeta);
         return this;
     }
 
