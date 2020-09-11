@@ -34,7 +34,7 @@ public enum ARNamespacedKey {
     SCROLL_SUCCESS_CHANCE(new NamespacedKey(getPlugin(),"scroll-success-chance"), PersistentDataType.DOUBLE, 0D),
     SCROLL_DESTROY_CHANCE(new NamespacedKey(getPlugin(),"scroll-destroy-chance"), PersistentDataType.DOUBLE, 0D),
     SCROLL_SKIN(new NamespacedKey(getPlugin(), "scroll-skin"), PersistentDataType.STRING, "BLUE"),
-    SCROLL_TYPE(new NamespacedKey(getPlugin(), "scroll-type"), PersistentDataType.STRING, "ARMOR");
+    SCROLL_TYPE(new NamespacedKey(getPlugin(), "scroll-type"), PersistentDataType.STRING, "ARMOUR");
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 

@@ -15,17 +15,17 @@ public enum Tier {
     private final int tierNumber;
     private final String materialColor;
     private final Material material;
-    private final String armorMaterial;
+    private final String armourMaterial;
     private final String weaponMaterial;
     private final String colorCode;
     private final String itemDisplayName;
     private final int maxDurability;
 
-    Tier(int tierNumber, String materialColor, Material material, String armorMaterial, String weaponMaterial, String colorCode, String itemDisplayName, int maxDurability) {
+    Tier(int tierNumber, String materialColor, Material material, String armourMaterial, String weaponMaterial, String colorCode, String itemDisplayName, int maxDurability) {
         this.tierNumber = tierNumber;
         this.materialColor = materialColor;
         this.material = material;
-        this.armorMaterial = armorMaterial;
+        this.armourMaterial = armourMaterial;
         this.weaponMaterial = weaponMaterial;
         this.colorCode = colorCode;
         this.itemDisplayName = itemDisplayName;
@@ -41,8 +41,8 @@ public enum Tier {
     public Material getMaterial() {
         return material;
     }
-    public String getArmorMaterial() {
-        return armorMaterial;
+    public String getArmourMaterial() {
+        return armourMaterial;
     }
     public String getWeaponMaterial() {
         return weaponMaterial;
