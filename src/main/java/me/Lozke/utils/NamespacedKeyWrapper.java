@@ -41,6 +41,10 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
         this.dataContainer = itemMeta.getPersistentDataContainer();
     }
 
+    public PersistentDataContainer getDataContainer() {
+        return dataContainer;
+    }
+
     public NamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
         dataContainer.set(namespacedKey, dataType, key);
         if (stack != null) stack.setItemMeta(itemMeta);
