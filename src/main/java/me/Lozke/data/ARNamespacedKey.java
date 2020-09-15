@@ -28,13 +28,8 @@ public enum ARNamespacedKey {
     DURABILITY(new NamespacedKey(getPlugin(), "durability"), PersistentDataType.INTEGER, 0),
     MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
     BROKEN(new NamespacedKey(getPlugin(), "is-broken"), getBooleanDataType(), false),
-    USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scroll"), getListDataType(), new ArrayList<>()),
-    SCROLL_DATA(new NamespacedKey(getPlugin(), "scroll-data"), getMapDataType(), new HashMap<>(0)),
-    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0),
-    SCROLL_SUCCESS_CHANCE(new NamespacedKey(getPlugin(),"scroll-success-chance"), PersistentDataType.DOUBLE, 0D),
-    SCROLL_DESTROY_CHANCE(new NamespacedKey(getPlugin(),"scroll-destroy-chance"), PersistentDataType.DOUBLE, 0D),
-    SCROLL_SKIN(new NamespacedKey(getPlugin(), "scroll-skin"), PersistentDataType.STRING, "BLUE"),
-    SCROLL_TYPE(new NamespacedKey(getPlugin(), "scroll-type"), PersistentDataType.STRING, "ARMOUR");
+    USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scrolls"), getListDataType(), new ArrayList<>()),
+    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0);
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 
