@@ -8,6 +8,7 @@ import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
 import me.Lozke.data.PersistentDataType.MapDataType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,7 +24,7 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     private final ListDataType LIST_DATA_TYPE = new ListDataType();
     private final BooleanDataType BOOLEAN_DATA_TYPE  = new BooleanDataType();
 
-    private PersistentDataContainer dataContainer;
+    private PersistentDataContainer dataContainer = null;
 
     private ItemStack stack;
     private ItemMeta itemMeta;
@@ -32,6 +33,9 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
         this.dataContainer = dataContainer;
     }
     public NamespacedKeyWrapper(ItemStack stack) {
+        if (stack.getType() == Material.AIR) {
+            return;
+        }
         this.stack = stack;
         this.itemMeta = (stack.getItemMeta() == null) ? Bukkit.getItemFactory().getItemMeta(stack.getType()) : stack.getItemMeta();
         this.dataContainer = itemMeta.getPersistentDataContainer();
