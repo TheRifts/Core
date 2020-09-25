@@ -37,6 +37,11 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
             return;
         }
         this.stack = stack;
+        cacheItem();
+    }
+
+    private void cacheItem() {
+        if (stack == null) return;
         this.itemMeta = (stack.getItemMeta() == null) ? Bukkit.getItemFactory().getItemMeta(stack.getType()) : stack.getItemMeta();
         this.dataContainer = itemMeta.getPersistentDataContainer();
     }
@@ -46,12 +51,14 @@ public class NamespacedKeyWrapper implements INamespacedKeyWrapper, IAddKeyWrapp
     }
 
     public NamespacedKeyWrapper addKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
+        cacheItem();
         dataContainer.set(namespacedKey, dataType, key);
         if (stack != null) stack.setItemMeta(itemMeta);
         return this;
     }
 
     public NamespacedKeyWrapper removeKey(NamespacedKey namespacedKey) {
+        cacheItem();
         dataContainer.remove(namespacedKey);
         if (stack != null) stack.setItemMeta(itemMeta);
         return this;
