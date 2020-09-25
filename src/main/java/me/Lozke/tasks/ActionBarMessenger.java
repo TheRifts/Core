@@ -34,7 +34,7 @@ public class ActionBarMessenger extends BukkitRunnable {
             UUID key = setEntry.getKey();
             Player player = Bukkit.getPlayer(key);
 
-            if (player == null) {
+            if (player == null || setEntry.getValue() == null || setEntry.getValue().isEmpty()) {
                 pendingMap.remove(key);
                 continue;
             }
