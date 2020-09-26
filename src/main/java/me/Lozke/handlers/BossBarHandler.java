@@ -17,12 +17,10 @@ public class BossBarHandler extends BukkitRunnable {
 
     private Map<UUID, BossBar> activeBars = new ConcurrentHashMap<>();
 
-
     public BossBarHandler(AgorianRifts plugin) {
         runTaskTimer(plugin, 0L , 1L);
         Bukkit.getOnlinePlayers().forEach(this::createBar);
     }
-
 
     public void createBar(Player player) {
         createBar(player.getUniqueId());
@@ -35,9 +33,13 @@ public class BossBarHandler extends BukkitRunnable {
                 "",
                 BarColor.RED,
                 BarStyle.SOLID);
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) {
+            return;
+        }
         activeBars.put(uuid, bossbar);
         updateBar(uuid);
-        bossbar.addPlayer(Bukkit.getPlayer(uuid));
+        bossbar.addPlayer(player);
     }
 
     public void updateBar(Player player) {
@@ -49,6 +51,10 @@ public class BossBarHandler extends BukkitRunnable {
             return;
         }
         Player player = Bukkit.getPlayer(uuid);
+        if (player == null) {
+            removeBar(uuid);
+            return;
+        }
         int maxHealth = (int) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         int health = (int) player.getHealth();
         BossBar bossbar = activeBars.get(uuid);
@@ -68,7 +74,7 @@ public class BossBarHandler extends BukkitRunnable {
         removeBar(player.getUniqueId());
     }
     public void removeBar(UUID uuid) {
-        if (!hasBar(Bukkit.getPlayer(uuid))) {
+        if (!hasBar(uuid)) {
             return;
         }
         activeBars.get(uuid).removeAll();
@@ -85,7 +91,6 @@ public class BossBarHandler extends BukkitRunnable {
         return activeBars.containsKey(uuid);
     }
 
-    
     @Override
     public void run() {
         updateAll();
