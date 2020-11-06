@@ -4,8 +4,10 @@ import co.aikar.commands.BukkitCommandManager;
 import me.Lozke.commands.ActionBarMessageCommand;
 import me.Lozke.commands.BossBarCommand;
 import me.Lozke.handlers.BossBarHandler;
+import me.Lozke.listeners.ChunkMonitor;
 import me.Lozke.listeners.PacketParticleListener;
 import me.Lozke.listeners.ReloadListener;
+import me.Lozke.managers.ChunkManager;
 import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
@@ -25,6 +27,8 @@ public class AgorianRifts extends JavaPlugin {
 
     private static AgorianRifts plugin;
     private static SmartYamlConfiguration gearData;
+
+    private ChunkManager chunkManager;
 
     private BossBarHandler bossBarHandler;
     private ActionBarMessenger actionBarMessenger;
@@ -55,9 +59,12 @@ public class AgorianRifts extends JavaPlugin {
             world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
         }
 
+        chunkManager = new ChunkManager();
+
         //Turn this into the same setup as commands
         //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents(new ChunkMonitor(chunkManager), this);
         pm.registerEvents(new ReloadListener(), this);
         pm.registerEvents(new MenuClickListener(), this);
         new PacketParticleListener(this);
@@ -90,6 +97,10 @@ public class AgorianRifts extends JavaPlugin {
 
     public static FileConfiguration getGearData() {
         return gearData;
+    }
+
+    public ChunkManager getChunkManager() {
+        return chunkManager;
     }
 
     public BossBarHandler getBossBarHandler() {
