@@ -1,9 +1,11 @@
 package me.Lozke.utils.ItemMenu.icons;
 
+import me.Lozke.AgorianRifts;
 import me.Lozke.utils.ItemMenu.events.MenuClickEvent;
 import me.Lozke.utils.ItemMenu.menus.ItemMenu;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -41,7 +43,12 @@ public class OpenMenuIcon extends MenuIcon {
         }
 
         openingMenu.updateMenu();
-        openingMenu.openMenu(event.getPlayer());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                openingMenu.openMenu(event.getPlayer());
+            }
+        }.runTaskLater(AgorianRifts.getPluginInstance(), 1L);
     }
 
     public OpenMenuIcon addClickAction(ClickType clickType, ItemMenu menu) {
