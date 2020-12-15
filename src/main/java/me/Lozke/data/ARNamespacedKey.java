@@ -29,7 +29,8 @@ public enum ARNamespacedKey {
     MAX_DURABILITY(new NamespacedKey(getPlugin(), "max-durability"), PersistentDataType.INTEGER, 0),
     BROKEN(new NamespacedKey(getPlugin(), "is-broken"), getBooleanDataType(), false),
     USED_SCROLLS(new NamespacedKey(getPlugin(), "used-scrolls"), getListDataType(), new ArrayList<>()),
-    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0);
+    SCROLL_MAX_AMOUNT(new NamespacedKey(getPlugin(), "scroll-max-amount"), PersistentDataType.INTEGER, 0),
+    MOB_ID(new NamespacedKey(getPlugin(), "mob-id"), PersistentDataType.STRING, "");
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 
