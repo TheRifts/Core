@@ -7,7 +7,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import me.Lozke.AgorianRifts;
-import org.bukkit.Particle;
 
 public class PacketParticleListener {
     public PacketParticleListener(AgorianRifts plugin) {
@@ -16,8 +15,10 @@ public class PacketParticleListener {
                     @Override
                     public void onPacketSending(PacketEvent event) {
                         PacketContainer container = event.getPacket();
-                        if (container.getNewParticles().read(0).getParticle() == Particle.DAMAGE_INDICATOR) {
-                            event.setCancelled(true);
+                        switch (container.getNewParticles().read(0).getParticle()) {
+                            case DAMAGE_INDICATOR:
+                            case SWEEP_ATTACK:
+                                event.setCancelled(true);
                         }
                     }
                 }
