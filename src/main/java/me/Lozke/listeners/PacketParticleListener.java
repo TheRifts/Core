@@ -6,10 +6,10 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import me.Lozke.AgorianRifts;
+import me.Lozke.RiftsCore;
 
 public class PacketParticleListener {
-    public PacketParticleListener(AgorianRifts plugin) {
+    public PacketParticleListener(RiftsCore plugin) {
         ProtocolLibrary.getProtocolManager().addPacketListener(
                 new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.WORLD_PARTICLES) {
                     @Override

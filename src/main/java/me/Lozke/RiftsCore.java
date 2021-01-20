@@ -24,9 +24,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
-public class AgorianRifts extends JavaPlugin {
+public class RiftsCore extends JavaPlugin {
 
-    private static AgorianRifts plugin;
+    private static RiftsCore plugin;
     private static SmartYamlConfiguration gearData;
 
     private ChunkManager chunkManager;
@@ -93,7 +93,7 @@ public class AgorianRifts extends JavaPlugin {
                 getResource(name), VersionedConfiguration.VersionUpdateType.BACKUP_AND_UPDATE);
     }
 
-    public static AgorianRifts getPluginInstance() {
+    public static RiftsCore getPluginInstance() {
         return plugin;
     }
 

@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public class Logger {
 
     private static final String PREFIX_REGEX = "[%plugin_name%] ";
-    private static final String DEFAULT_PREFIX = "[Agorian Rifts] ";
+    private static final String DEFAULT_PREFIX = "[RiftsCore] ";
     private static final java.util.logging.Logger logger = Bukkit.getServer().getLogger();
 
     private static String getPrefix(Plugin plugin) {

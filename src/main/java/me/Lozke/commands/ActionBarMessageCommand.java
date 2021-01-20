@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
-import me.Lozke.AgorianRifts;
+import me.Lozke.RiftsCore;
 import me.Lozke.data.ActionBarType.ActionBarFixedMessage;
 import me.Lozke.data.ActionBarType.ActionBarMessage;
 import me.Lozke.data.ActionBarType.ActionBarTimerMessage;
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class ActionBarMessageCommand extends BaseCommand {
 
     private static void addBar(Player player, ActionBarMessage message) {
-        AgorianRifts.getPluginInstance().getActionBarMessenger().addMessage(player, message);
+        RiftsCore.getPluginInstance().getActionBarMessenger().addMessage(player, message);
     }
 
     @Default
@@ -44,7 +44,7 @@ public class ActionBarMessageCommand extends BaseCommand {
 
     @Subcommand("remove")
     public static void onRemove(Player player, String string) {
-        AgorianRifts.getPluginInstance().getActionBarMessenger().removeMessage(player.getUniqueId(), string);
+        RiftsCore.getPluginInstance().getActionBarMessenger().removeMessage(player.getUniqueId(), string);
     }
 
 }

@@ -1,6 +1,6 @@
 package me.Lozke.listeners;
 
-import me.Lozke.AgorianRifts;
+import me.Lozke.RiftsCore;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ public class DamagedEntityListener implements Listener {
     private Plugin plugin;
     private final Map<LivingEntity, Long> MONSTER_HIT_COOLDOWN = new WeakHashMap<>();
 
-    public DamagedEntityListener(AgorianRifts plugin) {
+    public DamagedEntityListener(RiftsCore plugin) {
         this.plugin = plugin;
     }
 

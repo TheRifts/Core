@@ -1,8 +1,8 @@
-name: AgorianRifts
+name: RiftsCore
 version: 1.0.0
-main: me.Lozke.AgorianRifts
+main: me.Lozke.RiftsCore
 author: Lozke
 description: Let us pray it works.
 api-version: 1.16
-loadbefore: [Loot, PlayerMechanics, MobMechanics]
+loadbefore: [RiftsLoot, RiftsCombat]
 depend: [ProtocolLib]

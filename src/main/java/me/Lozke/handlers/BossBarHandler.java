@@ -1,6 +1,6 @@
 package me.Lozke.handlers;
 
-import me.Lozke.AgorianRifts;
+import me.Lozke.RiftsCore;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
@@ -17,7 +17,7 @@ public class BossBarHandler extends BukkitRunnable {
 
     private Map<UUID, BossBar> activeBars = new ConcurrentHashMap<>();
 
-    public BossBarHandler(AgorianRifts plugin) {
+    public BossBarHandler(RiftsCore plugin) {
         runTaskTimer(plugin, 0L , 1L);
         Bukkit.getOnlinePlayers().forEach(this::createBar);
     }

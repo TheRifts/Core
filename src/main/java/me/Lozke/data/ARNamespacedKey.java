@@ -1,6 +1,6 @@
 package me.Lozke.data;
 
-import me.Lozke.AgorianRifts;
+import me.Lozke.RiftsCore;
 import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
 import me.Lozke.data.PersistentDataType.MapDataType;
@@ -87,7 +87,7 @@ public enum ARNamespacedKey {
         return new UUIDDataType();
     }
 
-    private static AgorianRifts getPlugin() {
-        return AgorianRifts.getPluginInstance();
+    private static RiftsCore getPlugin() {
+        return RiftsCore.getPluginInstance();
     }
 }
