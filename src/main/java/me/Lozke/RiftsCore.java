@@ -4,21 +4,19 @@ import co.aikar.commands.BukkitCommandManager;
 import me.Lozke.commands.ActionBarMessageCommand;
 import me.Lozke.commands.BossBarCommand;
 import me.Lozke.handlers.BossBarHandler;
-import me.Lozke.listeners.DamagedEntityListener;
 import me.Lozke.listeners.ChunkMonitor;
+import me.Lozke.listeners.DamagedEntityListener;
 import me.Lozke.listeners.PacketParticleListener;
 import me.Lozke.listeners.ReloadListener;
 import me.Lozke.managers.ChunkManager;
 import me.Lozke.tasks.ActionBarMessenger;
 import me.Lozke.utils.ItemMenu.listeners.MenuClickListener;
 import me.Lozke.utils.Logger;
-import me.Lozke.utils.config.SmartYamlConfiguration;
 import me.Lozke.utils.config.VersionedConfiguration;
 import me.Lozke.utils.config.VersionedSmartYamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,18 +25,14 @@ import java.io.File;
 public class RiftsCore extends JavaPlugin {
 
     private static RiftsCore plugin;
-    private static SmartYamlConfiguration gearData;
 
     private ChunkManager chunkManager;
-
     private BossBarHandler bossBarHandler;
     private ActionBarMessenger actionBarMessenger;
 
     @Override
     public void onEnable() {
         plugin = this;
-
-        gearData = defaultSettingsLoad("geardata.yml");
 
         for (World world : getServer().getWorlds()) {
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -60,10 +54,10 @@ public class RiftsCore extends JavaPlugin {
             world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
         }
 
+        bossBarHandler = new BossBarHandler(this);
+        actionBarMessenger = new ActionBarMessenger(this);
         chunkManager = new ChunkManager();
 
-        //Turn this into the same setup as commands
-        //Turn this into a Factory
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new DamagedEntityListener(this), this);
         pm.registerEvents(new ChunkMonitor(chunkManager), this);
@@ -74,9 +68,6 @@ public class RiftsCore extends JavaPlugin {
         BukkitCommandManager cM = new BukkitCommandManager(this);
         cM.registerCommand(new BossBarCommand());
         cM.registerCommand(new ActionBarMessageCommand());
-
-        bossBarHandler = new BossBarHandler(this);
-        actionBarMessenger = new ActionBarMessenger(this);
 
         Logger.log("The little monkeys have clocked in (\u001b[32mPlugin Enabled\u001b[0m)");
     }
@@ -95,10 +86,6 @@ public class RiftsCore extends JavaPlugin {
 
     public static RiftsCore getPluginInstance() {
         return plugin;
-    }
-
-    public static FileConfiguration getGearData() {
-        return gearData;
     }
 
     public ChunkManager getChunkManager() {
