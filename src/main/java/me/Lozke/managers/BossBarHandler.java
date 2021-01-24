@@ -1,4 +1,4 @@
-package me.Lozke.handlers;
+package me.Lozke.managers;
 
 import me.Lozke.RiftsCore;
 import org.bukkit.Bukkit;

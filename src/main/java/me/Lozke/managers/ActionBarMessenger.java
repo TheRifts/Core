@@ -1,4 +1,4 @@
-package me.Lozke.tasks;
+package me.Lozke.managers;
 
 import me.Lozke.data.ActionBarType.ActionBarMessage;
 import me.Lozke.utils.Logger;
