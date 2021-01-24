@@ -1,5 +1,8 @@
 package me.Lozke.data.ActionBarType;
 
+import lombok.Data;
+
+@Data
 public class ActionBarMessage implements Comparable< ActionBarMessage >{
 
     protected String id;
@@ -18,27 +21,6 @@ public class ActionBarMessage implements Comparable< ActionBarMessage >{
         this.message = message;
         this.weight = weight;
         this.time = (time * 20) + 20;
-    }
-
-    public String getID() {
-        return id;
-    }
-    public void setID(String id) {
-        this.id = id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-    public void setWeight(int weight) {
-        this.weight = weight;
     }
 
     public int getTime() {

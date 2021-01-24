@@ -84,7 +84,7 @@ public class ActionBarMessenger extends BukkitRunnable {
         }
         else {
             for (ActionBarMessage actionBarMessage : messageList) {
-                if (actionBarMessage.getID().equalsIgnoreCase(message.getID())) {
+                if (actionBarMessage.getId().equalsIgnoreCase(message.getId())) {
                     actionBarMessage.overwrite(message);
                     return;
                 }
@@ -115,7 +115,7 @@ public class ActionBarMessenger extends BukkitRunnable {
             return;
         }
         for (ActionBarMessage message : messages) {
-            if (message.getID().equalsIgnoreCase(messageID)) {
+            if (message.getId().equalsIgnoreCase(messageID)) {
                 message.setTime(0);
             }
         }
@@ -142,7 +142,7 @@ public class ActionBarMessenger extends BukkitRunnable {
             return null;
         }
         for (ActionBarMessage message : messages) {
-            if (message.getID().equalsIgnoreCase(messageID)) {
+            if (message.getId().equalsIgnoreCase(messageID)) {
                 return message;
             }
         }

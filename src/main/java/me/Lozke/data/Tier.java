@@ -1,7 +1,10 @@
 package me.Lozke.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.Material;
 
+@AllArgsConstructor
 public enum Tier {
     T1(1, "WHITE", Material.WHITE_CONCRETE,"LEATHER", "WOODEN", "&7", "Shoddy", 2000), //Wood/Leather
     T2(2, "LIME", Material.LIME_CONCRETE,"CHAINMAIL", "STONE", "&2", "Ordinary", 2000), //Stone/Chain
@@ -12,48 +15,12 @@ public enum Tier {
 
     public static Tier[] types = Tier.values();
 
-    private final int tierNumber;
-    private final String materialColor;
-    private final Material material;
-    private final String armourMaterial;
-    private final String weaponMaterial;
-    private final String colorCode;
-    private final String itemDisplayName;
-    private final int maxDurability;
-
-    Tier(int tierNumber, String materialColor, Material material, String armourMaterial, String weaponMaterial, String colorCode, String itemDisplayName, int maxDurability) {
-        this.tierNumber = tierNumber;
-        this.materialColor = materialColor;
-        this.material = material;
-        this.armourMaterial = armourMaterial;
-        this.weaponMaterial = weaponMaterial;
-        this.colorCode = colorCode;
-        this.itemDisplayName = itemDisplayName;
-        this.maxDurability = maxDurability;
-    }
-
-    public int getTierNumber() {
-        return tierNumber;
-    }
-    public String getMaterialColor() {
-        return materialColor;
-    }
-    public Material getMaterial() {
-        return material;
-    }
-    public String getArmourMaterial() {
-        return armourMaterial;
-    }
-    public String getWeaponMaterial() {
-        return weaponMaterial;
-    }
-    public String getColorCode() {
-        return colorCode;
-    }
-    public String getItemDisplayName() {
-        return itemDisplayName;
-    }
-    public int getMaxDurability() {
-        return maxDurability;
-    }
+    @Getter private final int tierNumber;
+    @Getter private final String materialColor;
+    @Getter private final Material material;
+    @Getter private final String armourMaterial;
+    @Getter private final String weaponMaterial;
+    @Getter private final String colorCode;
+    @Getter private final String itemDisplayName;
+    @Getter private final int maxDurability;
 }

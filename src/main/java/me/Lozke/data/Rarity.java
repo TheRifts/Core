@@ -1,8 +1,11 @@
 package me.Lozke.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+@AllArgsConstructor
 public enum Rarity {
     COMMON("I", new ItemStack(Material.WHITE_CONCRETE), "&7"),
     UNCOMMON("II", new ItemStack(Material.LIME_CONCRETE), "&2"),
@@ -12,23 +15,7 @@ public enum Rarity {
 
     public static Rarity[] types = Rarity.values();
 
-    private final String symbol;
-    private final ItemStack icon;
-    private final String colorCode;
-    
-    Rarity(String symbol, ItemStack icon, String colorCode) {
-        this.symbol = symbol;
-        this.icon = icon;
-        this.colorCode = colorCode;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-    public ItemStack getIcon() {
-        return icon;
-    }
-    public String getColorCode() {
-        return colorCode;
-    }
+    @Getter private final String symbol;
+    @Getter private final ItemStack icon;
+    @Getter private final String colorCode;
 }

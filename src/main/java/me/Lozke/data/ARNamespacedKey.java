@@ -1,5 +1,7 @@
 package me.Lozke.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import me.Lozke.RiftsCore;
 import me.Lozke.data.PersistentDataType.BooleanDataType;
 import me.Lozke.data.PersistentDataType.ListDataType;
@@ -13,6 +15,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
+@AllArgsConstructor
 public enum ARNamespacedKey {
     UUID(new NamespacedKey(getPlugin(), "uuid"), getUUIDDataType(), java.util.UUID.randomUUID()),
     SPAWNER_WAND_TOGGLE(new NamespacedKey(getPlugin(), "spawner-wand-toggle"), getBooleanDataType(), true),
@@ -34,27 +37,9 @@ public enum ARNamespacedKey {
 
     public static ARNamespacedKey[] types = ARNamespacedKey.values();
 
-    private NamespacedKey namespacedKey;
-    private PersistentDataType dataType;
-    private Object defaultKey;
-
-    ARNamespacedKey(NamespacedKey namespacedKey, PersistentDataType dataType, Object defaultKey) {
-        this.namespacedKey = namespacedKey;
-        this.dataType = dataType;
-        this.defaultKey = defaultKey;
-    }
-
-    public NamespacedKey getNamespacedKey() {
-        return namespacedKey;
-    }
-
-    public PersistentDataType getDataType() {
-        return dataType;
-    }
-
-    public Object getDefaultKey() {
-        return defaultKey;
-    }
+    @Getter private NamespacedKey namespacedKey;
+    @Getter private PersistentDataType dataType;
+    @Getter private Object defaultKey;
 
     public static ItemStack addToItem(ItemStack item, NamespacedKey namespacedKey, PersistentDataType dataType, Object key) {
         ItemMeta itemMeta = item.getItemMeta() == null ? Bukkit.getServer().getItemFactory().getItemMeta(item.getType()) : item.getItemMeta();
